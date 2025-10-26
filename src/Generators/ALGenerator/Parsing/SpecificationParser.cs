@@ -1,7 +1,3 @@
-using ALGenerator.Process;
-using GeneratorBase;
-using GeneratorBase.Utility;
-using GeneratorBase.Utility.Extensions;
 using System;
 using System.Buffers.Binary;
 using System.Collections.Generic;
@@ -14,6 +10,12 @@ using System.Net.Http.Headers;
 using System.Numerics;
 using System.Threading;
 using System.Xml.Linq;
+
+using ALGenerator.Process;
+
+using GeneratorBase;
+using GeneratorBase.Utility;
+using GeneratorBase.Utility.Extensions;
 
 namespace ALGenerator.Parsing
 {
@@ -252,10 +254,7 @@ namespace ALGenerator.Parsing
 
         private static void CreateDirectContextCommands(List<Function> functions, List<Extension> extensions)
         {
-            // FIXME: We probably want to generate these functions in the same namespace as their original version.
-            // And modify the required string to be something like "[requires: ALC_EXT_EFX & AL_EXT_direct_context]"
-            // meaning both ALC_EXT_EFX and AL_EXT_direct_context needs to be supported for this to work.
-            // We also need to deal with the fact that AL_EXT_direct_context devices need to load all of their
+            // FIXME: We need to deal with the fact that AL_EXT_direct_context devices need to load all of their
             // function pointers from alcGetProcAddress2 which you only get access to after creating your first
             // context, similar to how you need to do with OpenGL on windows.
             // - Noggin_bops 2025-08-08
@@ -263,41 +262,45 @@ namespace ALGenerator.Parsing
             List<Function> directContextFunctions = new List<Function>();
             List<CommandRef> directContextFunctionNames = new List<CommandRef>();
 
+            Extension directContextExtension = extensions.Find(e => e.Name == "AL_EXT_direct_context") ?? throw new InvalidOperationException("Could not find AL_EXT_direct_context extension!");
+
             CSStructPrimitive contextType = new CSStructPrimitive("ALCContext", false, CSPrimitive.IntPtr(true));
 
             foreach (var function in functions)
             {
-                string entryPoint = $"{NameMangler.RemoveVendorPostfix(function.EntryPoint)}Direct{NameMangler.GetVendorPostfix(function.EntryPoint)}";
+                var originalEntryPoint = function.EntryPoint;
+                string entryPoint = $"{NameMangler.RemoveVendorPostfix(originalEntryPoint)}Direct{NameMangler.GetVendorPostfix(originalEntryPoint)}";
 
-                Function directFunction = function with {
+                var directFunction = function with
+                {
                     Parameters = [
                         new Parameter()
-                        {
-                            Name = "context",
-                            OriginalName = "context",
-                            Type = contextType.ToCSString(),
-                            Length = null,
+                                {
+                                    Name = "context",
+                                    OriginalName = "context",
+                                    Type = contextType.ToCSString(),
+                                    Length = null,
 
-                            StrongType = contextType,
-                            StrongLength = null,
+                                    StrongType = contextType,
+                                    StrongLength = null,
 
-                            Kinds = [],
-                        },
-                        ..function.Parameters
+                                    Kinds = [],
+                                },
+                                ..function.Parameters
                         ],
                     // FIXME: Extension stuff!
                     EntryPoint = entryPoint,
                     Name = $"{NameMangler.RemoveVendorPostfix(function.Name)}Direct{NameMangler.GetVendorPostfix(function.Name)}",
+                    OriginalEntryPoint = originalEntryPoint,
+                    VersionInfo = new(function.VersionInfo?.Version, [.. function.VersionInfo?.Extensions ?? [], new(directContextExtension.Name, directContextExtension.Author)]),
                 };
+                var commandRef = new CommandRef(entryPoint);
 
                 directContextFunctions.Add(directFunction);
-                directContextFunctionNames.Add(new CommandRef(entryPoint));
+                directContextFunctionNames.Add(commandRef);
             }
             functions.AddRange(directContextFunctions);
-
-            Extension extension = extensions.Find(e => e.Name == "AL_EXT_direct_context")!;
-
-            extension.RequireTags.Add(new RequireTag()
+            directContextExtension.RequireTags.Add(new RequireTag()
             {
                 Commands = directContextFunctionNames,
                 Enums = [],
@@ -564,7 +567,6 @@ namespace ALGenerator.Parsing
                 {
                     return new CSPointer(baseType, @const);
                 }
-
             }
             else
             {
@@ -620,7 +622,7 @@ namespace ALGenerator.Parsing
 
                     return new CSEnum(group.TranslatedName, baseType, @const);
                 }
-                
+
                 BaseCSType csType;
                 {
                     csType = type switch
@@ -727,7 +729,6 @@ namespace ALGenerator.Parsing
             }
         }
 
-
         internal static List<EnumEntry> ParseEnums(XElement input, NameMangler nameMangler, APIFile currentFile)
         {
             Logger.Info("Begining parsing of enums.");
@@ -775,7 +776,7 @@ namespace ALGenerator.Parsing
                             _ => throw new Exception(),
                         };
                     }
-                    else 
+                    else
                     {
                         enumApi = api switch
                         {
@@ -878,7 +879,6 @@ namespace ALGenerator.Parsing
             return new GroupRef(name, translatedName, file);
         }
 
-
         internal static List<Feature> ParseFeatures(XElement input, APIFile currentFile)
         {
             Logger.Info("Begining parsing of features.");
@@ -945,7 +945,11 @@ namespace ALGenerator.Parsing
                 // Extension name convention: "GL_VENDOR_EXTENSION_NAME"
                 string? extNameWithoutGLPrefix = nameMangler.RemoveExtensionPrefix(extName);
                 // FIXME: Hack, if the extension name begins with "EAX" it's a Creative extension...
-                string? vendor = extNameWithoutGLPrefix.StartsWith("EAX") ? "Creative" : extNameWithoutGLPrefix[..extNameWithoutGLPrefix.IndexOf("_")];
+                string? vendor = extNameWithoutGLPrefix switch
+                {
+                    "EXT_direct_context" => "Direct",
+                    _ => extNameWithoutGLPrefix.StartsWith("EAX") ? "Creative" : extNameWithoutGLPrefix[..extNameWithoutGLPrefix.IndexOf('_')]
+                };
                 if (string.IsNullOrEmpty(vendor))
                 {
                     throw new Exception($"Extension '{extension}' doesn't have the vendor in it's name!");
@@ -1087,8 +1091,6 @@ namespace ALGenerator.Parsing
             _ => ALAPI.Invalid,
         };
 
-
-
         internal static List<EFXPreset> ParseEFXPresets(FileStream input, NameMangler nameMangler)
         {
             XDocument? xdocument = XDocument.Load(input);
@@ -1135,7 +1137,7 @@ namespace ALGenerator.Parsing
                 float roomRolloffFactor = float.Parse(preset.Attribute("roomRolloffFactor")?.Value ?? throw new Exception());
                 // FIXME:
                 bool decayHFLimit = bool.Parse(preset.Attribute("decayHFLimit")?.Value ?? throw new Exception());
-                
+
                 presets.Add(new EFXPreset(
                     nameMangler.MangleEnumName(name),
                     density,

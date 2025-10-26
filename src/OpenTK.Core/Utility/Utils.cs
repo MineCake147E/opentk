@@ -1,8 +1,11 @@
 using System;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
+
+using OpenTK.Core.Native;
 
 namespace OpenTK.Core
 {
@@ -49,6 +52,13 @@ namespace OpenTK.Core
 
         // FIXME: this function is supposed to take in a TCHAR string,
         // but it doesn't handle the 32 bit case...
+
+        /// <summary>
+        /// Creates a new <see cref="string"/> from a target unmanaged string that potentially contains the null terminator.
+        /// </summary>
+        /// <param name="ptr">The pointer.</param>
+        /// <param name="max_length">The maximum length.</param>
+        /// <returns>The newly created <see cref="string"/>.</returns>
         public static unsafe string FromTszString(char* ptr, int max_length)
         {
             ReadOnlySpan<char> span = new ReadOnlySpan<char>(ptr, max_length);
@@ -63,21 +73,16 @@ namespace OpenTK.Core
             }
         }
 
+        /// <summary>
+        /// Obtains a <see cref="byte"/> pointer from a target <see cref="ReadOnlySpan{T}"/>.
+        /// </summary>
+        /// <param name="span">The target <see cref="ReadOnlySpan{T}"/>.</param>
+        /// <returns>
+        /// The newly created <see cref="byte"/>.
+        /// </returns>
         public static unsafe byte* AsPtr(ReadOnlySpan<byte> span) => (byte*)Unsafe.AsPointer(ref MemoryMarshal.GetReference(span));
 
-        public static unsafe ReadOnlySpan<byte> ToSpan(byte* str)
-        {
-            if (str == null)
-            {
-                return ReadOnlySpan<byte>.Empty;
-            }
-
-            int len = 0;
-            while (str[len++] != 0)
-            {
-            }
-
-            return new ReadOnlySpan<byte>(str, len - 1);
-        }
+        /// <inheritdoc cref="MemoryMarshal.CreateReadOnlySpanFromNullTerminated(byte*)"/>
+        public static unsafe ReadOnlySpan<byte> ToSpan(byte* str) => MemoryMarshal.CreateReadOnlySpanFromNullTerminated(str);
     }
 }

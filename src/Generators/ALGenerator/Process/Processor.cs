@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using GeneratorBase.Utility.Extensions;
-using GeneratorBase.Utility;
-using ALGenerator.Process;
-using ALGenerator.Parsing;
-using GeneratorBase;
 using System.Diagnostics;
+using System.Linq;
+
+using ALGenerator.Parsing;
+using ALGenerator.Process;
+
+using GeneratorBase;
 using GeneratorBase.Overloading;
+using GeneratorBase.Utility;
+using GeneratorBase.Utility.Extensions;
 
 namespace ALGenerator.Process
 {
@@ -54,7 +56,8 @@ namespace ALGenerator.Process
             Dictionary<string, OverloadedFunction> allFunctions = new Dictionary<string, OverloadedFunction>(spec.Functions.Count);
             foreach (Function nativeFunction in spec.Functions)
             {
-                Dictionary<OutputApi, CommandDocumentation> functionDocumentation = MakeDocumentationForNativeFunction(nativeFunction, docs);
+                var dependency = nativeFunction.OriginalEntryPoint ?? "";
+                Dictionary<OutputApi, CommandDocumentation> functionDocumentation = MakeDocumentationForNativeFunction(nativeFunction, docs, dependency);
                 OverloadedFunction overloadedFunction = GenerateOverloads(nativeFunction, functionDocumentation);
 
                 allFunctions.Add(nativeFunction.EntryPoint, overloadedFunction);
@@ -307,7 +310,7 @@ namespace ALGenerator.Process
                                 else
                                 {
                                     functionsByVendor.AddToNestedHashSet("", overloadedFunction);
-                                    
+
                                     referenced = true;
                                 }
                             }
@@ -339,8 +342,8 @@ namespace ALGenerator.Process
                     }
 
                     // Go through all vendorFunctions and build up a Dictionary from enumName groups to function using them
-                    Dictionary<GroupRef, List<(string Vendor, Function Function)>> enumGroupToNativeFunctionsUsingThatEnumGroup = new Dictionary<GroupRef, List<(string Vendor, Function Function)>>();
-                    Dictionary<string, VendorFunctions> vendors = new Dictionary<string, VendorFunctions>();
+                    Dictionary<GroupRef, List<(string Vendor, Function Function)>> enumGroupToNativeFunctionsUsingThatEnumGroup = [];
+                    Dictionary<string, VendorFunctions> vendors = [];
                     foreach (var (vendor, vendorFunctions) in functionsByVendor)
                     {
                         foreach (var function in vendorFunctions)
@@ -351,14 +354,16 @@ namespace ALGenerator.Process
                                 vendors.Add(vendor, group);
                             }
 
-                            group.Functions.Add(new Process.OverloadedFunction(function.NativeFunction, function.Overloads));
+                            var nativeFunction = function.NativeFunction;
+                            if (!nativeFunction.IsNative) continue;
+                            group.Functions.Add(new Process.OverloadedFunction(nativeFunction, function.Overloads));
 
                             if (function.ChangeNativeName)
                             {
-                                group.NativeFunctionsWithPostfix.Add(function.NativeFunction);
+                                group.NativeFunctionsWithPostfix.Add(nativeFunction);
                             }
 
-                            foreach (var enumGroup in function.NativeFunction.ReferencedEnumGroups)
+                            foreach (var enumGroup in nativeFunction.ReferencedEnumGroups)
                             {
                                 if (enumGroupToNativeFunctionsUsingThatEnumGroup.TryGetValue(enumGroup, out var listOfFunctions) == false)
                                 {
@@ -366,13 +371,14 @@ namespace ALGenerator.Process
                                     enumGroupToNativeFunctionsUsingThatEnumGroup.Add(enumGroup, listOfFunctions);
                                 }
 
-                                if (listOfFunctions.Contains((vendor, function.NativeFunction)) == false)
+                                if (listOfFunctions.Contains((vendor, NativeFunction: nativeFunction)) == false)
                                 {
-                                    listOfFunctions.Add((vendor, function.NativeFunction));
+                                    listOfFunctions.Add((vendor, NativeFunction: nativeFunction));
                                 }
                             }
                         }
                     }
+                    Dictionary<string, string> vendorsByEntryPoint = vendors.SelectMany(a => a.Value.Functions.Select(b => b.NativeFunction.EntryPoint).Select(c => (c, a.Key))).DistinctBy(a => a.c).ToDictionary(a => a.c, a => a.Key);
 
                     List<VendorFunctions> sortedVendorFunctions = [.. vendors.Values];
                     foreach (VendorFunctions functions in sortedVendorFunctions)
@@ -380,11 +386,11 @@ namespace ALGenerator.Process
                         functions.Functions.Sort();
                     }
                     sortedVendorFunctions.Sort((e1, e2) => e1.Vendor.CompareTo(e2.Vendor));
-
+                    var contextParameterDocumentation = new ParameterDocumentation("context", "The ALC context to access.");
                     Dictionary<Function, FunctionDocumentation> documentation = new Dictionary<Function, FunctionDocumentation>();
-                    foreach (var (vendor, vendorFunctions) in functionsByVendor)
+                    foreach (var (vendor, vendorFunctions) in functionsByVendor.OrderBy(a => a.Key == "Direct" ? 1 : 0))
                     {
-                        foreach (var function in vendorFunctions)
+                        foreach (var function in vendorFunctions.OrderBy(a => a.NativeFunction.IsNative ? 1 : 0))
                         {
                             FunctionReference func = functions.Find(f => f.EntryPoint == function.NativeFunction.EntryPoint) ?? throw new Exception($"Could not find function {function.NativeFunction.EntryPoint}!");
 
@@ -398,7 +404,6 @@ namespace ALGenerator.Process
                             {
                                 addedIn.Add(extension.Name);
                             }
-
 
                             List<string> removedIn = new List<string>();
                             if (func.VersionInfo.RemovedBy.Count > 0)
@@ -443,35 +448,52 @@ namespace ALGenerator.Process
                                     commandDocumentation.Parameters,
                                     [commandDocumentation.RefPagesLink, .. extensionURLs],
                                     addedIn,
-                                    removedIn
+                                    removedIn,
+                                    commandDocumentation.Dependency
                                     );
                             }
                             else
                             {
-                                if (vendor == "")
+                                switch (vendor)
                                 {
-                                    Logger.Warning($"{function.NativeFunction.EntryPoint} doesn't have any documentation for {api}");
-
-                                    documentation[function.NativeFunction] = new FunctionDocumentation(
-                                        function.NativeFunction.EntryPoint,
-                                        "",
-                                        Array.Empty<ParameterDocumentation>(),
-                                        // TODO: Is it possible to get the functionRef spec file and link to it here?
-                                        extensionURLs,
-                                        addedIn,
-                                        removedIn);
-                                }
-                                else
-                                {
-                                    // Extensions don't have documentation (yet?)
-                                    documentation[function.NativeFunction] = new FunctionDocumentation(
-                                        function.NativeFunction.EntryPoint,
-                                        "",
-                                        Array.Empty<ParameterDocumentation>(),
-                                        // TODO: Is it possible to get the extension spec file and link to it here?
-                                        extensionURLs,
-                                        addedIn,
-                                        removedIn);
+                                    case "Direct" when allFunctions.TryGetValue(function.NativeFunction.OriginalEntryPoint ?? "", out var dependency):
+                                        // Auto-generated documentation for AL_EXT_direct_context functions
+                                        var dependencyFunctionDocumentation = documentation[dependency.NativeFunction];
+                                        var dependentVendor = vendorsByEntryPoint.TryGetValue(function.NativeFunction.OriginalEntryPoint ?? "", out var k) ? k : "";
+                                        var dependencyAddedIn = dependencyFunctionDocumentation.AddedIn;
+                                        dependencyAddedIn.Sort();
+                                        var parameters = function.NativeFunction.Parameters.Any(a => a.OriginalName == "context" && a.StrongType is CSStructPrimitive primitive && primitive.StructName == "ALCContext")
+                                            ? [contextParameterDocumentation, .. dependencyFunctionDocumentation.Parameters] : dependencyFunctionDocumentation.Parameters;
+                                        var newDocumentation = new FunctionDocumentation(
+                                            function.NativeFunction.EntryPoint,
+                                            dependencyFunctionDocumentation.Purpose,
+                                            parameters,
+                                            [.. extensionURLs, .. dependencyFunctionDocumentation.RefPagesLinks],
+                                            addedIn,
+                                            removedIn,
+                                            string.Join(" | ", dependencyAddedIn),
+                                            dependentVendor);
+                                        documentation[function.NativeFunction] = newDocumentation;
+                                        foreach (var item in function.Overloads.Where(a => !a.NativeFunction.IsNative))
+                                        {
+                                            documentation.TryAdd(item.NativeFunction, newDocumentation);
+                                        }
+                                        break;
+                                    default:
+                                        if (string.IsNullOrEmpty(vendor))
+                                        {
+                                            Logger.Warning($"{function.NativeFunction.EntryPoint} doesn't have any documentation for {api}");
+                                        }
+                                        // Extensions don't have documentation (yet?)
+                                        documentation[function.NativeFunction] = new FunctionDocumentation(
+                                            function.NativeFunction.EntryPoint,
+                                            "",
+                                            [],
+                                            // TODO: Is it possible to get the extension spec file and link to it here?
+                                            extensionURLs,
+                                            addedIn,
+                                            removedIn);
+                                        break;
                                 }
                             }
                         }
@@ -562,7 +584,8 @@ namespace ALGenerator.Process
 
                         // If there is a list, sort it by name
                         if (functionsUsingEnumGroup != null)
-                            functionsUsingEnumGroup.Sort((f1, f2) => {
+                            functionsUsingEnumGroup.Sort((f1, f2) =>
+                            {
                                 // We want to prioritize "core" vendorFunctions before extensions.
                                 if (f1.Vendor == "" && f2.Vendor != "") return -1;
                                 if (f1.Vendor != "" && f2.Vendor == "") return 1;
@@ -618,7 +641,7 @@ namespace ALGenerator.Process
 
             Pointers CreatePointersList(APIFile file, List<Namespace> namespaces)
             {
-                SortedList<string, Function> allFunctions = new SortedList<string, Function>();
+                SortedList<string, Function> allFunctions = [];
                 foreach (Namespace @namespace in namespaces)
                 {
                     bool addFunctions = false;
@@ -644,12 +667,9 @@ namespace ALGenerator.Process
                     {
                         foreach (var functions in @namespace.VendorFunctions)
                         {
-                            foreach (var function in functions.Functions)
+                            foreach (var function in functions.Functions.Select(a => a.NativeFunction).Where(function => function.IsNative && !allFunctions.ContainsKey(function.EntryPoint)))
                             {
-                                if (allFunctions.ContainsKey(function.NativeFunction.EntryPoint) == false)
-                                {
-                                    allFunctions.Add(function.NativeFunction.EntryPoint, function.NativeFunction);
-                                }
+                                allFunctions.Add(function.EntryPoint, function);
                             }
                         }
                     }
@@ -659,7 +679,7 @@ namespace ALGenerator.Process
             }
         }
 
-        internal static Dictionary<OutputApi, CommandDocumentation> MakeDocumentationForNativeFunction(Function function, Documentation documentation)
+        internal static Dictionary<OutputApi, CommandDocumentation> MakeDocumentationForNativeFunction(Function function, Documentation documentation, string dependency = "")
         {
             Dictionary<OutputApi, CommandDocumentation> commandDocs = new Dictionary<OutputApi, CommandDocumentation>();
 
@@ -680,7 +700,7 @@ namespace ALGenerator.Process
                         }
                     }
 
-                    commandDocs.Add(version, commandDoc);
+                    commandDocs.Add(version, string.IsNullOrEmpty(dependency) ? commandDoc : commandDoc with { Dependency = dependency });
                 }
             }
 
@@ -688,35 +708,33 @@ namespace ALGenerator.Process
         }
 
         public static readonly IOverloader[] Overloaders = [
-                new TrimNameOverloader(TrimNameOverloader.EndingsNotToTrimOpenAL),
+            new TrimNameOverloader(TrimNameOverloader.EndingsNotToTrimOpenAL),
 
-                new StringReturnOverloader(),
-                new BoolReturnOverloader(),
+            new StringReturnOverloader(),
+            new BoolReturnOverloader(),
 
-                new ColorTypeOverloader(),
-                new MathTypeOverloader(),
-                new FunctionPtrToDelegateOverloader(),
-                new PointerToOffsetOverloader(),
-                new VoidPtrToIntPtrOverloader(),
-                new GenCreateAndDeleteOverloader(
-                    GenCreateAndDeleteOverloader.PluralNameToSingularNameOpenAL,
-                    GenCreateAndDeleteOverloader.PluralParameterNameToSingularNameOpenAL),
-                new StringOverloader(),
-                new StringArrayOverloader(),
-                new SpanAndArrayOverloader(),
-                new RefInsteadOfPointerOverloader(),
-                new OutToReturnOverloader(),
-            ];
+            new ColorTypeOverloader(),
+            new MathTypeOverloader(),
+            new FunctionPtrToDelegateOverloader(),
+            new PointerToOffsetOverloader(),
+            new VoidPtrToIntPtrOverloader(),
+            new GenCreateAndDeleteOverloader(
+                GenCreateAndDeleteOverloader.PluralNameToSingularNameOpenAL,
+                GenCreateAndDeleteOverloader.PluralParameterNameToSingularNameOpenAL),
+            new ExplicitLengthSpanOverloader(),
+            new StringOverloader(),
+            new StringArrayOverloader(),
+            new SpanAndArrayOverloader(),
+            new RefInsteadOfPointerOverloader(),
+            new OutToReturnOverloader(),
+            new SpanInsteadOfReadOnlySpanOverloader(),
+        ];
 
         // Maybe we can do the return type overloading in a post processing step?
         internal static OverloadedFunction GenerateOverloads(Function nativeFunction, Dictionary<OutputApi, CommandDocumentation> functionDocumentation)
         {
-            List<Overload> overloads = new List<Overload>
-            {
-                // Make a "base" overload
-                new Overload(null, null, nativeFunction.Parameters.ToArray(), nativeFunction, nativeFunction.StrongReturnType!,
-                    new NameTable(), /*"returnValue",*/ Array.Empty<string>(), nativeFunction.Name),
-            };
+            // Make a "base" overload
+            List<Overload> overloads = [Overload.CreateBaseOverload(nativeFunction)];
 
             bool hasOverloads = false;
             foreach (IOverloader overloader in Overloaders)
@@ -753,7 +771,7 @@ namespace ALGenerator.Process
 
             static bool AreSignaturesDifferent(Function nativeFunction, Overload overload)
             {
-                if (nativeFunction.Parameters.Count != overload.InputParameters.Length)
+                if (nativeFunction.Parameters.Count(a => !a.Optional) != overload.InputParameters.Count(a => !a.Optional))
                 {
                     return true;
                 }

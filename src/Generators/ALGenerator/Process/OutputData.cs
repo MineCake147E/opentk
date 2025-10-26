@@ -40,7 +40,9 @@ namespace ALGenerator.Process
         ParameterDocumentation[] Parameters,
         List<string> RefPagesLinks,
         List<string> AddedIn,
-        List<string>? RemovedIn
+        List<string>? RemovedIn,
+        string Dependency = "",
+        string DependentVendor = ""
         );
 
     internal record VendorFunctions(

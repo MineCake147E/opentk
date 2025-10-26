@@ -20,7 +20,8 @@ namespace ALGenerator.Parsing
         string Name,
         string Purpose,
         ParameterDocumentation[] Parameters,
-        string RefPagesLink);
+        string RefPagesLink,
+        string Dependency = "");
 
     internal record ParameterDocumentation(
         string Name,

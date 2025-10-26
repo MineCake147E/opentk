@@ -11,6 +11,11 @@ namespace GeneratorBase
         // We use a custom ToString here to allow ToString to be used for debugging,
         // also this way we make sure you have to override the custom ToString method.
         public abstract string ToCSString();
+
+        // Because this will be used in the <inheritdoc> comment we replace
+        // generic <T> angle brackets with braces to conform with the xml format.
+        // - MineCake147E 2025-10-25
+        public virtual string ToXMLString() => ToCSString();
     }
 
     public interface IConstantCSType
@@ -160,22 +165,55 @@ namespace GeneratorBase
 
     public record CSRef(CSRef.Type RefType, BaseCSType ReferencedType) : BaseCSType, IBaseTypeCSType
     {
-        public enum Type { Ref, Out, RefReadonly }
+        [Flags]
+        public enum Type
+        {
+            None = 0,
+            Scoped = 1,
+            RefRequired = 2,
+            Read = 4,
+            Write = 8,
+
+            RefReadonly = RefRequired | Read,
+            In = Read,
+            Ref = RefRequired | Read | Write,
+            Out = RefRequired | Write,
+        }
 
         public BaseCSType BaseType => ReferencedType;
 
         public bool TakeAddressInFixedStatement => true;
 
-        public override string ToCSString()
+        public override string ToCSString() => $"{GetModifiersFrom(RefType)} {ReferencedType.ToCSString()}";
+
+        public StringBuilder GetModifiers() => GetModifiersFrom(RefType);
+
+        public string GetCallModifiers() => (RefType & ~Type.Scoped) switch
         {
-            string modifier = RefType switch
+            Type.In or Type.RefReadonly => "in",
+            Type.Out => "out",
+            _ => "ref"
+        };
+
+        public static StringBuilder GetModifiersFrom(Type refType)
+        {
+            List<string> modifiers = [];
+            if (refType.HasFlag(Type.Scoped))
             {
+                modifiers.Add("scoped");
+            }
+
+            modifiers.Add((refType & ~Type.Scoped) switch
+            {
+                Type.In => "in",
                 Type.Ref => "ref",
                 Type.Out => "out",
                 Type.RefReadonly => "ref readonly",
-                _ => throw new Exception()
-            };
-            return $"{modifier} {ReferencedType.ToCSString()}";
+                _ => throw new ArgumentException($"Unknown Ref type '{refType}'"),
+            });
+            var modifierString = new StringBuilder();
+            modifierString.AppendJoin(' ', modifiers);
+            return modifierString;
         }
 
         public BaseCSType CreateWithNewType(BaseCSType type)
@@ -212,6 +250,18 @@ namespace GeneratorBase
             else
             {
                 return $"Span<{BaseType.ToCSString()}>";
+            }
+        }
+
+        public override string ToXMLString()
+        {
+            if (Readonly)
+            {
+                return $"ReadOnlySpan{{{BaseType.ToCSString()}}}";
+            }
+            else
+            {
+                return $"Span{{{BaseType.ToCSString()}}}";
             }
         }
 

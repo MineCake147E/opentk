@@ -181,6 +181,14 @@ namespace GeneratorBase
         // OpenGL/OpenAL
         public GroupRef[] ReferencedEnumGroups { get; set; }
 
+        // OpenAL AL_EXT_direct_context
+        public string? OriginalEntryPoint { get; init; }
+
+        // Overloads that have to disguise as native functions
+        public string[]? GenericTypes { get; init; }
+
+        public bool IsNative { get; init; } = true;
+
         // Vulkan
         public CommandType CommandType { get; set; } = CommandType.Invalid;
     }
@@ -201,6 +209,31 @@ namespace GeneratorBase
         // Vulkan
         public bool Optional { get; init; }
         public bool ExternSync { get; init; }
+
+        // Overloads
+        public string? DefaultValue { get; init; }
+
+        public IReadOnlyList<string>? Attributes { get; init; }
+
+        public string ToDefinitionString()
+        {
+            var builder = new StringBuilder();
+            if (Attributes is not null && Attributes.Count > 0)
+            {
+                builder.Append('[');
+                builder.AppendJoin(", ", Attributes);
+                builder.Append("] ");
+            }
+            builder.Append(StrongType?.ToCSString());
+            builder.Append(' ');
+            builder.Append(Name);
+            if (Optional && !string.IsNullOrEmpty(DefaultValue))
+            {
+                builder.Append(" = ");
+                builder.Append(DefaultValue);
+            }
+            return builder.ToString();
+        }
     }
 
     public record class EnumType : IReferable

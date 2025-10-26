@@ -17,7 +17,7 @@ namespace GeneratorBase.Overloading
         public NameTable(NameTable table)
         {
             Table = new Dictionary<Parameter, string>(table.Table);
-            FixedTable = new HashSet<Parameter>(table.FixedTable);
+            FixedTable = [.. table.FixedTable];
             ReturnName = table.ReturnName;
         }
 

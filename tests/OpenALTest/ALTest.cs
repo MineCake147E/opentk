@@ -1,8 +1,5 @@
-﻿using OpenTK.Audio;
-using OpenTK.Audio.OpenAL;
-using OpenTK.Audio.OpenAL.ALC;
-using OpenTK.Mathematics;
-using System;
+﻿using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -11,11 +8,16 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 
+using OpenTK.Audio;
+using OpenTK.Audio.OpenAL;
+using OpenTK.Audio.OpenAL.ALC;
+using OpenTK.Mathematics;
+
 namespace OpenALTest
 {
-    internal class ALTest
+    internal static class ALTest
     {
-        public static unsafe int LoadEffect(ReverbProperties preset)
+        public static unsafe int LoadEffect(AL AL, ReverbProperties preset)
         {
             AL.GetError();
             int effect = AL.EXT.GenEffect();
@@ -25,48 +27,14 @@ namespace OpenALTest
             {
                 Console.WriteLine("Using EAX reverb.");
 
-                AL.EXT.Effectf(effect, EffectPNameF.EaxreverbDensity, preset.Density);
-                AL.EXT.Effectf(effect, EffectPNameF.EaxreverbDiffusion, preset.Diffusion);
-                AL.EXT.Effectf(effect, EffectPNameF.EaxreverbGain, preset.Gain);
-                AL.EXT.Effectf(effect, EffectPNameF.EaxreverbGainhf, preset.GainHF);
-                AL.EXT.Effectf(effect, EffectPNameF.EaxreverbGainlf, preset.GainLF);
-                AL.EXT.Effectf(effect, EffectPNameF.EaxreverbDecayTime, preset.DecayTime);
-                AL.EXT.Effectf(effect, EffectPNameF.EaxreverbDecayHfratio, preset.DecayHFRatio);
-                AL.EXT.Effectf(effect, EffectPNameF.EaxreverbDecayLfratio, preset.DecayLFRatio);
-                AL.EXT.Effectf(effect, EffectPNameF.EaxreverbReflectionsGain, preset.ReflectionsGain);
-                AL.EXT.Effectf(effect, EffectPNameF.EaxreverbReflectionsDelay, preset.ReflectionsDelay);
-                AL.EXT.Effectfv(effect, EffectPNameFV.EaxreverbReflectionsPan, ref Unsafe.AsRef(in preset.ReflectionsPan.X));
-                AL.EXT.Effectf(effect, EffectPNameF.EaxreverbLateReverbGain, preset.LateReverbGain);
-                AL.EXT.Effectf(effect, EffectPNameF.EaxreverbLateReverbDelay, preset.LateReverbDelay);
-                AL.EXT.Effectfv(effect, EffectPNameFV.EaxreverbLateReverbPan, ref Unsafe.AsRef(in preset.LateReverbPan.X));
-                AL.EXT.Effectf(effect, EffectPNameF.EaxreverbEchoTime, preset.EchoTime);
-                AL.EXT.Effectf(effect, EffectPNameF.EaxreverbEchoDepth, preset.EchoDepth);
-                AL.EXT.Effectf(effect, EffectPNameF.EaxreverbModulationTime, preset.ModulationTime);
-                AL.EXT.Effectf(effect, EffectPNameF.EaxreverbModulationDepth, preset.ModulationDepth);
-                AL.EXT.Effectf(effect, EffectPNameF.EaxreverbAirAbsorptionGainhf, preset.AirAbsorptionGainHF);
-                AL.EXT.Effectf(effect, EffectPNameF.EaxreverbHfreference, preset.HFReference);
-                AL.EXT.Effectf(effect, EffectPNameF.EaxreverbLfreference, preset.LFReference);
-                AL.EXT.Effectf(effect, EffectPNameF.EaxreverbRoomRolloffFactor, preset.RoomRolloffFactor);
-                AL.EXT.Effecti(effect, EffectPNameI.EaxreverbDecayHflimit, preset.DecayHFLimit);
+                AL.EXT.EffectEaxReverb(effect, preset);
             }
             else
             {
                 Console.WriteLine("Using standard reverb.");
                 AL.EXT.Effecti(effect, EffectPNameI.EffectType, (int)EffectType.EffectReverb);
 
-                AL.EXT.Effectf(effect, EffectPNameF.ReverbDensity, preset.Density);
-                AL.EXT.Effectf(effect, EffectPNameF.ReverbDiffusion, preset.Diffusion);
-                AL.EXT.Effectf(effect, EffectPNameF.ReverbGain, preset.Gain);
-                AL.EXT.Effectf(effect, EffectPNameF.ReverbGainhf, preset.GainHF);
-                AL.EXT.Effectf(effect, EffectPNameF.ReverbDecayTime, preset.DecayTime);
-                AL.EXT.Effectf(effect, EffectPNameF.ReverbDecayHfratio, preset.DecayHFRatio);
-                AL.EXT.Effectf(effect, EffectPNameF.ReverbReflectionsGain, preset.ReflectionsGain);
-                AL.EXT.Effectf(effect, EffectPNameF.ReverbReflectionsDelay, preset.ReflectionsDelay);
-                AL.EXT.Effectf(effect, EffectPNameF.ReverbLateReverbGain, preset.LateReverbGain);
-                AL.EXT.Effectf(effect, EffectPNameF.ReverbLateReverbDelay, preset.LateReverbDelay);
-                AL.EXT.Effectf(effect, EffectPNameF.ReverbAirAbsorptionGainhf, preset.AirAbsorptionGainHF);
-                AL.EXT.Effectf(effect, EffectPNameF.ReverbRoomRolloffFactor, preset.RoomRolloffFactor);
-                AL.EXT.Effecti(effect, EffectPNameI.ReverbDecayHflimit, preset.DecayHFLimit);
+                AL.EXT.EffectReverb(effect, preset);
             }
 
             error = AL.GetError();
@@ -81,47 +49,51 @@ namespace OpenALTest
         public static void Main()
         {
             Console.WriteLine("Hello!");
+            var loader = ALLoader.Default;
+            (var AL, var ALC) = loader;
             var devices = ALC.GetStringList(ALCDevice.Null, OpenTK.Audio.OpenAL.ALC.StringName.DeviceSpecifier);
             Console.WriteLine($"Devices: {string.Join(", ", devices)}");
 
             // Get the default device, then go though all devices and select the AL soft device if it exists.
-            string deviceName = ALC.GetString(ALCDevice.Null, OpenTK.Audio.OpenAL.ALC.StringName.DefaultDeviceSpecifier);
-            foreach (var d in devices)
+            var defaultDeviceName = ALC.GetString(ALCDevice.Null, OpenTK.Audio.OpenAL.ALC.StringName.DefaultDeviceSpecifier);
+            string deviceName = defaultDeviceName;
+
+            foreach (var d in devices.Where(a => a.Contains("OpenAL Soft") && a.Contains(defaultDeviceName)))
             {
-                if (d.Contains("OpenAL Soft"))
-                {
-                    deviceName = d;
-                }
+                deviceName = d;
             }
 
-            var allDevices = ALC.GetString(ALCDevice.Null, OpenTK.Audio.OpenAL.ALC.StringName.AllDevicesSpecifier);
-            Console.WriteLine($"All Devices: {string.Join(", ", allDevices)}");
+            var allDevices = ALC.GetStringList(ALCDevice.Null, OpenTK.Audio.OpenAL.ALC.StringName.AllDevicesSpecifier);
+            Console.WriteLine($"All Devices:\n   {string.Join("\n   ", allDevices)}");
 
             var device = ALC.OpenDevice(deviceName);
 
-            string[] extensions = ALC.GetString(device, OpenTK.Audio.OpenAL.ALC.StringName.Extensions).Split(" ");
+            var extensions = ALC.GetString(device, OpenTK.Audio.OpenAL.ALC.StringName.Extensions).Split(" ").Distinct().ToHashSet();
 
-
-            ALCContextAttributes contextAttributes = new ALCContextAttributes();
+            var contextAttributes = new ALCContextAttributes();
             if (extensions.Contains("ALC_SOFT_HRTF"))
             {
                 // Enable HRTF if the extension is available.
-                contextAttributes.AdditionalAttributes = [ (int)OpenTK.Audio.OpenAL.ALC.ContextAttribute.HrtfSoft, 1 ];
+                contextAttributes[OpenTK.Audio.OpenAL.ALC.ContextAttribute.HrtfSoft] = 1;
             }
 
             var context = ALC.CreateContext(device, contextAttributes);
             ALC.MakeContextCurrent(context);
 
-            ALLoader.SetALCDevice(device);
+            loader = loader.LoadWithDevice(device);
+            (AL, ALC) = loader;
+            if (extensions.Contains("ALC_SOFT_HRTF"))
+            {
+                int numHRTFs = ALC.GetInteger(device, OpenTK.Audio.OpenAL.ALC.GetPNameIV.NumHrtfSpecifiersSoft);
+                var hrtfs = ALC.SOFT.GetAllIndexedStringSOFT(device, OpenTK.Audio.OpenAL.ALC.IndexedStringName.HrtfSpecifierSoft, numHRTFs).ToList();
+                Console.WriteLine($"All Available HRTFs:\n   {string.Join("\n   ", hrtfs)}");
+            }
 
-            int numHRTFs = ALC.GetInteger(device, OpenTK.Audio.OpenAL.ALC.GetPNameIV.NumHrtfSpecifiersSoft);
-
-            CheckALError("Start");
+            CheckALError(AL, "Start");
 
             int alcMajorVersion = 0, alcMinorVersion = 0;
             ALC.GetInteger(device, OpenTK.Audio.OpenAL.ALC.GetPNameIV.MajorVersion, 1, ref alcMajorVersion);
             ALC.GetInteger(device, OpenTK.Audio.OpenAL.ALC.GetPNameIV.MinorVersion, 1, ref alcMinorVersion);
-            
 
             var attrs = ALC.GetContextAttributes(device);
             Console.WriteLine($"Attributes: {attrs}");
@@ -150,15 +122,16 @@ namespace OpenALTest
             if (ALC.IsExtensionPresent(device, "ALC_EXT_EFX"))
             {
                 Console.WriteLine("EFX extension is present!!");
-                int effect = LoadEffect(ReverbPresets.CastleHall);
+                int effect = LoadEffect(AL, ReverbPresets.CastleHall);
                 AL.EXT.GenAuxiliaryEffectSlot(out auxSlot);
                 AL.EXT.AuxiliaryEffectSloti(auxSlot, AuxEffectSlotPNameI.EffectslotEffect, effect);
             }
 
             // Record a second of data
-            CheckALError("Before record");
+            CheckALError(AL, "Before record");
             short[] recording = new short[44100 * 4];
-            ALCDevice captureDevice = ALC.CaptureOpenDevice((string)null, 44100u, Format.Mono16, 1024);
+            var captureDevice = ALC.CaptureOpenDevice((string)null, 44100u, Format.Mono16, 1024);
+            if (captureDevice.HasValue)
             {
                 string defaultCaptureName = ALC.GetString(captureDevice, OpenTK.Audio.OpenAL.ALC.StringName.CaptureDefaultDeviceSpecifier);
                 string version = AL.GetString(OpenTK.Audio.OpenAL.StringName.Version);
@@ -182,16 +155,16 @@ namespace OpenALTest
 
                 ALC.CaptureStop(captureDevice);
             }
-            CheckALError("After record");
+            CheckALError(AL, "After record");
 
             // Playback the recorded data
-            CheckALError("Before data");
+            CheckALError(AL, "Before data");
             AL.GenBuffer(out int alBuffer);
             // short[] sine = new short[44100 * 1];
             // FillSine(sine, 4400, 44100);
             // FillSine(recording, 440, 44100);
-            AL.BufferData(alBuffer, Format.Mono16, ref recording[0], recording.Length * 2, 44100);
-            CheckALError("After data");
+            AL.BufferData(alBuffer, Format.Mono16, recording.AsSpan(), 44100);
+            CheckALError(AL, "After data");
 
             AL.Listenerf(ListenerPNameF.Gain, 0.1f);
 
@@ -206,12 +179,14 @@ namespace OpenALTest
 
             Console.WriteLine("Before Playing: " + AL.GetString((OpenTK.Audio.OpenAL.StringName)AL.GetError()));
 
+            bool logLatency = false;
+
             if (ALC.IsExtensionPresent(device, "ALC_SOFT_device_clock"))
             {
                 long[] clockLatency = new long[2];
                 ALC.SOFT.GetInteger64vSOFT(device, GetPNameI64V.DeviceClockSoft, 2, clockLatency);
-                //Console.WriteLine("Clock: " + clockLatency[0] + ", Latency: " + clockLatency[1]);
-                CheckALError(" ");
+                if (logLatency) Console.WriteLine("Clock: " + clockLatency[0] + ", Latency: " + clockLatency[1]);
+                CheckALError(AL, " ");
             }
 
             Span<long> offsets = stackalloc long[2];
@@ -220,9 +195,12 @@ namespace OpenALTest
                 Vector2d values = default;
                 AL.SOFT.GetSourcedvSOFT(alSource, SourceGetPNameDV.SecOffsetLatencySoft, ref values.X);
                 AL.SOFT.GetSourcei64vSOFT(alSource, SourceGetPNameI64V.SampleOffsetLatencySoft, offsets);
-                //Console.WriteLine("Source latency: " + values);
-                //Console.WriteLine($"Source latency 2: {offsets[0] / (float)(1 << 32)}; {offsets[1]}");
-                CheckALError(" ");
+                if (logLatency)
+                {
+                    Console.WriteLine("Source latency: " + values);
+                    Console.WriteLine($"Source latency 2: {offsets[0] / (float)(1L << 32)}; {offsets[1]}");
+                }
+                CheckALError(AL, " ");
             }
 
             while ((SourceState)AL.GetSourcei(alSource, SourceGetPNameI.SourceState) == SourceState.Playing)
@@ -232,16 +210,19 @@ namespace OpenALTest
                     Vector2d values = default;
                     AL.SOFT.GetSourcedvSOFT(alSource, SourceGetPNameDV.SecOffsetLatencySoft, ref values.X);
                     AL.SOFT.GetSourcei64vSOFT(alSource, SourceGetPNameI64V.SampleOffsetLatencySoft, offsets);
-                    //Console.WriteLine("Source latency: " + values);
-                    //Console.WriteLine($"Source latency 2: {offsets[0] / (float)(1 << 32)}; {offsets[1]}");
-                    CheckALError(" ");
+                    if (logLatency)
+                    {
+                        Console.WriteLine("Source latency: " + values);
+                        Console.WriteLine($"Source latency 2: {offsets[0] / (float)(1L << 32)}; {offsets[1]}");
+                    }
+                    CheckALError(AL, " ");
                 }
                 if (ALC.IsExtensionPresent(device, "ALC_SOFT_device_clock"))
                 {
                     long[] clockLatency = new long[2];
                     ALC.SOFT.GetInteger64vSOFT(device, OpenTK.Audio.OpenAL.ALC.GetPNameI64V.DeviceClockSoft, 1, clockLatency);
-                    //Console.WriteLine("Clock: " + clockLatency[0] + ", Latency: " + clockLatency[1]);
-                    CheckALError(" ");
+                    if (logLatency) Console.WriteLine("Clock: " + clockLatency[0] + ", Latency: " + clockLatency[1]);
+                    CheckALError(AL, " ");
                 }
 
                 Thread.Sleep(10);
@@ -250,7 +231,8 @@ namespace OpenALTest
             AL.SourceStop(alSource);
 
             // Test float32 format extension
-            if (AL.IsExtensionPresent("AL_EXT_float32")) {
+            if (AL.IsExtensionPresent("AL_EXT_float32"))
+            {
                 Console.WriteLine("Testing float32 format extension with a sine wave...");
 
                 const int SampleRate = 44100;
@@ -262,12 +244,12 @@ namespace OpenALTest
                 }
 
                 var buffer = AL.GenBuffer();
-                AL.BufferData(buffer, Format.MonoFloat32, sine, sine.Length * sizeof(float), SampleRate);
+                AL.BufferData(buffer, Format.MonoFloat32, sine.AsSpan(), SampleRate);
 
                 AL.Listenerf(ListenerPNameF.Gain, 0.1f);
 
                 AL.Sourcef(alSource, SourcePNameF.Gain, 1f);
-                AL.Sourcei(alSource, SourcePNameI.Buffer, (int)buffer);
+                AL.Sourcei(alSource, SourcePNameI.Buffer, buffer);
 
                 AL.SourcePlay(alSource);
 
@@ -279,6 +261,7 @@ namespace OpenALTest
                     float z = 0;
 
                     AL.Source3f(alSource, SourcePName3F.Position, x, y, z);
+                    AL.Source3f(alSource, SourcePName3F.Velocity, y, -x, z);
                     Thread.Sleep(10);
                 }
 
@@ -294,7 +277,7 @@ namespace OpenALTest
                 double[] saw = new double[44100 * 2];
                 for (int i = 0; i < saw.Length; i++)
                 {
-                    var t = (i / (double)saw.Length) * 440;
+                    var t = i / (double)saw.Length * 440;
                     saw[i] = t - Math.Floor(t);
                 }
 
@@ -304,7 +287,7 @@ namespace OpenALTest
                 AL.Listenerf(ListenerPNameF.Gain, 0.05f);
 
                 AL.Sourcef(alSource, SourcePNameF.Gain, 1f);
-                AL.Sourcei(alSource, SourcePNameI.Buffer, (int)buffer);
+                AL.Sourcei(alSource, SourcePNameI.Buffer, buffer);
 
                 AL.SourcePlay(alSource);
 
@@ -323,7 +306,7 @@ namespace OpenALTest
             ALC.CloseDevice(device);
         }
 
-        public static bool CheckALError(string str)
+        public static bool CheckALError(AL AL, string str)
         {
             bool hadError = false;
             var error = AL.GetError();
@@ -339,7 +322,7 @@ namespace OpenALTest
         {
             for (int i = 0; i < buffer.Length; i++)
             {
-                buffer[i] = (short)(MathF.Sin((i * frequency * MathF.PI * 2) / sampleRate) * short.MaxValue);
+                buffer[i] = (short)(MathF.Sin(i * frequency * MathF.PI * 2 / sampleRate) * short.MaxValue);
             }
         }
     }

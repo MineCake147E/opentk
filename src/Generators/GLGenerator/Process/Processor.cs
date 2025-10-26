@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using GeneratorBase.Utility.Extensions;
-using GeneratorBase.Utility;
-using GLGenerator.Process;
-using GLGenerator.Parsing;
 using System.Diagnostics;
+using System.Linq;
+
 using GeneratorBase;
 using GeneratorBase.Overloading;
+using GeneratorBase.Utility;
+using GeneratorBase.Utility.Extensions;
+
+using GLGenerator.Parsing;
+using GLGenerator.Process;
 
 namespace GLGenerator.Process
 {
@@ -316,8 +318,6 @@ namespace GLGenerator.Process
                                             }
                                         }
                                     }
-
-                                    
                                 }
                             }
                         }
@@ -429,14 +429,16 @@ namespace GLGenerator.Process
                                 vendors.Add(vendor, group);
                             }
 
-                            group.Functions.Add(new Process.OverloadedFunction(function.NativeFunction, function.Overloads));
+                            var nativeFunction = function.NativeFunction;
+                            if (!nativeFunction.IsNative) continue;
+                            group.Functions.Add(new Process.OverloadedFunction(nativeFunction, function.Overloads));
 
                             if (function.ChangeNativeName)
                             {
-                                group.NativeFunctionsWithPostfix.Add(function.NativeFunction);
+                                group.NativeFunctionsWithPostfix.Add(nativeFunction);
                             }
 
-                            foreach (var enumGroup in function.NativeFunction.ReferencedEnumGroups)
+                            foreach (var enumGroup in nativeFunction.ReferencedEnumGroups)
                             {
                                 if (enumGroupToNativeFunctionsUsingThatEnumGroup.TryGetValue(enumGroup, out var listOfFunctions) == false)
                                 {
@@ -444,9 +446,9 @@ namespace GLGenerator.Process
                                     enumGroupToNativeFunctionsUsingThatEnumGroup.Add(enumGroup, listOfFunctions);
                                 }
 
-                                if (listOfFunctions.Contains((vendor, function.NativeFunction)) == false)
+                                if (listOfFunctions.Contains((vendor, NativeFunction: nativeFunction)) == false)
                                 {
-                                    listOfFunctions.Add((vendor, function.NativeFunction));
+                                    listOfFunctions.Add((vendor, NativeFunction: nativeFunction));
                                 }
                             }
                         }
@@ -649,7 +651,8 @@ namespace GLGenerator.Process
 
                         // If there is a list, sort it by name
                         if (functionsUsingEnumGroup != null)
-                            functionsUsingEnumGroup.Sort((f1, f2) => {
+                            functionsUsingEnumGroup.Sort((f1, f2) =>
+                            {
                                 // We want to prioritize "core" vendorFunctions before extensions.
                                 if (f1.Vendor == "" && f2.Vendor != "") return -1;
                                 if (f1.Vendor != "" && f2.Vendor == "") return 1;
@@ -749,7 +752,7 @@ namespace GLGenerator.Process
                         {
                             foreach (var function in functions.Functions)
                             {
-                                if (allFunctions.ContainsKey(function.NativeFunction.EntryPoint) == false)
+                                if (function.NativeFunction.IsNative && allFunctions.ContainsKey(function.NativeFunction.EntryPoint) == false)
                                 {
                                     allFunctions.Add(function.NativeFunction.EntryPoint, function.NativeFunction);
                                 }
@@ -791,35 +794,32 @@ namespace GLGenerator.Process
         }
 
         public static readonly IOverloader[] Overloaders = [
-                new TrimNameOverloader(TrimNameOverloader.EndingsNotToTrimOpenGL),
+            new TrimNameOverloader(TrimNameOverloader.EndingsNotToTrimOpenGL),
 
-                new StringReturnOverloader(),
-                new BoolReturnOverloader(),
+            new StringReturnOverloader(),
+            new BoolReturnOverloader(),
 
-                new ColorTypeOverloader(),
-                new MathTypeOverloader(),
-                new FunctionPtrToDelegateOverloader(),
-                new PointerToOffsetOverloader(),
-                new VoidPtrToIntPtrOverloader(),
-                new GenCreateAndDeleteOverloader(
-                    GenCreateAndDeleteOverloader.PluralNameToSingularNameOpenGL,
-                    GenCreateAndDeleteOverloader.PluralParameterNameToSingularNameOpenGL),
-                new StringOverloader(),
-                new StringArrayOverloader(),
-                new SpanAndArrayOverloader(),
-                new RefInsteadOfPointerOverloader(),
-                new OutToReturnOverloader(),
-            ];
+            new ColorTypeOverloader(),
+            new MathTypeOverloader(),
+            new FunctionPtrToDelegateOverloader(),
+            new PointerToOffsetOverloader(),
+            new VoidPtrToIntPtrOverloader(),
+            new GenCreateAndDeleteOverloader(
+                GenCreateAndDeleteOverloader.PluralNameToSingularNameOpenGL,
+                GenCreateAndDeleteOverloader.PluralParameterNameToSingularNameOpenGL),
+            new ExplicitLengthSpanOverloader(),
+            new StringOverloader(),
+            new StringArrayOverloader(),
+            new SpanAndArrayOverloader(),
+            new RefInsteadOfPointerOverloader(),
+            new OutToReturnOverloader(),
+            new SpanInsteadOfReadOnlySpanOverloader(),
+        ];
 
         // Maybe we can do the return type overloading in a post processing step?
         internal static OverloadedFunction GenerateOverloads(Function nativeFunction, Dictionary<OutputApi, CommandDocumentation> functionDocumentation)
         {
-            List<Overload> overloads = new List<Overload>
-            {
-                // Make a "base" overload
-                new Overload(null, null, nativeFunction.Parameters.ToArray(), nativeFunction, nativeFunction.StrongReturnType!,
-                    new NameTable(), /*"returnValue",*/ Array.Empty<string>(), nativeFunction.Name),
-            };
+            List<Overload> overloads = [Overload.CreateBaseOverload(nativeFunction)];
 
             bool overloadedOnce = false;
             foreach (IOverloader overloader in Overloaders)
@@ -856,7 +856,7 @@ namespace GLGenerator.Process
 
             static bool AreSignaturesDifferent(Function nativeFunction, Overload overload)
             {
-                if (nativeFunction.Parameters.Count != overload.InputParameters.Length)
+                if (nativeFunction.Parameters.Count(a => !a.Optional) != overload.InputParameters.Count(a => !a.Optional))
                 {
                     return true;
                 }

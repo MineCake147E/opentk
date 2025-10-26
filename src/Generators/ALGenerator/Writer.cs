@@ -1,17 +1,23 @@
-﻿using ALGenerator.Parsing;
-using ALGenerator.Process;
-using GeneratorBase;
-using GeneratorBase.Overloading;
-using GeneratorBase.Utility;
-using GeneratorBase.Utility.Extensions;
-using System;
+﻿using System;
 using System.CodeDom.Compiler;
+using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Reflection.Metadata;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Xml.Linq;
+
+using ALGenerator.Parsing;
+using ALGenerator.Process;
+
+using GeneratorBase;
+using GeneratorBase.Overloading;
+using GeneratorBase.Utility;
+using GeneratorBase.Utility.Extensions;
 
 namespace ALGenerator
 {
@@ -20,121 +26,49 @@ namespace ALGenerator
         private const string BaseNamespace = "OpenTK";
         private const string AudioNamespace = BaseNamespace + ".Audio";
 
+        private const string APIExtensionSuffix = "Extensions";
+        private static readonly FrozenSet<string> SuppressableFunctions = FrozenSet.ToFrozenSet([
+            "alIsExtensionPresent",
+            "alBufferi",
+            "alBufferiv",
+            "alGenBuffers",
+            "alGenSources",
+            "alGetError",
+            "alGetInteger",
+            "alGetSourcei",
+            "alGetSourceiv",
+            "alListener3f",
+            "alListener3i",
+            "alSource3f",
+            "alSourcef",
+            "alSourcefv",
+            "alSourcei",
+            "alSourceiv",
+            "alSourcePause",
+            "alSourcePausev",
+            "alSourcePlay",
+            "alSourcePlayv",
+            "alSourceQueueBuffers",
+            "alSourceRewind",
+            "alSourceRewindv",
+            "alSourceStop",
+            "alSourceStopv",
+            "alSourceUnqueueBuffers",
+            "alSpeedOfSound",
+            ]);
+        private static IReadOnlyList<string> Usings => [
+            "System",
+            "System.Diagnostics.CodeAnalysis",
+            "System.Runtime.CompilerServices",
+            "System.Runtime.InteropServices",
+            "OpenTK.Core.Native",
+            "OpenTK.Mathematics",
+            "OpenTK.Audio",
+            ];
         internal record FileStrings(string FileNamePrefix, string ClassName, string Namespace, string LoaderClass, string LoaderBindingsContext, string LoadFunction)
         {
             /// <summary>Alias for <see cref="ClassName"/>.</summary>
             public string ApiName => ClassName;
-        }
-
-        public static void Write(OutputData data)
-        {
-            // This is quite fragile, no idea if there is an easy way that is "better".
-            string outputProjectPath = Path.Combine(
-                Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? throw new NullReferenceException(),
-                "..", "..", "..", "..", "..", AudioNamespace);
-
-            foreach (Pointers pointers in data.Pointers)
-            {
-                FileStrings strings = pointers.File switch
-                {
-                    APIFile.AL => new FileStrings("AL", "AL", "OpenAL", "ALLoader", "ALLoader", "ALGetProcAddress"),
-                    APIFile.ALC => new FileStrings("ALC", "ALC", "OpenAL.ALC", "ALCLoader", "ALLoader", "ALCGetProcAddress"),
-                    _ => throw new Exception(),
-                };
-
-                // FIXME: Merge the writing of these function pointers for the relevant namespaces!
-                WriteFunctionPointers(outputProjectPath, strings, pointers.NativeFunctions);
-            }
-
-            foreach (Namespace @namespace in data.Namespaces)
-            {
-                WriteNamespace(outputProjectPath, @namespace);
-            }
-        }
-
-        public static void WriteNamespace(string outputProjectPath, Namespace @namespace)
-        {
-            // FIXME: Fix function pointers so we can merge this.
-            FileStrings strings = @namespace.Name switch
-            {
-                OutputApi.AL => new FileStrings("AL", "AL", "OpenAL", "ALLoader", "ALLoader", "ALGetProcAddress"),
-                OutputApi.ALC => new FileStrings("ALC", "ALC", "OpenAL.ALC", "ALCLoader", "ALLoader", "ALCGetProcAddress"),
-                _ => throw new Exception($"This is not a valid output API ({@namespace.Name})"),
-            };
-
-            string directoryPath = Path.Combine(outputProjectPath, Path.Combine(strings.Namespace.Split('.')));
-            if (Directory.Exists(directoryPath) == false) Directory.CreateDirectory(directoryPath);
-            
-            WriteNativeFunctions(directoryPath, strings, @namespace.VendorFunctions, @namespace.Documentation);
-            WriteOverloads(directoryPath, strings, @namespace.VendorFunctions);
-
-            WriteEnums(directoryPath, strings, @namespace.EnumGroups);
-        }
-
-        // FIXME: Maybe we should nest this 
-        private static void WriteFunctionPointers(string directoryPath, FileStrings strings, List<Function> nativeFunctions)
-        {
-            using StreamWriter stream = File.CreateText(Path.Combine(directoryPath, $"{strings.FileNamePrefix}.Pointers.cs"));
-            using IndentedTextWriter writer = new IndentedTextWriter(stream);
-
-            writer.WriteLine($"// This file is auto generated, do not edit.");
-            writer.WriteLine("using System;");
-            writer.WriteLine("using System.Runtime.InteropServices;");
-            writer.WriteLine("using OpenTK.Audio;");
-            writer.WriteLine();
-            writer.WriteLine($"namespace {AudioNamespace}.{strings.Namespace}");
-
-            using (writer.CsScope())
-            {
-                writer.WriteLine($"/// <summary>A collection of all function pointers to all OpenAL entry points.</summary>");
-                // FIXME: Better class name?
-                writer.WriteLine($"public static unsafe partial class {strings.ClassName}Pointers");
-                using (writer.CsScope())
-                {
-                    foreach (Function function in nativeFunctions)
-                    {
-                        WriteFunctionPointer(writer, function, strings);
-                    }
-                }
-            }
-        }
-
-        private static void WriteFunctionPointer(IndentedTextWriter writer, Function function, FileStrings strings)
-        {
-            // Write delegate field initialized to the lazy loader.
-            // Write public function definition that calls delegate.
-            // Write lazy loader function.
-            GetNativeFunctionSignature(function, postfixName: false, swapTypesForUnderlyingType: true,
-                out string _,
-                out StringBuilder paramNames,
-                out StringBuilder delegateTypes,
-                out StringBuilder signature,
-                out bool _,
-                out string returnType);
-
-            string entryPoint = function.EntryPoint;
-
-            writer.WriteLine($"/// <summary><b>[entry point: <c>{entryPoint}</c>]</b></summary>");
-            writer.WriteLine($"public static delegate* unmanaged<{delegateTypes}> _{entryPoint}_fnptr = &{entryPoint}_Lazy;");
-
-            writer.WriteLine($"[UnmanagedCallersOnly]");
-            writer.WriteLine($"private static {returnType} {entryPoint}_Lazy({signature})");
-            using (writer.CsScope())
-            {
-                // Dotnet gurantees you can't get torn values when assigning functionpointers, assuming proper allignment which is default.
-                writer.WriteLine($"_{entryPoint}_fnptr = (delegate* unmanaged<{delegateTypes}>){strings.LoaderBindingsContext}.{strings.LoadFunction}(\"{function.EntryPoint}\");");
-
-                if (function.StrongReturnType is not CSVoid)
-                {
-                    writer.WriteLine($"return _{entryPoint}_fnptr({paramNames});");
-                }
-                else
-                {
-                    writer.WriteLine($"_{entryPoint}_fnptr({paramNames});");
-                }
-            }
-
-            writer.WriteLine();
         }
 
         private static void GetNativeFunctionSignature(Function function, bool postfixName, bool swapTypesForUnderlyingType,
@@ -152,14 +86,14 @@ namespace ALGenerator
                 string type = swapTypesForUnderlyingType ? SwapUnderlyingTypeForPrimitive(param.StrongType!) : param.StrongType!.ToCSString();
 
                 string primitiveType = SwapUnderlyingTypeForPrimitive(param.StrongType!);
-                
+
                 if (type != primitiveType)
                 {
                     paramNames.Append($"({primitiveType})");
                 }
 
                 // HACK: FIXME: You can't cast a bool to byte, sigh..
-                if (swapTypesForUnderlyingType == false && param.StrongType is CSBool8)
+                if (!swapTypesForUnderlyingType && param.StrongType is CSBool8)
                 {
                     paramNames.Append($"({param.Name} ? 1 : 0)");
                 }
@@ -167,7 +101,7 @@ namespace ALGenerator
                 {
                     paramNames.Append(param.Name);
                 }
-                
+
                 delegateTypes.Append(type);
                 signature.Append($"{type} {param.Name}");
 
@@ -217,45 +151,511 @@ namespace ALGenerator
             }
         }
 
+        public static void Write(OutputData data)
+        {
+            // This is quite fragile, no idea if there is an easy way that is "better".
+            string outputProjectPath = Path.Combine(
+                Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? throw new NullReferenceException(),
+                "..", "..", "..", "..", "..", AudioNamespace);
+
+            foreach (Pointers pointers in data.Pointers)
+            {
+                FileStrings strings = pointers.File switch
+                {
+                    APIFile.AL => new FileStrings("AL", "AL", "OpenAL", "ALLoader", "ALLoader", "DefaultALGetProcAddress"),
+                    APIFile.ALC => new FileStrings("ALC", "ALC", "OpenAL.ALC", "ALCLoader", "ALLoader", "DefaultALCGetProcAddress"),
+                    _ => throw new Exception(),
+                };
+
+                // FIXME: Merge the writing of these function pointers for the relevant namespaces!
+                WriteFunctionPointers(outputProjectPath, strings, pointers.NativeFunctions);
+                WriteFunctionNameList(outputProjectPath, strings, pointers.NativeFunctions);
+                WriteLazyFunctions(outputProjectPath, strings, pointers.NativeFunctions);
+                WriteDefaultFunctionPointerInitializers(outputProjectPath, strings, pointers.NativeFunctions);
+            }
+
+            foreach (Namespace @namespace in data.Namespaces)
+            {
+                WriteNamespace(outputProjectPath, @namespace);
+            }
+        }
+
+        public static void WriteNamespace(string outputProjectPath, Namespace @namespace)
+        {
+            // FIXME: Fix function pointers so we can merge this.
+            FileStrings strings = @namespace.Name switch
+            {
+                OutputApi.AL => new FileStrings("AL", "AL", "OpenAL", "ALLoader", "ALLoader", "DefaultALGetProcAddress"),
+                OutputApi.ALC => new FileStrings("ALC", "ALC", "OpenAL.ALC", "ALCLoader", "ALLoader", "DefaultALCGetProcAddress"),
+                _ => throw new ArgumentException($"This is not a valid output API ({@namespace.Name})"),
+            };
+
+            string directoryPath = Path.Combine(outputProjectPath, Path.Combine(strings.Namespace.Split('.')));
+            if (!Directory.Exists(directoryPath)) Directory.CreateDirectory(directoryPath);
+
+            WriteContainers(directoryPath, strings, @namespace);
+            WriteNativeFunctions(directoryPath, strings, @namespace.VendorFunctions, @namespace.Documentation);
+            WriteOverloads(directoryPath, strings, @namespace.VendorFunctions, @namespace.Documentation);
+            const string LoadFunctionName = "loadFunction";
+            switch (@namespace.Name)
+            {
+                case OutputApi.AL:
+                    WriteFunctionPointerInitializers(outputProjectPath, strings, @namespace, "ByDeviceOrContext",
+                        ("delegate* unmanaged[Cdecl]<IntPtr, byte*, void*>", "delegate* unmanaged[Cdecl, SuppressGCTransition]<IntPtr, byte*, void*>", LoadFunctionName), [("IntPtr", "handle")]);
+                    WriteFunctionPointerInitializers(outputProjectPath, strings, @namespace, "",
+                        ("delegate* unmanaged[Cdecl]<byte*, void*>", "delegate* unmanaged[Cdecl, SuppressGCTransition]<byte*, void*>", LoadFunctionName), []);
+                    break;
+                case OutputApi.ALC:
+                    WriteFunctionPointerInitializers(outputProjectPath, strings, @namespace, "",
+                        ("delegate* unmanaged[Cdecl]<IntPtr, byte*, void*>", "delegate* unmanaged[Cdecl, SuppressGCTransition]<IntPtr, byte*, void*>", LoadFunctionName), [("IntPtr", "device")]);
+                    break;
+                default:
+                    break;
+            }
+
+            WriteEnums(directoryPath, strings, @namespace.EnumGroups);
+        }
+
+        private static void WriteAutoGeneratedWarnings(IndentedTextWriter writer)
+        {
+            // Style Analyzers needs <auto-generated /> to be inserted at the start of file for auto-generated files.
+            writer.WriteLine($"// <auto-generated />");
+            writer.WriteLine($"// This file is auto generated, do not edit.");
+            writer.WriteLine($"#nullable enable");
+        }
+
+        private static void WriteUsings(IndentedTextWriter writer)
+        {
+            foreach (var item in Usings)
+            {
+                writer.WriteLine($"using {item};");
+            }
+        }
+
+        // FIXME: Maybe we should nest this 
+        private static void WriteFunctionPointers(string directoryPath, FileStrings strings, List<Function> nativeFunctions)
+        {
+            using StreamWriter stream = File.CreateText(Path.Combine(directoryPath, $"{strings.FileNamePrefix}.Pointers.cs"));
+            using IndentedTextWriter writer = new IndentedTextWriter(stream);
+            WriteAutoGeneratedWarnings(writer);
+            WriteUsings(writer);
+            writer.WriteLine();
+            writer.WriteLine($"namespace {AudioNamespace}.{strings.Namespace}");
+
+            using (writer.CsScope())
+            {
+                writer.WriteLine($"/// <summary>A collection of all function pointers to all OpenAL <c>{strings.ApiName.ToLowerInvariant()}</c> entry points.</summary>");
+                // FIXME: Better class name?
+                writer.WriteLine($"public unsafe partial struct {strings.ClassName}Pointers");
+                using (writer.CsScope())
+                {
+                    foreach (Function function in nativeFunctions)
+                    {
+                        WriteFunctionPointer(writer, function, strings);
+                    }
+                }
+            }
+        }
+
+        private static void WriteFunctionPointer(IndentedTextWriter writer, Function function, FileStrings strings)
+        {
+            // Write delegate field initialized to the lazy loader.
+            // Write public function definition that calls delegate.
+            // Write lazy loader function.
+            GetNativeFunctionSignature(function, postfixName: false, swapTypesForUnderlyingType: true,
+                out string _,
+                out StringBuilder paramNames,
+                out StringBuilder delegateTypes,
+                out StringBuilder signature,
+                out bool _,
+                out string returnType);
+
+            string entryPoint = function.EntryPoint;
+
+            writer.WriteLine($"/// <summary><b>[entry point: <c>{entryPoint}</c>]</b></summary>");
+            writer.WriteLine($"public delegate* unmanaged[Cdecl]<{delegateTypes}> _{entryPoint}_fnptr;");
+            writer.WriteLine();
+        }
+
+        private static void WriteLazyFunctions(string directoryPath, FileStrings strings, List<Function> nativeFunctions)
+        {
+            using StreamWriter stream = File.CreateText(Path.Combine(directoryPath, $"{strings.FileNamePrefix}.Pointers.Lazy.cs"));
+            using IndentedTextWriter writer = new IndentedTextWriter(stream);
+
+            WriteAutoGeneratedWarnings(writer);
+            WriteUsings(writer);
+            writer.WriteLine();
+            writer.WriteLine($"namespace {AudioNamespace}.{strings.Namespace}");
+
+            using (writer.CsScope())
+            {
+                // FIXME: Better class name?
+                writer.WriteLine($"public unsafe partial struct {strings.ClassName}Pointers");
+                using (writer.CsScope())
+                {
+                    foreach (Function function in nativeFunctions)
+                    {
+                        WriteLazyFunction(writer, function, strings);
+                    }
+                }
+            }
+        }
+
+        private static void WriteLazyFunction(IndentedTextWriter writer, Function function, FileStrings strings)
+        {
+            // Write delegate field initialized to the lazy loader.
+            // Write public function definition that calls delegate.
+            // Write lazy loader function.
+            GetNativeFunctionSignature(function, postfixName: false, swapTypesForUnderlyingType: true,
+                out string _,
+                out StringBuilder paramNames,
+                out StringBuilder delegateTypes,
+                out StringBuilder signature,
+                out bool _,
+                out string returnType);
+
+            string entryPoint = function.EntryPoint;
+
+            writer.WriteLine($"[UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]");
+            writer.WriteLine($"private static {returnType} {entryPoint}_Lazy({signature})");
+            using (writer.CsScope())
+            {
+                // Dotnet gurantees you can't get torn values when assigning functionpointers, assuming proper allignment which is default.
+                writer.WriteLine($"var fnptr = (delegate* unmanaged[Cdecl]<{delegateTypes}>){strings.LoaderBindingsContext}.{strings.LoadFunction}(AllFunctionNames.Slice({function.EntryPoint}_offset));");
+                writer.WriteLine($"{strings.LoaderBindingsContext}.Default.{strings.ClassName}._pointers->_{entryPoint}_fnptr = fnptr;");
+                if (function.StrongReturnType is not CSVoid)
+                {
+                    writer.Write($"return ");
+                }
+                writer.WriteLine($"fnptr({paramNames});");
+            }
+
+            writer.WriteLine();
+        }
+
+        private static void WriteFunctionNameList(string directoryPath, FileStrings strings, List<Function> nativeFunctions)
+        {
+            using StreamWriter stream = File.CreateText(Path.Combine(directoryPath, $"{strings.FileNamePrefix}.Pointers.Names.cs"));
+            using IndentedTextWriter writer = new IndentedTextWriter(stream);
+            WriteAutoGeneratedWarnings(writer);
+            WriteUsings(writer);
+            writer.WriteLine();
+            writer.WriteLine($"namespace {AudioNamespace}.{strings.Namespace}");
+
+            using (writer.CsScope())
+            {
+                writer.WriteLine($"public unsafe partial struct {strings.ClassName}Pointers");
+                using (writer.CsScope())
+                {
+                    writer.Write($"internal static ReadOnlySpan<byte> AllFunctionNames => \"");
+                    List<(string entryPoint, int offset)> offsets = new();
+                    int currentOffset = 0;
+                    var builder = new StringBuilder();
+                    var entryPoints = nativeFunctions.Select(a => a.EntryPoint).ToList();
+                    foreach (var entryPoint in entryPoints)
+                    {
+                        // Write delegate field initialized to the lazy loader.
+                        builder.Append($"{entryPoint}\\0");
+                        offsets.Add((entryPoint, currentOffset));
+                        currentOffset += entryPoint.Length + 1;
+                    }
+                    writer.WriteLine($"{builder}\"u8;");
+                    var constType = $"internal const {offsets[^1].offset switch
+                    {
+                        <= byte.MaxValue => "byte",
+                        <= ushort.MaxValue => "ushort",
+                        _ => "int"
+                    }}";
+                    foreach (var item in offsets)
+                    {
+                        writer.WriteLine($"{constType} {item.entryPoint}_offset = {item.offset};");
+                    }
+                }
+            }
+        }
+
+        private static void WriteDefaultFunctionPointerInitializers(string directoryPath, FileStrings strings, List<Function> nativeFunctions)
+        {
+            using StreamWriter stream = File.CreateText(Path.Combine(directoryPath, $"{strings.FileNamePrefix}.Pointers.InitializeLazy.cs"));
+            using IndentedTextWriter writer = new IndentedTextWriter(stream);
+            WriteAutoGeneratedWarnings(writer);
+            WriteUsings(writer);
+            writer.WriteLine();
+            writer.WriteLine($"namespace {AudioNamespace}.{strings.Namespace}");
+
+            using (writer.CsScope())
+            {
+                writer.WriteLine($"public unsafe partial struct {strings.ClassName}Pointers");
+                using (writer.CsScope())
+                {
+                    writer.WriteLine($"/// <summary>Initializes all function pointers to their lazy loader functions.</summary>");
+                    writer.WriteLine($"internal static void InitializeLazyLoaders(ref {strings.ClassName}Pointers pointers)");
+                    using (writer.CsScope())
+                    {
+                        var entryPoints = nativeFunctions.Select(a => a.EntryPoint).ToList();
+                        foreach (var entryPoint in entryPoints.Intersect(["alcGetProcAddress", "alGetProcAddress"]))
+                        {
+                            // Write delegate field initialized to the lazy loader.
+                            writer.WriteLine($"if (pointers._{entryPoint}_fnptr is null) pointers._{entryPoint}_fnptr = &{entryPoint}_Lazy;");
+                        }
+                        foreach (var entryPoint in entryPoints.Except(["alcGetProcAddress", "alGetProcAddress"]))
+                        {
+                            // Write delegate field initialized to the lazy loader.
+                            writer.WriteLine($"pointers._{entryPoint}_fnptr = &{entryPoint}_Lazy;");
+                        }
+                    }
+                }
+            }
+        }
+
+        private static void WriteFunctionPointerInitializers(string directoryPath, FileStrings strings, Namespace @namespace, string overloadName, (string type, string suppressedType, string name) loadFunction, IReadOnlyList<(string type, string name)> additionalParameters)
+        {
+            using StreamWriter stream = File.CreateText(Path.Combine(directoryPath, $"{strings.FileNamePrefix}.Pointers.Initialize{overloadName}.cs"));
+            using IndentedTextWriter writer = new IndentedTextWriter(stream);
+
+            WriteAutoGeneratedWarnings(writer);
+            WriteUsings(writer);
+            writer.WriteLine();
+            writer.WriteLine($"namespace {AudioNamespace}.{strings.Namespace}");
+
+            using (writer.CsScope())
+            {
+                writer.WriteLine($"public unsafe partial struct {strings.ClassName}Pointers");
+                using (writer.CsScope())
+                {
+                    writer.WriteLine($"/// <summary>Loads all function pointers via specified loader function.</summary>");
+                    var parameters = string.Join(", ", additionalParameters.Prepend((loadFunction.type, loadFunction.name)).Select(a => $"{a.type} {a.name}"));
+                    writer.WriteLine($"internal static void InitializePointers{overloadName}({parameters}, {strings.ClassName}Pointers* pointers)");
+                    IReadOnlyList<(string type, string name)> parametersToJoin = [(loadFunction.type, loadFunction.name), .. additionalParameters, ("byte*", "names"), ($"{strings.ClassName}Pointers*", "pointers")];
+                    using (writer.CsScope())
+                    {
+                        writer.WriteLine($"fixed (byte* names = AllFunctionNames)");
+                        using (writer.CsScope())
+                        {
+                            writer.WriteLine($"var initializePointers{overloadName}Internal_fnptr = (delegate* unmanaged[Cdecl]<{string.Join(", ", parametersToJoin.Select(a => a.type))}, void>)&InitializePointers{overloadName}Internal;");
+                            writer.WriteLine($"initializePointers{overloadName}Internal_fnptr({string.Join(", ", parametersToJoin.Select(a => a.name))});");
+                        }
+                    }
+                    var innerFunctionParameters = string.Join(", ", parametersToJoin.Select(a => $"{a.type} {a.name}"));
+                    writer.WriteLine($"[UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]");
+                    writer.WriteLine($"private static void InitializePointers{overloadName}Internal({innerFunctionParameters})");
+                    using (writer.CsScope())
+                    {
+                        var suppressedFunctionName = $"{loadFunction.name}Suppressed";
+                        writer.WriteLine($"var {suppressedFunctionName} = ({loadFunction.suppressedType}){loadFunction.name};");
+                        var joinedAdditionalParameters = string.Join(", ", additionalParameters.Select(a => a.name));
+                        HashSet<string> exportedEndpoints = [];
+                        IEnumerable<VendorFunctions> items = @namespace.VendorFunctions;
+                        if (@namespace.Name == OutputApi.AL) items = items.Where(a => a.Vendor != "Direct");
+                        foreach (var item in items)
+                        {
+                            var vendorFunctions = item.Functions.Select(a => a.NativeFunction).GroupBy(a => @namespace.Documentation.TryGetValue(a, out var documentation) ? documentation.AddedIn : [""], EqualityComparer<List<string>>.Create(
+                                (a, b) =>
+                                {
+                                    if (a is null) return b is null;
+                                    if (b is null) return false;
+                                    if (a.Count != b.Count) return false;
+                                    for (int i = 0; i < a.Count; i++)
+                                    {
+                                        if (a[i] != b[i]) return false;
+                                    }
+                                    return true;
+                                }, a =>
+                                {
+                                    var h = new HashCode();
+                                    foreach (var item in a)
+                                    {
+                                        h.Add(item);
+                                    }
+                                    return h.ToHashCode();
+                                })).ToList();
+                            foreach (var dependency in vendorFunctions)
+                            {
+                                writer.WriteLine();
+                                var extensionFunctions = dependency.ExceptBy(exportedEndpoints, a => a.EntryPoint).OrderBy(a => a.EntryPoint).ToList();
+                                exportedEndpoints.UnionWith(extensionFunctions.Select(a => a.EntryPoint));
+                                WriteExtensionBlock(suppressedFunctionName, writer, joinedAdditionalParameters, extensionFunctions);
+                            }
+                        }
+                        if (@namespace.Name != OutputApi.AL) return;
+                        writer.WriteLine();
+                        foreach (var item in @namespace.VendorFunctions.Where(a => a.Vendor == "Direct"))
+                        {
+                            var vendorDirectFunctions = item.Functions.Select(a => a.NativeFunction).GroupBy(a => @namespace.Documentation.TryGetValue(a, out var documentation) ? documentation.Dependency : "")
+                                .OrderBy(a => a.Key == "v1.0" ? "" : a.Key).ToList();
+                            CsScope? scope = null;
+                            if (vendorDirectFunctions.Count > 0)
+                            {
+                                var firstDependency = vendorDirectFunctions[0];
+                                var extensionFunctions = firstDependency.OrderBy(a => a.Name).ToList();
+                                var functions = extensionFunctions.GetEnumerator();
+                                if (functions.MoveNext())
+                                {
+                                    var function = functions.Current;
+                                    GetNativeFunctionSignature(function, postfixName: false, swapTypesForUnderlyingType: true, out _, out _, out StringBuilder delegateTypes, out _, out _, out _);
+                                    string entryPoint = function.EntryPoint;
+                                    writer.WriteLine($"var {entryPoint}_fnptr = (delegate* unmanaged[Cdecl]<{delegateTypes}>){suppressedFunctionName}({joinedAdditionalParameters}{(string.IsNullOrEmpty(joinedAdditionalParameters) ? "" : ", ")}names + {entryPoint}_offset);");
+                                    writer.WriteLine($"pointers->_{entryPoint}_fnptr = {entryPoint}_fnptr;");
+                                    writer.WriteLine($"if ({entryPoint}_fnptr is not null)");
+                                    scope = writer.CsScope();
+                                    while (functions.MoveNext())
+                                    {
+                                        function = functions.Current;
+                                        WriteFunctionPointerInitializer(writer, function, suppressedFunctionName, joinedAdditionalParameters);
+                                    }
+                                }
+                            }
+                            foreach (var dependency in vendorDirectFunctions.Skip(1))
+                            {
+                                writer.WriteLine();
+                                WriteExtensionBlock(suppressedFunctionName, writer, joinedAdditionalParameters, [.. dependency.OrderBy(a => a.Name)]);
+                            }
+                            scope?.Dispose();
+                        }
+                    }
+                }
+            }
+
+            static void WriteExtensionBlock(string loadFunction, IndentedTextWriter writer, string joinedAdditionalParameters, List<Function> extensionFunctions)
+            {
+                var functions = extensionFunctions.GetEnumerator();
+                CsScope? scope = null;
+                if (extensionFunctions.Count > 3 && functions.MoveNext())
+                {
+                    var function = functions.Current;
+                    GetNativeFunctionSignature(function, postfixName: false, swapTypesForUnderlyingType: true, out _, out _, out StringBuilder delegateTypes, out _, out _, out _);
+                    string entryPoint = function.EntryPoint;
+                    writer.WriteLine($"var {entryPoint}_fnptr = (delegate* unmanaged[Cdecl]<{delegateTypes}>){loadFunction}({joinedAdditionalParameters}{(string.IsNullOrEmpty(joinedAdditionalParameters) ? "" : ", ")}names + {entryPoint}_offset);");
+                    writer.WriteLine($"pointers->_{entryPoint}_fnptr = {entryPoint}_fnptr;");
+                    writer.WriteLine($"if ({entryPoint}_fnptr is not null)");
+                    scope = writer.CsScope();
+                }
+                while (functions.MoveNext())
+                {
+                    var function = functions.Current;
+                    WriteFunctionPointerInitializer(writer, function, loadFunction, joinedAdditionalParameters);
+                }
+                scope?.Dispose();
+            }
+        }
+
+        private static void WriteFunctionPointerInitializer(IndentedTextWriter writer, Function function, string loadFunction, string additionalParameters)
+        {
+            GetNativeFunctionSignature(function, postfixName: false, swapTypesForUnderlyingType: true, out _, out _, out StringBuilder delegateTypes, out _, out _, out _);
+            string entryPoint = function.EntryPoint;
+            // Dotnet gurantees you can't get torn values when assigning functionpointers, assuming proper allignment which is default.
+            writer.WriteLine($"pointers->_{entryPoint}_fnptr = (delegate* unmanaged[Cdecl]<{delegateTypes}>){loadFunction}({additionalParameters}{(string.IsNullOrEmpty(additionalParameters) ? "" : ", ")}names + {entryPoint}_offset);");
+        }
+
+        private static void WriteContainers(string directoryPath, FileStrings strings, Namespace @namespace)
+        {
+            var groups = @namespace.VendorFunctions;
+            using StreamWriter stream = File.CreateText(Path.Combine(directoryPath, $"{strings.FileNamePrefix}.cs"));
+            using IndentedTextWriter writer = new IndentedTextWriter(stream);
+            WriteAutoGeneratedWarnings(writer);
+            WriteUsings(writer);
+
+            writer.WriteLine();
+            writer.WriteLine($"namespace {AudioNamespace}.{strings.Namespace}");
+            using (writer.CsScope())
+            {
+                writer.WriteLine($"/// <summary>Exposes all the {strings.ApiName} functions loaded by {strings.LoaderClass}.</summary>");
+                writer.WriteLine($"public readonly unsafe partial struct {strings.ApiName}");
+                using (writer.CsScope())
+                {
+                    writer.WriteLine($"internal readonly {strings.ApiName}Pointers* _pointers;");
+                    writer.WriteLine($"internal readonly {strings.ApiName}Pointers[] _pointersPinnedArray;");
+                    writer.WriteLine($"/// <summary>The reference to the container of function pointers loaded by {strings.LoaderClass}.</summary>");
+                    writer.WriteLine($"public ref readonly {strings.ApiName}Pointers Pointers => ref Unsafe.AsRef<{strings.ApiName}Pointers>(_pointers);");
+                    writer.WriteLine();
+                    writer.WriteLine($"/// <summary>");
+                    writer.WriteLine($"/// Initializes a new instance of the <see cref=\"{strings.ApiName}\"/> struct.");
+                    writer.WriteLine($"/// </summary>");
+                    writer.WriteLine($"/// <param name=\"pointers\">The <see cref=\"{strings.ApiName}Pointers\"/> to initialize with.</param>");
+                    writer.WriteLine($"/// <param name=\"pointersPinnedArray\">The place <see cref=\"{strings.ApiName}Pointers\"/> resides.</param>");
+                    writer.WriteLine($"public {strings.ApiName}({strings.ApiName}Pointers* pointers, {strings.ApiName}Pointers[] pointersPinnedArray)");
+                    using (writer.CsScope())
+                    {
+                        writer.WriteLine($"_pointers = pointers;");
+                        writer.WriteLine($"_pointersPinnedArray = pointersPinnedArray;");
+                    }
+                    foreach (var vendor in groups.Select(a => a.Vendor).Where(a => !string.IsNullOrEmpty(a)))
+                    {
+                        writer.WriteLine($"/// <summary>{vendor} extensions.</summary>");
+                        writer.WriteLine($"public {strings.ApiName}{APIExtensionSuffix}.{vendor} {vendor} => new(this);");
+                    }
+                }
+                writer.WriteLine();
+                writer.WriteLine($"/// <summary>Contains extensions' pointer containers.</summary>");
+                writer.WriteLine($"public static partial class {strings.ApiName}Extensions");
+                using (writer.CsScope())
+                {
+                    var vendors = groups.Select(a => a.Vendor);
+                    writer.WriteLine($"/// <summary>Interface for {strings.ApiName}Pointers containers.</summary>");
+                    writer.WriteLine($"public interface I{strings.ApiName}Container");
+                    using (writer.CsScope())
+                    {
+                        writer.WriteLine($"/// <summary>The underlying {strings.ApiName} object.</summary>");
+                        writer.WriteLine($"{strings.ApiName} {strings.ApiName} {{ get; }}");
+                    }
+                    writer.WriteLine();
+                    if (@namespace.Name == OutputApi.AL)
+                    {
+                        writer.WriteLine($"/// <summary>The {strings.ApiName}Pointers container for AL_EXT_direct_context extensions.</summary>");
+                        writer.WriteLine($"public readonly record struct Direct<TDependentAPIVendor>(TDependentAPIVendor vendor) : I{strings.ApiName}Container where TDependentAPIVendor : struct, I{strings.ApiName}Container");
+                        using (writer.CsScope())
+                        {
+                            writer.WriteLine($"/// <inheritdoc/>");
+                            writer.WriteLine($"public {strings.ApiName} {strings.ApiName} => vendor.{strings.ApiName};");
+                        }
+                    }
+
+                    foreach (var vendor in vendors.Where(a => !string.IsNullOrEmpty(a)))
+                    {
+                        writer.WriteLine();
+                        writer.WriteLine($"/// <summary>{vendor} extensions.</summary>");
+                        writer.WriteLine($"public readonly record struct {vendor}({strings.ApiName} {strings.ApiName}) : I{strings.ApiName}Container");
+                        using (writer.CsScope())
+                        {
+                            if (@namespace.Name == OutputApi.AL && vendor != "Direct")
+                            {
+                                writer.WriteLine($"/// <summary>AL_EXT_direct_context extensions for {vendor} extensions.</summary>");
+                                writer.WriteLine($"public Direct<{vendor}> Direct => new(this);");
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         private static void WriteNativeFunctions(
             string directoryPath,
             FileStrings strings,
             List<VendorFunctions> groups,
             Dictionary<Function, FunctionDocumentation> documentation)
         {
-            using StreamWriter stream = File.CreateText(Path.Combine(directoryPath, $"{strings.FileNamePrefix}.Native.cs"));
+            using StreamWriter stream = File.CreateText(Path.Combine(directoryPath, $"{strings.FileNamePrefix}Functions.Native.cs"));
             using IndentedTextWriter writer = new IndentedTextWriter(stream);
-            writer.WriteLine($"// This file is auto generated, do not edit.");
-            writer.WriteLine("using System;");
-            writer.WriteLine("using System.Runtime.CompilerServices;");
-            writer.WriteLine("using System.Runtime.InteropServices;");
-            writer.WriteLine("using OpenTK.Audio;");
+            WriteAutoGeneratedWarnings(writer);
+            WriteUsings(writer);
 
             writer.WriteLine();
             writer.WriteLine($"namespace {AudioNamespace}.{strings.Namespace}");
             using (writer.CsScope())
             {
-                writer.WriteLine($"public static unsafe partial class {strings.ApiName}");
+                writer.WriteLine($"public static unsafe partial class {strings.ApiName}Functions");
                 using (writer.CsScope())
                 {
                     foreach (var group in groups)
                     {
-                        CsScope? scope = null;
-                        if (!string.IsNullOrWhiteSpace(group.Vendor))
-                        {
-                            writer.WriteLine($"/// <summary>{group.Vendor} extensions.</summary>");
-                            writer.WriteLine($"public static unsafe partial class {group.Vendor}");
-                            scope = writer.CsScope();
-                        }
-
+                        var vendor = group.Vendor;
                         foreach (var function in group.Functions)
                         {
-                            bool postfixName = group.NativeFunctionsWithPostfix.Contains(function.NativeFunction);
-                            documentation.TryGetValue(function.NativeFunction, out FunctionDocumentation? functionDocumentation);
-                            WriteNativeFunction(writer, function.NativeFunction, postfixName, functionDocumentation, strings.ApiName);
+                            var nativeFunction = function.NativeFunction;
+                            bool postfixName = group.NativeFunctionsWithPostfix.Contains(nativeFunction);
+                            documentation.TryGetValue(nativeFunction, out FunctionDocumentation? functionDocumentation);
+                            WriteNativeFunction(writer, nativeFunction, postfixName, functionDocumentation, strings.ApiName, vendor);
                         }
-
-                        scope?.Dispose();
                     }
                 }
             }
@@ -263,7 +663,7 @@ namespace ALGenerator
             writer.Flush();
         }
 
-        private static void WriteNativeFunction(IndentedTextWriter writer, Function function, bool postfixName, FunctionDocumentation? documentation, string apiName)
+        private static void WriteNativeFunction(IndentedTextWriter writer, Function function, bool postfixName, FunctionDocumentation? documentation, string apiName, string vendorName)
         {
             GetNativeFunctionSignature(function, postfixName, swapTypesForUnderlyingType: false,
                 out string name,
@@ -274,112 +674,105 @@ namespace ALGenerator
                 out string returnType);
 
             string entryPoint = function.EntryPoint;
+            GenerateExtensionParameters(apiName, vendorName, documentation, out var thisParameterName, out var extendingCSType, out _, out var apiVariableName);
 
             if (documentation != null)
             {
-                WriteDocumentation(writer, function, documentation);
+                WriteDocumentation(writer, function, documentation, thisParameterName);
             }
-
-            // We want to generally prefer overloads, this will allow calls like
-            // ALC.OpenDevice(null) to work correctly without ambiguous overloads.
-            writer.WriteLine("[OverloadResolutionPriority(-1)]");
-
-            if (handleAbiDifferenceForTypesafeHandles)
+            var strongReturnType = function.StrongReturnType;
+            if (handleAbiDifferenceForTypesafeHandles && strongReturnType is not null)
             {
                 // Here we just cast and return the correct return type in the public facing function.
                 // This works because all of the structs that get here should have a defined cast from the primitive type to the struct type.
                 // These casts need to be added manually for this to work correctly.
                 // - 2021-06-22
-
-                if (function.StrongReturnType is CSBool8)
+                returnType = strongReturnType.ToCSString();
+            }
+            // We want to generally prefer overloads, this will allow calls like
+            // ALC.OpenDevice(null) to work correctly without ambiguous overloads.
+            var allParamNames = $"this {extendingCSType} {thisParameterName}";
+            if (signature.Length > 0) allParamNames = string.Join(", ", allParamNames, signature);
+            writer.WriteLine("[OverloadResolutionPriority(short.MinValue)]");
+            writer.WriteLine($"[MethodImpl(MethodImplOptions.AggressiveInlining)]");
+            writer.Write($"public static {returnType} {name}({allParamNames}) => ");
+            if (handleAbiDifferenceForTypesafeHandles)
+            {
+                if (strongReturnType is CSBool8)
                 {
                     // HACK: We can't cast byte to bool, sigh...
-                    writer.WriteLine($"public static {function.StrongReturnType!.ToCSString()} {name}({signature}) => {apiName}Pointers._{entryPoint}_fnptr({paramNames}) != 0;");
+                    writer.Write($"0 != ");
                 }
                 else
                 {
-                    writer.WriteLine($"public static {function.StrongReturnType!.ToCSString()} {name}({signature}) => ({function.StrongReturnType!.ToCSString()}) {apiName}Pointers._{entryPoint}_fnptr({paramNames});");
+                    writer.Write($"({returnType}) ");
                 }
             }
-            else
-            {
-                writer.WriteLine($"public static {returnType} {name}({signature}) => {apiName}Pointers._{entryPoint}_fnptr({paramNames});");
-            }
-
+            writer.WriteLine($"{apiVariableName}._pointers->_{entryPoint}_fnptr({paramNames});");
             writer.WriteLine();
         }
 
         private static void WriteOverloads(
             string directoryPath,
             FileStrings strings,
-            List<VendorFunctions> groups)
+            List<VendorFunctions> groups,
+            Dictionary<Function, FunctionDocumentation> documentation
+            )
         {
-            using StreamWriter stream = File.CreateText(Path.Combine(directoryPath, $"{strings.FileNamePrefix}.Overloads.cs"));
+            using StreamWriter stream = File.CreateText(Path.Combine(directoryPath, $"{strings.FileNamePrefix}Functions.Overloads.cs"));
             using IndentedTextWriter writer = new IndentedTextWriter(stream);
-            writer.WriteLine($"// This file is auto generated, do not edit.");
-            writer.WriteLine("using System;");
-            writer.WriteLine("using System.Runtime.CompilerServices;");
-            writer.WriteLine("using System.Runtime.InteropServices;");
-            writer.WriteLine("using OpenTK.Core.Native;");
-            writer.WriteLine("using OpenTK.Mathematics;");
-            writer.WriteLine("using OpenTK.Audio;");
+            WriteAutoGeneratedWarnings(writer);
+            WriteUsings(writer);
 
             writer.WriteLine();
             writer.WriteLine($"namespace {AudioNamespace}.{strings.Namespace}");
             using (writer.CsScope())
             {
-                // FIXME: Maybe we want to fix this?
-                writer.WriteLine($"public static unsafe partial class {strings.ApiName}");
+                writer.WriteLine($"public static unsafe partial class {strings.ApiName}Functions");
                 using (writer.CsScope())
                 {
                     foreach (var group in groups)
                     {
-                        CsScope? scope = null;
-                        if (!string.IsNullOrWhiteSpace(group.Vendor))
-                        {
-                            writer.WriteLine($"public static unsafe partial class {group.Vendor}");
-                            scope = writer.CsScope();
-                        }
-
+                        var vendor = group.Vendor;
                         foreach (var function in group.Functions)
                         {
                             foreach (var overload in function.Overloads)
                             {
                                 bool postfixNativeCall = group.NativeFunctionsWithPostfix.Contains(overload.NativeFunction);
-                                WriteOverloadMethod(writer, overload, postfixNativeCall);
+                                documentation.TryGetValue(overload.NativeFunction, out var functionDocumentation);
+                                WriteOverloadMethod(writer, overload, postfixNativeCall, strings.ApiName, vendor, functionDocumentation);
                             }
                         }
-
-                        scope?.Dispose();
                     }
                 }
             }
         }
 
-        private static void WriteOverloadMethod(IndentedTextWriter writer, Overload overload, bool postfixNativeCall)
+        private static void WriteOverloadMethod(IndentedTextWriter writer, Overload overload, bool postfixNativeCall, string apiName, string vendorName, FunctionDocumentation? documentation)
         {
-            string parameterTypes = string.Join(", ", overload.NativeFunction.Parameters.Select(p => p.StrongType!.ToCSString()));
-            // Because this will be used in the <inheritdoc> comment we replace
-            // generic <T> angle brackets with braces to conform with the xml format.
-            // - Noggin_bops 2025-08-07
             // FIXME: Functions taking function pointer parameters cannot be properly referenced
             // in a cref as of yet (see https://github.com/dotnet/roslyn/issues/48363) so this
             // will fail for these functions.
             // - Noggin_bops 2025-08-076
-            parameterTypes = parameterTypes.Replace("<", "{").Replace(">", "}");
+            string parameterTypes = string.Join(", ", overload.NativeFunction.Parameters.Select(p => p.StrongType!.ToXMLString()));
 
             string nativeFunctionName = overload.NativeFunction.Name;
             if (postfixNativeCall)
             {
                 nativeFunctionName += "_";
             }
-
-            writer.WriteLine($"/// <inheritdoc cref=\"{nativeFunctionName}({parameterTypes})\"/>");
-
-            string parameterString = string.Join(", ", overload.InputParameters.Select(p => $"{p.StrongType.ToCSString()} {p.Name}"));
+            if (overload.NativeFunction.GenericTypes is not null)
+            {
+                nativeFunctionName += $"{{{string.Join(", ", overload.NativeFunction.GenericTypes)}}}";
+            }
+            GenerateExtensionParameters(apiName, vendorName, documentation, out var thisParameterName, out var extendingCSType, out var extendingXMLType, out _);
+            writer.WriteLine($"/// <inheritdoc cref=\"{nativeFunctionName}({extendingXMLType}, {parameterTypes})\"/>");
 
             string genericTypes = overload.GenericTypes.Length <= 0 ? "" : $"<{string.Join(", ", overload.GenericTypes)}>";
-            writer.WriteLine($"public static unsafe {overload.ReturnType.ToCSString()} {overload.OverloadName}{genericTypes}({parameterString})");
+            writer.WriteLine($"[MethodImpl(MethodImplOptions.AggressiveInlining)]");
+            var priority = overload.OverloadResolutionPriority;
+            if (priority != 0) writer.WriteLine($"[OverloadResolutionPriority({priority})]");
+            writer.WriteLine($"public static unsafe {overload.ReturnType.ToCSString()} {overload.OverloadName}{genericTypes}({string.Join(", ", overload.InputParameters.Select(p => p.ToDefinitionString()).Prepend($"this {extendingCSType} {thisParameterName}"))})");
             using (writer.Indent())
             {
                 foreach (var type in overload.GenericTypes)
@@ -401,7 +794,7 @@ namespace ALGenerator
                     writer.WriteLine($"{overload.ReturnType.ToCSString()} {overload.NameTable.ReturnName};");
                 }
 
-                string? returnName = WriteNestedOverload(writer, overload, new NameTable(), postfixNativeCall);
+                string? returnName = WriteNestedOverload(writer, overload, new NameTable(), postfixNativeCall, thisParameterName);
 
                 if (returnName != null)
                 {
@@ -410,7 +803,21 @@ namespace ALGenerator
             }
         }
 
-        private static string? WriteNestedOverload(IndentedTextWriter writer, Overload overload, NameTable nameTable, bool postfixNativeCall)
+        private static void GenerateExtensionParameters(string apiName, string vendorName, FunctionDocumentation? documentation, out string thisParameterName, out string extendingCSType, out string extendingXMLType, out string apiVariableName)
+        {
+            var isVendorEmpty = string.IsNullOrEmpty(vendorName);
+            thisParameterName = (isVendorEmpty ? apiName : vendorName).ToLowerInvariant();
+            extendingCSType = isVendorEmpty ? apiName : $"{apiName}{APIExtensionSuffix}.{vendorName}";
+            extendingXMLType = extendingCSType;
+            if (documentation is not null && vendorName == "Direct" && !string.IsNullOrEmpty(documentation?.DependentVendor))
+            {
+                extendingCSType = $"{apiName}{APIExtensionSuffix}.Direct<{apiName}{APIExtensionSuffix}.{documentation?.DependentVendor}>";
+                extendingXMLType = $"{apiName}{APIExtensionSuffix}.Direct{{{apiName}{APIExtensionSuffix}.{documentation?.DependentVendor}}}";
+            }
+            apiVariableName = isVendorEmpty ? thisParameterName : $"{thisParameterName}.{apiName}";
+        }
+
+        private static string? WriteNestedOverload(IndentedTextWriter writer, Overload overload, NameTable nameTable, bool postfixNativeCall, string thisParameterName)
         {
             // Update the name table with the names for this overload.
             nameTable.Apply(overload.NameTable);
@@ -418,9 +825,9 @@ namespace ALGenerator
             overload.MarshalLayerToNested?.WritePrologue(writer, nameTable);
 
             string? returnName;
-            if (overload.NestedOverload != null)
+            if (overload.NestedOverload is not null)
             {
-                returnName = WriteNestedOverload(writer, overload.NestedOverload, nameTable, postfixNativeCall);
+                returnName = WriteNestedOverload(writer, overload.NestedOverload, nameTable, postfixNativeCall, thisParameterName);
             }
             else
             {
@@ -433,12 +840,12 @@ namespace ALGenerator
 
                 if (nativeFunction.StrongReturnType is CSVoid)
                 {
-                    writer.WriteLine($"{name}({arguments});");
+                    writer.WriteLine($"{thisParameterName}.{name}({arguments});");
                     return null;
                 }
                 else
                 {
-                    writer.WriteLine($"returnValue = {name}({arguments});");
+                    writer.WriteLine($"returnValue = {thisParameterName}.{name}({arguments});");
                     return "returnValue";
                 }
             }
@@ -446,20 +853,29 @@ namespace ALGenerator
             return overload.MarshalLayerToNested?.WriteEpilogue(writer, nameTable, returnName) ?? returnName;
         }
 
-
-        private static void WriteDocumentation(IndentedTextWriter writer, Function function, FunctionDocumentation documentation)
+        private static void WriteDocumentation(IndentedTextWriter writer, Function function, FunctionDocumentation documentation, string thisParameterName)
         {
             writer.Write("/// <summary> ");
-            writer.Write($"<b>[requires: {string.Join(" | ", documentation.AddedIn)}]</b> ");
+            writer.Write($"<b>[requires: {string.Join(" | ", documentation.AddedIn)}");
+            if (!string.IsNullOrEmpty(documentation.Dependency))
+            {
+                if (documentation.AddedIn.Count > 0)
+                    writer.Write($" &amp; (");
+                writer.Write($"{documentation.Dependency}");
+                if (documentation.AddedIn.Count > 0)
+                    writer.Write($")");
+            }
+            writer.Write($"]</b> ");
             if (documentation.RemovedIn?.Count > 0)
                 writer.Write($"<b>[removed in: {string.Join(" | ", documentation.RemovedIn)}]</b> ");
             writer.Write($"<b>[entry point: <c>{function.EntryPoint}</c>]</b><br/>");
             writer.WriteLine($" {documentation.Purpose} </summary>");
 
-            for (int i = 0; i < documentation.Parameters.Length; i++)
+            writer.WriteLine($"/// <param name=\"{thisParameterName}\">The container of native function pointers.</param>");
+            for (int i = 0; i < documentation.Parameters.Length && i < function.Parameters.Count; i++)
             {
-                ParameterDocumentation parameterDoc = documentation.Parameters[i];
-                Parameter parameter = function.Parameters[i];
+                var parameterDoc = documentation.Parameters[i];
+                var parameter = function.Parameters[i];
 
                 // We use the parameter name here, if the documentation uses another name
                 // we've already warned about this, and using the name the C# documentation
@@ -478,8 +894,8 @@ namespace ALGenerator
         {
             using StreamWriter stream = File.CreateText(Path.Combine(directoryPath, $"{strings.FileNamePrefix}.Enums.cs"));
             using IndentedTextWriter writer = new IndentedTextWriter(stream);
-            writer.WriteLine($"// This file is auto generated, do not edit.");
-            writer.WriteLine("using System;");
+            WriteAutoGeneratedWarnings(writer);
+            WriteUsings(writer);
             writer.WriteLine();
             writer.WriteLine($"namespace {AudioNamespace}.{strings.Namespace}");
             using (writer.CsScope())
@@ -502,14 +918,13 @@ namespace ALGenerator
             {
                 if (group.FunctionsUsingEnumGroup != null)
                 {
+                    var functions = group.FunctionsUsingEnumGroup.Take(3);
+                    writer.Write($"///<summary>Used in {string.Join(", ", functions.Select(f => $"<see cref=\"{apiName}Functions.{f.Function.Name}\"/>"))}");
                     if (group.FunctionsUsingEnumGroup.Count > 3)
                     {
-                        writer.WriteLine($"///<summary>Used in {string.Join(", ", group.FunctionsUsingEnumGroup.Take(3).Select(f => $"<see cref=\"{apiName}.{(f.Vendor != "" ? $"{f.Vendor}." : "")}{f.Function.Name}\" />"))}, ...</summary>");
+                        writer.Write($", ...");
                     }
-                    else
-                    {
-                        writer.WriteLine($"///<summary>Used in {string.Join(", ", group.FunctionsUsingEnumGroup.Select(f => $"<see cref=\"{apiName}.{(f.Vendor != "" ? $"{f.Vendor}." : "")}{f.Function.Name}\" />"))}</summary>");
-                    }
+                    writer.WriteLine($"</summary>");
                 }
 
                 if (group.IsFlags) writer.WriteLine($"[Flags]");
@@ -518,8 +933,8 @@ namespace ALGenerator
                 {
                     foreach (var member in group.Members)
                     {
-                        
-                        writer.WriteLine($"/// <remarks>[originally: {member.Name}]</remarks>");
+
+                        writer.WriteLine($"/// <remarks>[<b>originally: {member.Name}</b>]</remarks>");
 
                         // HACK: Some enums have a value of -1, and because
                         // we don't know the bitwidth of the enum here we can't cast
@@ -551,47 +966,47 @@ namespace ALGenerator
             using StreamWriter stream = File.CreateText(Path.Combine(directoryPath, $"EFXPresets.cs"));
             using IndentedTextWriter writer = new IndentedTextWriter(stream);
 
-            writer.WriteLine($"// This file is auto generated, do not edit.");
-            writer.WriteLine("using System;");
-            writer.WriteLine("using System.Runtime.InteropServices;");
-            writer.WriteLine("using OpenTK.Audio;");
-            writer.WriteLine("using OpenTK.Mathematics;");
+            WriteAutoGeneratedWarnings(writer);
+            WriteUsings(writer);
             writer.WriteLine();
             writer.WriteLine($"namespace {AudioNamespace}.OpenAL");
             using (writer.CsScope())
             {
                 // FIXME: Better class name?
+                writer.WriteLine($"/// <summary>Provides a collection of Reverb presets.</summary>");
                 writer.WriteLine($"public static unsafe partial class ReverbPresets");
                 using (writer.CsScope())
                 {
                     foreach (var preset in efxPresets)
                     {
+                        writer.WriteLine($"/// <summary>The {preset.Name} reverb preset.</summary>");
                         writer.WriteLine($"public static readonly ReverbProperties {preset.Name} = new ReverbProperties");
                         writer.WriteLine("(");
                         using (writer.Indent())
                         {
-                            writer.WriteLine($"{preset.Density:0.0000}f,");
-                            writer.WriteLine($"{preset.Diffusion:0.0000}f,");
-                            writer.WriteLine($"{preset.Gain:0.0000}f,");
-                            writer.WriteLine($"{preset.GainHF:0.0000}f,");
-                            writer.WriteLine($"{preset.GainLF:0.0000}f,");
-                            writer.WriteLine($"{preset.DecayTime:0.0000}f,");
-                            writer.WriteLine($"{preset.DecayHFRatio:0.0000}f,");
-                            writer.WriteLine($"{preset.DecayLFRatio:0.0000}f,");
-                            writer.WriteLine($"{preset.ReflectionsGain:0.0000}f,");
-                            writer.WriteLine($"{preset.RelfectionsDelay:0.0000}f,");
-                            writer.WriteLine($"new Vector3({preset.ReflectionsPan.X:0.0000}f, {preset.ReflectionsPan.Y:0.0000}f, {preset.ReflectionsPan.Z:0.0000}f),");
-                            writer.WriteLine($"{preset.LateReverbGain:0.0000}f,");
-                            writer.WriteLine($"{preset.LateReverbDelay:0.0000}f,");
-                            writer.WriteLine($"new Vector3({preset.LateReverbPan.X:0.0000}f, {preset.LateReverbPan.Y:0.0000}f, {preset.LateReverbPan.Z:0.0000}f),");
-                            writer.WriteLine($"{preset.EchoTime:0.0000}f,");
-                            writer.WriteLine($"{preset.EchoDepth:0.0000}f,");
-                            writer.WriteLine($"{preset.ModulationTime:0.0000}f,");
-                            writer.WriteLine($"{preset.ModulationDepth:0.0000}f,");
-                            writer.WriteLine($"{preset.AirAbsorptionGainHF:0.0000}f,");
-                            writer.WriteLine($"{preset.HFReference:0.0000}f,");
-                            writer.WriteLine($"{preset.LFReference:0.0000}f,");
-                            writer.WriteLine($"{preset.RoomRolloffFactor:0.0000}f,");
+                            // Non-round-trip format might alter precision, so we use round-trip format specifier.
+                            writer.WriteLine($"{preset.Density:R}f,");
+                            writer.WriteLine($"{preset.Diffusion:R}f,");
+                            writer.WriteLine($"{preset.Gain:R}f,");
+                            writer.WriteLine($"{preset.GainHF:R}f,");
+                            writer.WriteLine($"{preset.GainLF:R}f,");
+                            writer.WriteLine($"{preset.DecayTime:R}f,");
+                            writer.WriteLine($"{preset.DecayHFRatio:R}f,");
+                            writer.WriteLine($"{preset.DecayLFRatio:R}f,");
+                            writer.WriteLine($"{preset.ReflectionsGain:R}f,");
+                            writer.WriteLine($"{preset.RelfectionsDelay:R}f,");
+                            writer.WriteLine($"new Vector3({preset.ReflectionsPan.X:R}f, {preset.ReflectionsPan.Y:R}f, {preset.ReflectionsPan.Z:R}f),");
+                            writer.WriteLine($"{preset.LateReverbGain:R}f,");
+                            writer.WriteLine($"{preset.LateReverbDelay:R}f,");
+                            writer.WriteLine($"new Vector3({preset.LateReverbPan.X:R}f, {preset.LateReverbPan.Y:R}f, {preset.LateReverbPan.Z:R}f),");
+                            writer.WriteLine($"{preset.EchoTime:R}f,");
+                            writer.WriteLine($"{preset.EchoDepth:R}f,");
+                            writer.WriteLine($"{preset.ModulationTime:R}f,");
+                            writer.WriteLine($"{preset.ModulationDepth:R}f,");
+                            writer.WriteLine($"{preset.AirAbsorptionGainHF:R}f,");
+                            writer.WriteLine($"{preset.HFReference:R}f,");
+                            writer.WriteLine($"{preset.LFReference:R}f,");
+                            writer.WriteLine($"{preset.RoomRolloffFactor:R}f,");
                             writer.WriteLine($"{(preset.DecayHFLimit ? 1 : 0)}");
                         }
                         writer.WriteLine(");");
