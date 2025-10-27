@@ -2,6 +2,7 @@
 // This file is auto generated, do not edit.
 #nullable enable
 using System;
+using System.Buffers;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -28,14 +29,12 @@ namespace OpenTK.Audio.OpenAL.ALC
         public static unsafe ALCDevice CaptureOpenDevice(this ALC alc, ReadOnlySpan<byte> nullTerminatedUtf8Devicename, uint frequency, Format format, int buffersize)
         {
             ALCDevice returnValue;
-            if (nullTerminatedUtf8Devicename.Length < 1 || nullTerminatedUtf8Devicename[^1] != 0)
-            {
-                throw new ArgumentException("The provided span is not null-terminated.", nameof(nullTerminatedUtf8Devicename));
-            }
-            fixed (byte* devicename_ptr = nullTerminatedUtf8Devicename)
+            var nullTerminatedUtf8Devicename_span = NativeString.EnsureNullTerminated(nullTerminatedUtf8Devicename, out var nullTerminatedUtf8Devicename_array);
+            fixed (byte* devicename_ptr = nullTerminatedUtf8Devicename_span)
             {
                 returnValue = alc.CaptureOpenDevice(devicename_ptr, frequency, format, buffersize);
             }
+            if (nullTerminatedUtf8Devicename_array is not null) ArrayPool<byte>.Shared.Return(nullTerminatedUtf8Devicename_array, true);
             return returnValue;
         }
         /// <inheritdoc cref="CaptureSamples(ALC, ALCDevice, void*, int)"/>
@@ -123,14 +122,12 @@ namespace OpenTK.Audio.OpenAL.ALC
         public static unsafe All GetEnumValue(this ALC alc, ALCDevice device, ReadOnlySpan<byte> nullTerminatedUtf8Enumname)
         {
             All returnValue;
-            if (nullTerminatedUtf8Enumname.Length < 1 || nullTerminatedUtf8Enumname[^1] != 0)
-            {
-                throw new ArgumentException("The provided span is not null-terminated.", nameof(nullTerminatedUtf8Enumname));
-            }
-            fixed (byte* enumname_ptr = nullTerminatedUtf8Enumname)
+            var nullTerminatedUtf8Enumname_span = NativeString.EnsureNullTerminated(nullTerminatedUtf8Enumname, out var nullTerminatedUtf8Enumname_array);
+            fixed (byte* enumname_ptr = nullTerminatedUtf8Enumname_span)
             {
                 returnValue = alc.GetEnumValue(device, enumname_ptr);
             }
+            if (nullTerminatedUtf8Enumname_array is not null) ArrayPool<byte>.Shared.Return(nullTerminatedUtf8Enumname_array, true);
             return returnValue;
         }
         /// <inheritdoc cref="GetIntegerv(ALC, ALCDevice, GetPNameIV, int, int*)"/>
@@ -176,14 +173,12 @@ namespace OpenTK.Audio.OpenAL.ALC
         public static unsafe void* GetProcAddress(this ALC alc, ALCDevice device, ReadOnlySpan<byte> nullTerminatedUtf8Extname)
         {
             void* returnValue;
-            if (nullTerminatedUtf8Extname.Length < 1 || nullTerminatedUtf8Extname[^1] != 0)
-            {
-                throw new ArgumentException("The provided span is not null-terminated.", nameof(nullTerminatedUtf8Extname));
-            }
-            fixed (byte* extname_ptr = nullTerminatedUtf8Extname)
+            var nullTerminatedUtf8Extname_span = NativeString.EnsureNullTerminated(nullTerminatedUtf8Extname, out var nullTerminatedUtf8Extname_array);
+            fixed (byte* extname_ptr = nullTerminatedUtf8Extname_span)
             {
                 returnValue = alc.GetProcAddress(device, extname_ptr);
             }
+            if (nullTerminatedUtf8Extname_array is not null) ArrayPool<byte>.Shared.Return(nullTerminatedUtf8Extname_array, true);
             return returnValue;
         }
         /// <inheritdoc cref="GetString_(ALC, ALCDevice, StringName)"/>
@@ -221,14 +216,12 @@ namespace OpenTK.Audio.OpenAL.ALC
         public static unsafe bool IsExtensionPresent(this ALC alc, ALCDevice deviceHandle, ReadOnlySpan<byte> nullTerminatedUtf8Extname)
         {
             bool returnValue;
-            if (nullTerminatedUtf8Extname.Length < 1 || nullTerminatedUtf8Extname[^1] != 0)
-            {
-                throw new ArgumentException("The provided span is not null-terminated.", nameof(nullTerminatedUtf8Extname));
-            }
-            fixed (byte* extname_ptr = nullTerminatedUtf8Extname)
+            var nullTerminatedUtf8Extname_span = NativeString.EnsureNullTerminated(nullTerminatedUtf8Extname, out var nullTerminatedUtf8Extname_array);
+            fixed (byte* extname_ptr = nullTerminatedUtf8Extname_span)
             {
                 returnValue = alc.IsExtensionPresent(deviceHandle, extname_ptr);
             }
+            if (nullTerminatedUtf8Extname_array is not null) ArrayPool<byte>.Shared.Return(nullTerminatedUtf8Extname_array, true);
             return returnValue;
         }
         /// <inheritdoc cref="OpenDevice(ALC, byte*)"/>
@@ -246,14 +239,12 @@ namespace OpenTK.Audio.OpenAL.ALC
         public static unsafe ALCDevice OpenDevice(this ALC alc, ReadOnlySpan<byte> nullTerminatedUtf8Devicename)
         {
             ALCDevice returnValue;
-            if (nullTerminatedUtf8Devicename.Length < 1 || nullTerminatedUtf8Devicename[^1] != 0)
-            {
-                throw new ArgumentException("The provided span is not null-terminated.", nameof(nullTerminatedUtf8Devicename));
-            }
-            fixed (byte* devicename_ptr = nullTerminatedUtf8Devicename)
+            var nullTerminatedUtf8Devicename_span = NativeString.EnsureNullTerminated(nullTerminatedUtf8Devicename, out var nullTerminatedUtf8Devicename_array);
+            fixed (byte* devicename_ptr = nullTerminatedUtf8Devicename_span)
             {
                 returnValue = alc.OpenDevice(devicename_ptr);
             }
+            if (nullTerminatedUtf8Devicename_array is not null) ArrayPool<byte>.Shared.Return(nullTerminatedUtf8Devicename_array, true);
             return returnValue;
         }
         /// <inheritdoc cref="GetProcAddress2(ALCExtensions.Direct, ALCDevice, byte*)"/>
@@ -271,14 +262,12 @@ namespace OpenTK.Audio.OpenAL.ALC
         public static unsafe void* GetProcAddress2(this ALCExtensions.Direct direct, ALCDevice device, ReadOnlySpan<byte> nullTerminatedUtf8FuncName)
         {
             void* returnValue;
-            if (nullTerminatedUtf8FuncName.Length < 1 || nullTerminatedUtf8FuncName[^1] != 0)
-            {
-                throw new ArgumentException("The provided span is not null-terminated.", nameof(nullTerminatedUtf8FuncName));
-            }
-            fixed (byte* funcName_ptr = nullTerminatedUtf8FuncName)
+            var nullTerminatedUtf8FuncName_span = NativeString.EnsureNullTerminated(nullTerminatedUtf8FuncName, out var nullTerminatedUtf8FuncName_array);
+            fixed (byte* funcName_ptr = nullTerminatedUtf8FuncName_span)
             {
                 returnValue = direct.GetProcAddress2(device, funcName_ptr);
             }
+            if (nullTerminatedUtf8FuncName_array is not null) ArrayPool<byte>.Shared.Return(nullTerminatedUtf8FuncName_array, true);
             return returnValue;
         }
         /// <inheritdoc cref="ASAGetListener(ALCExtensions.EXT, uint, void*, uint*)"/>
@@ -544,14 +533,12 @@ namespace OpenTK.Audio.OpenAL.ALC
         public static unsafe ALCDevice CaptureOpenDevice(this ALCExtensions.EXT ext, ReadOnlySpan<byte> nullTerminatedUtf8Devicename, uint frequency, Format format, int buffersize)
         {
             ALCDevice returnValue;
-            if (nullTerminatedUtf8Devicename.Length < 1 || nullTerminatedUtf8Devicename[^1] != 0)
-            {
-                throw new ArgumentException("The provided span is not null-terminated.", nameof(nullTerminatedUtf8Devicename));
-            }
-            fixed (byte* devicename_ptr = nullTerminatedUtf8Devicename)
+            var nullTerminatedUtf8Devicename_span = NativeString.EnsureNullTerminated(nullTerminatedUtf8Devicename, out var nullTerminatedUtf8Devicename_array);
+            fixed (byte* devicename_ptr = nullTerminatedUtf8Devicename_span)
             {
                 returnValue = ext.CaptureOpenDevice(devicename_ptr, frequency, format, buffersize);
             }
+            if (nullTerminatedUtf8Devicename_array is not null) ArrayPool<byte>.Shared.Return(nullTerminatedUtf8Devicename_array, true);
             return returnValue;
         }
         /// <inheritdoc cref="CaptureSamples(ALCExtensions.EXT, ALCDevice, void*, int)"/>
@@ -830,14 +817,12 @@ namespace OpenTK.Audio.OpenAL.ALC
             bool returnValue;
             fixed (int* attribs_ptr = &attribs)
             {
-                if (nullTerminatedUtf8DeviceName.Length < 1 || nullTerminatedUtf8DeviceName[^1] != 0)
-                {
-                    throw new ArgumentException("The provided span is not null-terminated.", nameof(nullTerminatedUtf8DeviceName));
-                }
-                fixed (byte* deviceName_ptr = nullTerminatedUtf8DeviceName)
+                var nullTerminatedUtf8DeviceName_span = NativeString.EnsureNullTerminated(nullTerminatedUtf8DeviceName, out var nullTerminatedUtf8DeviceName_array);
+                fixed (byte* deviceName_ptr = nullTerminatedUtf8DeviceName_span)
                 {
                     returnValue = soft.ReopenDeviceSOFT(device, deviceName_ptr, attribs_ptr);
                 }
+                if (nullTerminatedUtf8DeviceName_array is not null) ArrayPool<byte>.Shared.Return(nullTerminatedUtf8DeviceName_array, true);
             }
             return returnValue;
         }
@@ -848,14 +833,12 @@ namespace OpenTK.Audio.OpenAL.ALC
             bool returnValue;
             fixed (int* attribs_ptr = attribs)
             {
-                if (nullTerminatedUtf8DeviceName.Length < 1 || nullTerminatedUtf8DeviceName[^1] != 0)
-                {
-                    throw new ArgumentException("The provided span is not null-terminated.", nameof(nullTerminatedUtf8DeviceName));
-                }
-                fixed (byte* deviceName_ptr = nullTerminatedUtf8DeviceName)
+                var nullTerminatedUtf8DeviceName_span = NativeString.EnsureNullTerminated(nullTerminatedUtf8DeviceName, out var nullTerminatedUtf8DeviceName_array);
+                fixed (byte* deviceName_ptr = nullTerminatedUtf8DeviceName_span)
                 {
                     returnValue = soft.ReopenDeviceSOFT(device, deviceName_ptr, attribs_ptr);
                 }
+                if (nullTerminatedUtf8DeviceName_array is not null) ArrayPool<byte>.Shared.Return(nullTerminatedUtf8DeviceName_array, true);
             }
             return returnValue;
         }
@@ -866,14 +849,12 @@ namespace OpenTK.Audio.OpenAL.ALC
             bool returnValue;
             fixed (int* attribs_ptr = attribs)
             {
-                if (nullTerminatedUtf8DeviceName.Length < 1 || nullTerminatedUtf8DeviceName[^1] != 0)
-                {
-                    throw new ArgumentException("The provided span is not null-terminated.", nameof(nullTerminatedUtf8DeviceName));
-                }
-                fixed (byte* deviceName_ptr = nullTerminatedUtf8DeviceName)
+                var nullTerminatedUtf8DeviceName_span = NativeString.EnsureNullTerminated(nullTerminatedUtf8DeviceName, out var nullTerminatedUtf8DeviceName_array);
+                fixed (byte* deviceName_ptr = nullTerminatedUtf8DeviceName_span)
                 {
                     returnValue = soft.ReopenDeviceSOFT(device, deviceName_ptr, attribs_ptr);
                 }
+                if (nullTerminatedUtf8DeviceName_array is not null) ArrayPool<byte>.Shared.Return(nullTerminatedUtf8DeviceName_array, true);
             }
             return returnValue;
         }

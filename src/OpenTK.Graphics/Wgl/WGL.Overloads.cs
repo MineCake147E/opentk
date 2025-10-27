@@ -2,6 +2,7 @@
 // This file is auto generated, do not edit.
 #nullable enable
 using System;
+using System.Buffers;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -119,14 +120,12 @@ namespace OpenTK.Graphics.Wgl
         public static unsafe IntPtr GetProcAddress(ReadOnlySpan<byte> nullTerminatedUtf8LpszProc)
         {
             IntPtr returnValue;
-            if (nullTerminatedUtf8LpszProc.Length < 1 || nullTerminatedUtf8LpszProc[^1] != 0)
-            {
-                throw new ArgumentException("The provided span is not null-terminated.", nameof(nullTerminatedUtf8LpszProc));
-            }
-            fixed (byte* lpszProc_ptr = nullTerminatedUtf8LpszProc)
+            var nullTerminatedUtf8LpszProc_span = NativeString.EnsureNullTerminated(nullTerminatedUtf8LpszProc, out var nullTerminatedUtf8LpszProc_array);
+            fixed (byte* lpszProc_ptr = nullTerminatedUtf8LpszProc_span)
             {
                 returnValue = GetProcAddress(lpszProc_ptr);
             }
+            if (nullTerminatedUtf8LpszProc_array is not null) ArrayPool<byte>.Shared.Return(nullTerminatedUtf8LpszProc_array, true);
             return returnValue;
         }
         /// <inheritdoc cref="MakeCurrent_(IntPtr, IntPtr)"/>

@@ -299,10 +299,65 @@ namespace OpenALTest
                 AL.SourceStop(alSource);
             }
 
-            Console.WriteLine("Goodbye!");
-
             ALC.MakeContextCurrent(ALCContext.Null);
             ALC.DestroyContext(context);
+
+            if (ALC.IsExtensionPresent(device, "ALC_EXT_direct_context\0"u8))
+            {
+                ALC.CloseDevice(device);
+                Console.WriteLine("Testing ALC_EXT_direct_context extension with a sine wave...");
+                loader = loader.LoadDirectContextFunctions();
+                (_, ALC) = loader;
+                allDevices = ALC.GetStringList(ALCDevice.Null, OpenTK.Audio.OpenAL.ALC.StringName.AllDevicesSpecifier);
+                Console.WriteLine($"All Devices:\n   {string.Join("\n   ", allDevices)}");
+
+                device = ALC.OpenDevice(deviceName);
+                context = ALC.CreateContext(device, contextAttributes);
+                loader = loader.LoadWithContext(context);
+                (AL, ALC) = loader;
+                Console.WriteLine($"Loaded ALC_EXT_direct_context functions!");
+                if (AL.Direct.IsExtensionPresentDirect(context, "AL_EXT_float32\0"u8))
+                {
+                    const int SampleRate = 44100;
+                    const int Frequency = 440;
+                    float[] sine = new float[SampleRate * 4];
+                    for (int i = 0; i < sine.Length; i++)
+                    {
+                        sine[i] = MathF.Sin(Frequency * MathF.PI * 2 * (i / (float)SampleRate));
+                    }
+
+                    alSource = AL.Direct.GenSourceDirect(context);
+                    var buffer = AL.Direct.GenBufferDirect(context);
+                    AL.Direct.BufferDataDirect(context, buffer, Format.MonoFloat32, sine.AsSpan(), SampleRate);
+
+                    AL.Direct.ListenerfDirect(context, ListenerPNameF.Gain, 0.1f);
+
+                    AL.Direct.SourcefDirect(context, alSource, SourcePNameF.Gain, 1f);
+                    AL.Direct.SourceiDirect(context, alSource, SourcePNameI.Buffer, buffer);
+
+                    AL.Direct.SourcePlayDirect(context, alSource);
+
+                    Console.WriteLine($"Start Playing...");
+                    Stopwatch watch = Stopwatch.StartNew();
+                    while ((SourceState)AL.Direct.GetSourceiDirect(context, alSource, SourceGetPNameI.SourceState) == SourceState.Playing)
+                    {
+                        float x = MathF.Cos((float)watch.Elapsed.TotalSeconds * MathF.PI * 1f);
+                        float y = MathF.Sin((float)watch.Elapsed.TotalSeconds * MathF.PI * 1f);
+                        float z = 0;
+
+                        AL.Direct.Source3fDirect(context, alSource, SourcePName3F.Position, x, y, z);
+                        AL.Direct.Source3fDirect(context, alSource, SourcePName3F.Velocity, y, -x, z);
+                        Thread.Sleep(10);
+                    }
+
+                    AL.Direct.SourceStopDirect(context, alSource);
+                    AL.Direct.Source3fDirect(context, alSource, SourcePName3F.Position, 0, 0, 0);
+                    ALC.DestroyContext(context);
+                }
+            }
+
+            Console.WriteLine("Goodbye!");
+
             ALC.CloseDevice(device);
         }
 

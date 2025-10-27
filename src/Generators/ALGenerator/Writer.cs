@@ -58,6 +58,7 @@ namespace ALGenerator
             ]);
         private static IReadOnlyList<string> Usings => [
             "System",
+            "System.Buffers",
             "System.Diagnostics.CodeAnalysis",
             "System.Runtime.CompilerServices",
             "System.Runtime.InteropServices",

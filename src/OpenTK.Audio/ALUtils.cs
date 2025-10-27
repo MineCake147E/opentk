@@ -79,7 +79,7 @@ namespace OpenTK.Audio
 
                 internal SpanEnumerator(byte* head)
                 {
-                    this._head = head;
+                    _head = head;
                     _offset = ~(nuint)0;
                     _currentLength = 0;
                     _separatorLength = 1;
@@ -88,7 +88,7 @@ namespace OpenTK.Audio
                 /// <inheritdoc/>
                 public readonly ReadOnlySpan<byte> Current => new(_head + _offset, _currentLength);
 
-                readonly object IEnumerator.Current => Current.ToArray();
+                readonly object IEnumerator.Current => Encoding.UTF8.GetString(Current);
 
                 /// <inheritdoc/>
                 public bool MoveNext()

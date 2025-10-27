@@ -2,6 +2,7 @@
 // This file is auto generated, do not edit.
 #nullable enable
 using System;
+using System.Buffers;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -498,14 +499,12 @@ namespace OpenTK.Audio.OpenAL
         public static unsafe All GetEnumValue(this AL al, ReadOnlySpan<byte> nullTerminatedUtf8Ename)
         {
             All returnValue;
-            if (nullTerminatedUtf8Ename.Length < 1 || nullTerminatedUtf8Ename[^1] != 0)
-            {
-                throw new ArgumentException("The provided span is not null-terminated.", nameof(nullTerminatedUtf8Ename));
-            }
-            fixed (byte* ename_ptr = nullTerminatedUtf8Ename)
+            var nullTerminatedUtf8Ename_span = NativeString.EnsureNullTerminated(nullTerminatedUtf8Ename, out var nullTerminatedUtf8Ename_array);
+            fixed (byte* ename_ptr = nullTerminatedUtf8Ename_span)
             {
                 returnValue = al.GetEnumValue(ename_ptr);
             }
+            if (nullTerminatedUtf8Ename_array is not null) ArrayPool<byte>.Shared.Return(nullTerminatedUtf8Ename_array, true);
             return returnValue;
         }
         /// <inheritdoc cref="GetFloatv(AL, GetPNameFV, float*)"/>
@@ -719,14 +718,12 @@ namespace OpenTK.Audio.OpenAL
         public static unsafe void* GetProcAddress(this AL al, ReadOnlySpan<byte> nullTerminatedUtf8Fname)
         {
             void* returnValue;
-            if (nullTerminatedUtf8Fname.Length < 1 || nullTerminatedUtf8Fname[^1] != 0)
-            {
-                throw new ArgumentException("The provided span is not null-terminated.", nameof(nullTerminatedUtf8Fname));
-            }
-            fixed (byte* fname_ptr = nullTerminatedUtf8Fname)
+            var nullTerminatedUtf8Fname_span = NativeString.EnsureNullTerminated(nullTerminatedUtf8Fname, out var nullTerminatedUtf8Fname_array);
+            fixed (byte* fname_ptr = nullTerminatedUtf8Fname_span)
             {
                 returnValue = al.GetProcAddress(fname_ptr);
             }
+            if (nullTerminatedUtf8Fname_array is not null) ArrayPool<byte>.Shared.Return(nullTerminatedUtf8Fname_array, true);
             return returnValue;
         }
         /// <inheritdoc cref="GetSource3f(AL, int, SourceGetPName3F, float*, float*, float*)"/>
@@ -906,14 +903,12 @@ namespace OpenTK.Audio.OpenAL
         public static unsafe bool IsExtensionPresent(this AL al, ReadOnlySpan<byte> nullTerminatedUtf8Extname)
         {
             bool returnValue;
-            if (nullTerminatedUtf8Extname.Length < 1 || nullTerminatedUtf8Extname[^1] != 0)
-            {
-                throw new ArgumentException("The provided span is not null-terminated.", nameof(nullTerminatedUtf8Extname));
-            }
-            fixed (byte* extname_ptr = nullTerminatedUtf8Extname)
+            var nullTerminatedUtf8Extname_span = NativeString.EnsureNullTerminated(nullTerminatedUtf8Extname, out var nullTerminatedUtf8Extname_array);
+            fixed (byte* extname_ptr = nullTerminatedUtf8Extname_span)
             {
                 returnValue = al.IsExtensionPresent(extname_ptr);
             }
+            if (nullTerminatedUtf8Extname_array is not null) ArrayPool<byte>.Shared.Return(nullTerminatedUtf8Extname_array, true);
             return returnValue;
         }
         /// <inheritdoc cref="Listenerfv(AL, ListenerPNameFV, float*)"/>
@@ -1779,14 +1774,12 @@ namespace OpenTK.Audio.OpenAL
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static unsafe void DebugMessageInsertDirectEXT(this ALExtensions.Direct<ALExtensions.EXT> direct, ALCContext context, DebugSource source, DebugType type, uint severity, int length, ReadOnlySpan<byte> nullTerminatedUtf8Message)
         {
-            if (nullTerminatedUtf8Message.Length < 1 || nullTerminatedUtf8Message[^1] != 0)
-            {
-                throw new ArgumentException("The provided span is not null-terminated.", nameof(nullTerminatedUtf8Message));
-            }
-            fixed (byte* message_ptr = nullTerminatedUtf8Message)
+            var nullTerminatedUtf8Message_span = NativeString.EnsureNullTerminated(nullTerminatedUtf8Message, out var nullTerminatedUtf8Message_array);
+            fixed (byte* message_ptr = nullTerminatedUtf8Message_span)
             {
                 direct.DebugMessageInsertDirectEXT(context, source, type, severity, length, message_ptr);
             }
+            if (nullTerminatedUtf8Message_array is not null) ArrayPool<byte>.Shared.Return(nullTerminatedUtf8Message_array, true);
         }
         /// <inheritdoc cref="DeleteAuxiliaryEffectSlotsDirect(ALExtensions.Direct{ALExtensions.EXT}, ALCContext, int, int*)"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -3147,14 +3140,12 @@ namespace OpenTK.Audio.OpenAL
         public static unsafe All GetEnumValueDirect(this ALExtensions.Direct direct, ALCContext context, ReadOnlySpan<byte> nullTerminatedUtf8Ename)
         {
             All returnValue;
-            if (nullTerminatedUtf8Ename.Length < 1 || nullTerminatedUtf8Ename[^1] != 0)
-            {
-                throw new ArgumentException("The provided span is not null-terminated.", nameof(nullTerminatedUtf8Ename));
-            }
-            fixed (byte* ename_ptr = nullTerminatedUtf8Ename)
+            var nullTerminatedUtf8Ename_span = NativeString.EnsureNullTerminated(nullTerminatedUtf8Ename, out var nullTerminatedUtf8Ename_array);
+            fixed (byte* ename_ptr = nullTerminatedUtf8Ename_span)
             {
                 returnValue = direct.GetEnumValueDirect(context, ename_ptr);
             }
+            if (nullTerminatedUtf8Ename_array is not null) ArrayPool<byte>.Shared.Return(nullTerminatedUtf8Ename_array, true);
             return returnValue;
         }
         /// <inheritdoc cref="GetFilterfDirect(ALExtensions.Direct{ALExtensions.EXT}, ALCContext, int, FilterGetPNameF, float*)"/>
@@ -3501,14 +3492,12 @@ namespace OpenTK.Audio.OpenAL
         public static unsafe void* GetProcAddressDirect(this ALExtensions.Direct direct, ALCContext context, ReadOnlySpan<byte> nullTerminatedUtf8Fname)
         {
             void* returnValue;
-            if (nullTerminatedUtf8Fname.Length < 1 || nullTerminatedUtf8Fname[^1] != 0)
-            {
-                throw new ArgumentException("The provided span is not null-terminated.", nameof(nullTerminatedUtf8Fname));
-            }
-            fixed (byte* fname_ptr = nullTerminatedUtf8Fname)
+            var nullTerminatedUtf8Fname_span = NativeString.EnsureNullTerminated(nullTerminatedUtf8Fname, out var nullTerminatedUtf8Fname_array);
+            fixed (byte* fname_ptr = nullTerminatedUtf8Fname_span)
             {
                 returnValue = direct.GetProcAddressDirect(context, fname_ptr);
             }
+            if (nullTerminatedUtf8Fname_array is not null) ArrayPool<byte>.Shared.Return(nullTerminatedUtf8Fname_array, true);
             return returnValue;
         }
         /// <inheritdoc cref="GetSource3dDirectSOFT(ALExtensions.Direct{ALExtensions.SOFT}, ALCContext, int, SourceGetPName3D, double*, double*, double*)"/>
@@ -3850,14 +3839,12 @@ namespace OpenTK.Audio.OpenAL
         public static unsafe bool IsExtensionPresentDirect(this ALExtensions.Direct direct, ALCContext context, ReadOnlySpan<byte> nullTerminatedUtf8Extname)
         {
             bool returnValue;
-            if (nullTerminatedUtf8Extname.Length < 1 || nullTerminatedUtf8Extname[^1] != 0)
-            {
-                throw new ArgumentException("The provided span is not null-terminated.", nameof(nullTerminatedUtf8Extname));
-            }
-            fixed (byte* extname_ptr = nullTerminatedUtf8Extname)
+            var nullTerminatedUtf8Extname_span = NativeString.EnsureNullTerminated(nullTerminatedUtf8Extname, out var nullTerminatedUtf8Extname_array);
+            fixed (byte* extname_ptr = nullTerminatedUtf8Extname_span)
             {
                 returnValue = direct.IsExtensionPresentDirect(context, extname_ptr);
             }
+            if (nullTerminatedUtf8Extname_array is not null) ArrayPool<byte>.Shared.Return(nullTerminatedUtf8Extname_array, true);
             return returnValue;
         }
         /// <inheritdoc cref="ListenerfvDirect(ALExtensions.Direct, ALCContext, ListenerPNameFV, float*)"/>
@@ -3944,14 +3931,12 @@ namespace OpenTK.Audio.OpenAL
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static unsafe void PushDebugGroupDirectEXT(this ALExtensions.Direct<ALExtensions.EXT> direct, ALCContext context, DebugSource source, uint id, int length, ReadOnlySpan<byte> nullTerminatedUtf8Message)
         {
-            if (nullTerminatedUtf8Message.Length < 1 || nullTerminatedUtf8Message[^1] != 0)
-            {
-                throw new ArgumentException("The provided span is not null-terminated.", nameof(nullTerminatedUtf8Message));
-            }
-            fixed (byte* message_ptr = nullTerminatedUtf8Message)
+            var nullTerminatedUtf8Message_span = NativeString.EnsureNullTerminated(nullTerminatedUtf8Message, out var nullTerminatedUtf8Message_array);
+            fixed (byte* message_ptr = nullTerminatedUtf8Message_span)
             {
                 direct.PushDebugGroupDirectEXT(context, source, id, length, message_ptr);
             }
+            if (nullTerminatedUtf8Message_array is not null) ArrayPool<byte>.Shared.Return(nullTerminatedUtf8Message_array, true);
         }
         /// <inheritdoc cref="RequestFoldbackStartDirect(ALExtensions.Direct{ALExtensions.EXT}, ALCContext, FoldbackMode, int, int, float*, delegate* unmanaged[Cdecl]<All, nuint, void>)"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -4497,14 +4482,12 @@ namespace OpenTK.Audio.OpenAL
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static unsafe void DebugMessageInsertEXT(this ALExtensions.EXT ext, DebugSource source, DebugType type, uint severity, int length, ReadOnlySpan<byte> nullTerminatedUtf8Message)
         {
-            if (nullTerminatedUtf8Message.Length < 1 || nullTerminatedUtf8Message[^1] != 0)
-            {
-                throw new ArgumentException("The provided span is not null-terminated.", nameof(nullTerminatedUtf8Message));
-            }
-            fixed (byte* message_ptr = nullTerminatedUtf8Message)
+            var nullTerminatedUtf8Message_span = NativeString.EnsureNullTerminated(nullTerminatedUtf8Message, out var nullTerminatedUtf8Message_array);
+            fixed (byte* message_ptr = nullTerminatedUtf8Message_span)
             {
                 ext.DebugMessageInsertEXT(source, type, severity, length, message_ptr);
             }
+            if (nullTerminatedUtf8Message_array is not null) ArrayPool<byte>.Shared.Return(nullTerminatedUtf8Message_array, true);
         }
         /// <inheritdoc cref="DeleteAuxiliaryEffectSlots(ALExtensions.EXT, int, int*)"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -5366,14 +5349,12 @@ namespace OpenTK.Audio.OpenAL
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static unsafe void PushDebugGroupEXT(this ALExtensions.EXT ext, DebugSource source, uint id, int length, ReadOnlySpan<byte> nullTerminatedUtf8Message)
         {
-            if (nullTerminatedUtf8Message.Length < 1 || nullTerminatedUtf8Message[^1] != 0)
-            {
-                throw new ArgumentException("The provided span is not null-terminated.", nameof(nullTerminatedUtf8Message));
-            }
-            fixed (byte* message_ptr = nullTerminatedUtf8Message)
+            var nullTerminatedUtf8Message_span = NativeString.EnsureNullTerminated(nullTerminatedUtf8Message, out var nullTerminatedUtf8Message_array);
+            fixed (byte* message_ptr = nullTerminatedUtf8Message_span)
             {
                 ext.PushDebugGroupEXT(source, id, length, message_ptr);
             }
+            if (nullTerminatedUtf8Message_array is not null) ArrayPool<byte>.Shared.Return(nullTerminatedUtf8Message_array, true);
         }
         /// <inheritdoc cref="RequestFoldbackStart(ALExtensions.EXT, FoldbackMode, int, int, float*, delegate* unmanaged[Cdecl]<All, nuint, void>)"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

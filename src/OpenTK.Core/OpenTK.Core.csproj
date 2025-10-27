@@ -8,6 +8,7 @@
     <PackageIcon>icon.png</PackageIcon>
     <IsTrimmable>true</IsTrimmable>
     <SignAssembly>true</SignAssembly>
+    <Nullable>enable</Nullable>
     <AssemblyOriginatorKeyFile>../../OpenTK.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 

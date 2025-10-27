@@ -2,6 +2,7 @@
 // This file is auto generated, do not edit.
 #nullable enable
 using System;
+using System.Buffers;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -26,14 +27,12 @@ namespace OpenTK.Graphics.OpenGLES2
         /// <inheritdoc cref="BindAttribLocation(int, uint, byte*)"/>
         public static unsafe void BindAttribLocation(int program, uint index, ReadOnlySpan<byte> nullTerminatedUtf8Name)
         {
-            if (nullTerminatedUtf8Name.Length < 1 || nullTerminatedUtf8Name[^1] != 0)
-            {
-                throw new ArgumentException("The provided span is not null-terminated.", nameof(nullTerminatedUtf8Name));
-            }
-            fixed (byte* name_ptr = nullTerminatedUtf8Name)
+            var nullTerminatedUtf8Name_span = NativeString.EnsureNullTerminated(nullTerminatedUtf8Name, out var nullTerminatedUtf8Name_array);
+            fixed (byte* name_ptr = nullTerminatedUtf8Name_span)
             {
                 BindAttribLocation(program, index, name_ptr);
             }
+            if (nullTerminatedUtf8Name_array is not null) ArrayPool<byte>.Shared.Return(nullTerminatedUtf8Name_array, true);
         }
         /// <inheritdoc cref="BufferData(BufferTarget, nint, void*, BufferUsage)"/>
         public static unsafe void BufferData(BufferTarget target, nint size, IntPtr data, BufferUsage usage)
@@ -452,14 +451,12 @@ namespace OpenTK.Graphics.OpenGLES2
         /// <inheritdoc cref="DebugMessageInsert(DebugSource, DebugType, uint, DebugSeverity, int, byte*)"/>
         public static unsafe void DebugMessageInsert(DebugSource source, DebugType type, uint id, DebugSeverity severity, int length, ReadOnlySpan<byte> nullTerminatedUtf8Buf)
         {
-            if (nullTerminatedUtf8Buf.Length < 1 || nullTerminatedUtf8Buf[^1] != 0)
-            {
-                throw new ArgumentException("The provided span is not null-terminated.", nameof(nullTerminatedUtf8Buf));
-            }
-            fixed (byte* buf_ptr = nullTerminatedUtf8Buf)
+            var nullTerminatedUtf8Buf_span = NativeString.EnsureNullTerminated(nullTerminatedUtf8Buf, out var nullTerminatedUtf8Buf_array);
+            fixed (byte* buf_ptr = nullTerminatedUtf8Buf_span)
             {
                 DebugMessageInsert(source, type, id, severity, length, buf_ptr);
             }
+            if (nullTerminatedUtf8Buf_array is not null) ArrayPool<byte>.Shared.Return(nullTerminatedUtf8Buf_array, true);
         }
         /// <inheritdoc cref="DeleteBuffers(int, int*)"/>
         public static unsafe void DeleteBuffer(int buffer)
@@ -1586,14 +1583,12 @@ namespace OpenTK.Graphics.OpenGLES2
         public static unsafe int GetAttribLocation(int program, ReadOnlySpan<byte> nullTerminatedUtf8Name)
         {
             int returnValue;
-            if (nullTerminatedUtf8Name.Length < 1 || nullTerminatedUtf8Name[^1] != 0)
-            {
-                throw new ArgumentException("The provided span is not null-terminated.", nameof(nullTerminatedUtf8Name));
-            }
-            fixed (byte* name_ptr = nullTerminatedUtf8Name)
+            var nullTerminatedUtf8Name_span = NativeString.EnsureNullTerminated(nullTerminatedUtf8Name, out var nullTerminatedUtf8Name_array);
+            fixed (byte* name_ptr = nullTerminatedUtf8Name_span)
             {
                 returnValue = GetAttribLocation(program, name_ptr);
             }
+            if (nullTerminatedUtf8Name_array is not null) ArrayPool<byte>.Shared.Return(nullTerminatedUtf8Name_array, true);
             return returnValue;
         }
         /// <inheritdoc cref="GetBooleani_v(BufferTarget, uint, bool*)"/>
@@ -1921,14 +1916,12 @@ namespace OpenTK.Graphics.OpenGLES2
         public static unsafe int GetFragDataLocation(int program, ReadOnlySpan<byte> nullTerminatedUtf8Name)
         {
             int returnValue;
-            if (nullTerminatedUtf8Name.Length < 1 || nullTerminatedUtf8Name[^1] != 0)
-            {
-                throw new ArgumentException("The provided span is not null-terminated.", nameof(nullTerminatedUtf8Name));
-            }
-            fixed (byte* name_ptr = nullTerminatedUtf8Name)
+            var nullTerminatedUtf8Name_span = NativeString.EnsureNullTerminated(nullTerminatedUtf8Name, out var nullTerminatedUtf8Name_array);
+            fixed (byte* name_ptr = nullTerminatedUtf8Name_span)
             {
                 returnValue = GetFragDataLocation(program, name_ptr);
             }
+            if (nullTerminatedUtf8Name_array is not null) ArrayPool<byte>.Shared.Return(nullTerminatedUtf8Name_array, true);
             return returnValue;
         }
         /// <inheritdoc cref="GetFramebufferAttachmentParameteriv(FramebufferTarget, FramebufferAttachment, FramebufferAttachmentParameterName, int*)"/>
@@ -2743,14 +2736,12 @@ namespace OpenTK.Graphics.OpenGLES2
         public static unsafe uint GetProgramResourceIndex(int program, ProgramInterface programInterface, ReadOnlySpan<byte> nullTerminatedUtf8Name)
         {
             uint returnValue;
-            if (nullTerminatedUtf8Name.Length < 1 || nullTerminatedUtf8Name[^1] != 0)
-            {
-                throw new ArgumentException("The provided span is not null-terminated.", nameof(nullTerminatedUtf8Name));
-            }
-            fixed (byte* name_ptr = nullTerminatedUtf8Name)
+            var nullTerminatedUtf8Name_span = NativeString.EnsureNullTerminated(nullTerminatedUtf8Name, out var nullTerminatedUtf8Name_array);
+            fixed (byte* name_ptr = nullTerminatedUtf8Name_span)
             {
                 returnValue = GetProgramResourceIndex(program, programInterface, name_ptr);
             }
+            if (nullTerminatedUtf8Name_array is not null) ArrayPool<byte>.Shared.Return(nullTerminatedUtf8Name_array, true);
             return returnValue;
         }
         /// <inheritdoc cref="GetProgramResourceiv(int, ProgramInterface, uint, int, ProgramResourceProperty*, int, int*, int*)"/>
@@ -2806,14 +2797,12 @@ namespace OpenTK.Graphics.OpenGLES2
         public static unsafe int GetProgramResourceLocation(int program, ProgramInterface programInterface, ReadOnlySpan<byte> nullTerminatedUtf8Name)
         {
             int returnValue;
-            if (nullTerminatedUtf8Name.Length < 1 || nullTerminatedUtf8Name[^1] != 0)
-            {
-                throw new ArgumentException("The provided span is not null-terminated.", nameof(nullTerminatedUtf8Name));
-            }
-            fixed (byte* name_ptr = nullTerminatedUtf8Name)
+            var nullTerminatedUtf8Name_span = NativeString.EnsureNullTerminated(nullTerminatedUtf8Name, out var nullTerminatedUtf8Name_array);
+            fixed (byte* name_ptr = nullTerminatedUtf8Name_span)
             {
                 returnValue = GetProgramResourceLocation(program, programInterface, name_ptr);
             }
+            if (nullTerminatedUtf8Name_array is not null) ArrayPool<byte>.Shared.Return(nullTerminatedUtf8Name_array, true);
             return returnValue;
         }
         /// <inheritdoc cref="GetProgramResourceName(int, ProgramInterface, uint, int, int*, byte*)"/>
@@ -3573,14 +3562,12 @@ namespace OpenTK.Graphics.OpenGLES2
         public static unsafe uint GetUniformBlockIndex(int program, ReadOnlySpan<byte> nullTerminatedUtf8UniformBlockName)
         {
             uint returnValue;
-            if (nullTerminatedUtf8UniformBlockName.Length < 1 || nullTerminatedUtf8UniformBlockName[^1] != 0)
-            {
-                throw new ArgumentException("The provided span is not null-terminated.", nameof(nullTerminatedUtf8UniformBlockName));
-            }
-            fixed (byte* uniformBlockName_ptr = nullTerminatedUtf8UniformBlockName)
+            var nullTerminatedUtf8UniformBlockName_span = NativeString.EnsureNullTerminated(nullTerminatedUtf8UniformBlockName, out var nullTerminatedUtf8UniformBlockName_array);
+            fixed (byte* uniformBlockName_ptr = nullTerminatedUtf8UniformBlockName_span)
             {
                 returnValue = GetUniformBlockIndex(program, uniformBlockName_ptr);
             }
+            if (nullTerminatedUtf8UniformBlockName_array is not null) ArrayPool<byte>.Shared.Return(nullTerminatedUtf8UniformBlockName_array, true);
             return returnValue;
         }
         /// <inheritdoc cref="GetUniformfv(int, int, float*)"/>
@@ -3706,14 +3693,12 @@ namespace OpenTK.Graphics.OpenGLES2
         public static unsafe int GetUniformLocation(int program, ReadOnlySpan<byte> nullTerminatedUtf8Name)
         {
             int returnValue;
-            if (nullTerminatedUtf8Name.Length < 1 || nullTerminatedUtf8Name[^1] != 0)
-            {
-                throw new ArgumentException("The provided span is not null-terminated.", nameof(nullTerminatedUtf8Name));
-            }
-            fixed (byte* name_ptr = nullTerminatedUtf8Name)
+            var nullTerminatedUtf8Name_span = NativeString.EnsureNullTerminated(nullTerminatedUtf8Name, out var nullTerminatedUtf8Name_array);
+            fixed (byte* name_ptr = nullTerminatedUtf8Name_span)
             {
                 returnValue = GetUniformLocation(program, name_ptr);
             }
+            if (nullTerminatedUtf8Name_array is not null) ArrayPool<byte>.Shared.Return(nullTerminatedUtf8Name_array, true);
             return returnValue;
         }
         /// <inheritdoc cref="GetUniformuiv(int, int, uint*)"/>
@@ -3899,14 +3884,12 @@ namespace OpenTK.Graphics.OpenGLES2
         /// <inheritdoc cref="ObjectLabel(ObjectIdentifier, uint, int, byte*)"/>
         public static unsafe void ObjectLabel(ObjectIdentifier identifier, uint name, int length, ReadOnlySpan<byte> nullTerminatedUtf8Label)
         {
-            if (nullTerminatedUtf8Label.Length < 1 || nullTerminatedUtf8Label[^1] != 0)
-            {
-                throw new ArgumentException("The provided span is not null-terminated.", nameof(nullTerminatedUtf8Label));
-            }
-            fixed (byte* label_ptr = nullTerminatedUtf8Label)
+            var nullTerminatedUtf8Label_span = NativeString.EnsureNullTerminated(nullTerminatedUtf8Label, out var nullTerminatedUtf8Label_array);
+            fixed (byte* label_ptr = nullTerminatedUtf8Label_span)
             {
                 ObjectLabel(identifier, name, length, label_ptr);
             }
+            if (nullTerminatedUtf8Label_array is not null) ArrayPool<byte>.Shared.Return(nullTerminatedUtf8Label_array, true);
         }
         /// <inheritdoc cref="ObjectPtrLabel(void*, int, byte*)"/>
         public static unsafe void ObjectPtrLabel(IntPtr ptr, int length, string label)
@@ -3919,15 +3902,13 @@ namespace OpenTK.Graphics.OpenGLES2
         /// <inheritdoc cref="ObjectPtrLabel(void*, int, byte*)"/>
         public static unsafe void ObjectPtrLabel(IntPtr ptr, int length, ReadOnlySpan<byte> nullTerminatedUtf8Label)
         {
-            if (nullTerminatedUtf8Label.Length < 1 || nullTerminatedUtf8Label[^1] != 0)
-            {
-                throw new ArgumentException("The provided span is not null-terminated.", nameof(nullTerminatedUtf8Label));
-            }
-            fixed (byte* label_ptr = nullTerminatedUtf8Label)
+            var nullTerminatedUtf8Label_span = NativeString.EnsureNullTerminated(nullTerminatedUtf8Label, out var nullTerminatedUtf8Label_array);
+            fixed (byte* label_ptr = nullTerminatedUtf8Label_span)
             {
                 void* ptr_vptr = (void*)ptr;
                 ObjectPtrLabel(ptr_vptr, length, label_ptr);
             }
+            if (nullTerminatedUtf8Label_array is not null) ArrayPool<byte>.Shared.Return(nullTerminatedUtf8Label_array, true);
         }
         /// <inheritdoc cref="ObjectPtrLabel(void*, int, byte*)"/>
         public static unsafe void ObjectPtrLabel<T1>(ref readonly T1 ptr, int length, string label)
@@ -3975,14 +3956,12 @@ namespace OpenTK.Graphics.OpenGLES2
         {
             fixed (void* ptr_ptr = &ptr)
             {
-                if (nullTerminatedUtf8Label.Length < 1 || nullTerminatedUtf8Label[^1] != 0)
-                {
-                    throw new ArgumentException("The provided span is not null-terminated.", nameof(nullTerminatedUtf8Label));
-                }
-                fixed (byte* label_ptr = nullTerminatedUtf8Label)
+                var nullTerminatedUtf8Label_span = NativeString.EnsureNullTerminated(nullTerminatedUtf8Label, out var nullTerminatedUtf8Label_array);
+                fixed (byte* label_ptr = nullTerminatedUtf8Label_span)
                 {
                     ObjectPtrLabel(ptr_ptr, length, label_ptr);
                 }
+                if (nullTerminatedUtf8Label_array is not null) ArrayPool<byte>.Shared.Return(nullTerminatedUtf8Label_array, true);
             }
         }
         /// <inheritdoc cref="ObjectPtrLabel(void*, int, byte*)"/>
@@ -3991,14 +3970,12 @@ namespace OpenTK.Graphics.OpenGLES2
         {
             fixed (void* ptr_ptr = ptr)
             {
-                if (nullTerminatedUtf8Label.Length < 1 || nullTerminatedUtf8Label[^1] != 0)
-                {
-                    throw new ArgumentException("The provided span is not null-terminated.", nameof(nullTerminatedUtf8Label));
-                }
-                fixed (byte* label_ptr = nullTerminatedUtf8Label)
+                var nullTerminatedUtf8Label_span = NativeString.EnsureNullTerminated(nullTerminatedUtf8Label, out var nullTerminatedUtf8Label_array);
+                fixed (byte* label_ptr = nullTerminatedUtf8Label_span)
                 {
                     ObjectPtrLabel(ptr_ptr, length, label_ptr);
                 }
+                if (nullTerminatedUtf8Label_array is not null) ArrayPool<byte>.Shared.Return(nullTerminatedUtf8Label_array, true);
             }
         }
         /// <inheritdoc cref="ObjectPtrLabel{T1}(ReadOnlySpan{T1}, int, ReadOnlySpan{byte})"/>
@@ -4014,14 +3991,12 @@ namespace OpenTK.Graphics.OpenGLES2
         {
             fixed (void* ptr_ptr = ptr)
             {
-                if (nullTerminatedUtf8Label.Length < 1 || nullTerminatedUtf8Label[^1] != 0)
-                {
-                    throw new ArgumentException("The provided span is not null-terminated.", nameof(nullTerminatedUtf8Label));
-                }
-                fixed (byte* label_ptr = nullTerminatedUtf8Label)
+                var nullTerminatedUtf8Label_span = NativeString.EnsureNullTerminated(nullTerminatedUtf8Label, out var nullTerminatedUtf8Label_array);
+                fixed (byte* label_ptr = nullTerminatedUtf8Label_span)
                 {
                     ObjectPtrLabel(ptr_ptr, length, label_ptr);
                 }
+                if (nullTerminatedUtf8Label_array is not null) ArrayPool<byte>.Shared.Return(nullTerminatedUtf8Label_array, true);
             }
         }
         /// <inheritdoc cref="ProgramBinary(int, All, void*, int)"/>
@@ -4724,14 +4699,12 @@ namespace OpenTK.Graphics.OpenGLES2
         /// <inheritdoc cref="PushDebugGroup(DebugSource, uint, int, byte*)"/>
         public static unsafe void PushDebugGroup(DebugSource source, uint id, int length, ReadOnlySpan<byte> nullTerminatedUtf8Message)
         {
-            if (nullTerminatedUtf8Message.Length < 1 || nullTerminatedUtf8Message[^1] != 0)
-            {
-                throw new ArgumentException("The provided span is not null-terminated.", nameof(nullTerminatedUtf8Message));
-            }
-            fixed (byte* message_ptr = nullTerminatedUtf8Message)
+            var nullTerminatedUtf8Message_span = NativeString.EnsureNullTerminated(nullTerminatedUtf8Message, out var nullTerminatedUtf8Message_array);
+            fixed (byte* message_ptr = nullTerminatedUtf8Message_span)
             {
                 PushDebugGroup(source, id, length, message_ptr);
             }
+            if (nullTerminatedUtf8Message_array is not null) ArrayPool<byte>.Shared.Return(nullTerminatedUtf8Message_array, true);
         }
         /// <inheritdoc cref="ReadnPixels(int, int, int, int, PixelFormat, PixelType, int, void*)"/>
         public static unsafe void ReadnPixels(int x, int y, int width, int height, PixelFormat format, PixelType type, int bufSize, IntPtr data)
@@ -6609,14 +6582,12 @@ namespace OpenTK.Graphics.OpenGLES2
             /// <inheritdoc cref="BindFragDataLocationEXT(int, uint, byte*)"/>
             public static unsafe void BindFragDataLocationEXT(int program, uint color, ReadOnlySpan<byte> nullTerminatedUtf8Name)
             {
-                if (nullTerminatedUtf8Name.Length < 1 || nullTerminatedUtf8Name[^1] != 0)
-                {
-                    throw new ArgumentException("The provided span is not null-terminated.", nameof(nullTerminatedUtf8Name));
-                }
-                fixed (byte* name_ptr = nullTerminatedUtf8Name)
+                var nullTerminatedUtf8Name_span = NativeString.EnsureNullTerminated(nullTerminatedUtf8Name, out var nullTerminatedUtf8Name_array);
+                fixed (byte* name_ptr = nullTerminatedUtf8Name_span)
                 {
                     BindFragDataLocationEXT(program, color, name_ptr);
                 }
+                if (nullTerminatedUtf8Name_array is not null) ArrayPool<byte>.Shared.Return(nullTerminatedUtf8Name_array, true);
             }
             /// <inheritdoc cref="BindFragDataLocationIndexedEXT(int, uint, uint, byte*)"/>
             public static unsafe void BindFragDataLocationIndexedEXT(int program, uint colorNumber, uint index, string name)
@@ -6628,14 +6599,12 @@ namespace OpenTK.Graphics.OpenGLES2
             /// <inheritdoc cref="BindFragDataLocationIndexedEXT(int, uint, uint, byte*)"/>
             public static unsafe void BindFragDataLocationIndexedEXT(int program, uint colorNumber, uint index, ReadOnlySpan<byte> nullTerminatedUtf8Name)
             {
-                if (nullTerminatedUtf8Name.Length < 1 || nullTerminatedUtf8Name[^1] != 0)
-                {
-                    throw new ArgumentException("The provided span is not null-terminated.", nameof(nullTerminatedUtf8Name));
-                }
-                fixed (byte* name_ptr = nullTerminatedUtf8Name)
+                var nullTerminatedUtf8Name_span = NativeString.EnsureNullTerminated(nullTerminatedUtf8Name, out var nullTerminatedUtf8Name_array);
+                fixed (byte* name_ptr = nullTerminatedUtf8Name_span)
                 {
                     BindFragDataLocationIndexedEXT(program, colorNumber, index, name_ptr);
                 }
+                if (nullTerminatedUtf8Name_array is not null) ArrayPool<byte>.Shared.Return(nullTerminatedUtf8Name_array, true);
             }
             /// <inheritdoc cref="BufferStorageEXT(BufferStorageTarget, nint, void*, BufferStorageMask)"/>
             public static unsafe void BufferStorageEXT(BufferStorageTarget target, nint size, IntPtr data, BufferStorageMask flags)
@@ -6854,14 +6823,12 @@ namespace OpenTK.Graphics.OpenGLES2
             public static unsafe int CreateShaderProgramEXT(ShaderType type, ReadOnlySpan<byte> nullTerminatedUtf8Str)
             {
                 int returnValue;
-                if (nullTerminatedUtf8Str.Length < 1 || nullTerminatedUtf8Str[^1] != 0)
-                {
-                    throw new ArgumentException("The provided span is not null-terminated.", nameof(nullTerminatedUtf8Str));
-                }
-                fixed (byte* str_ptr = nullTerminatedUtf8Str)
+                var nullTerminatedUtf8Str_span = NativeString.EnsureNullTerminated(nullTerminatedUtf8Str, out var nullTerminatedUtf8Str_array);
+                fixed (byte* str_ptr = nullTerminatedUtf8Str_span)
                 {
                     returnValue = CreateShaderProgramEXT(type, str_ptr);
                 }
+                if (nullTerminatedUtf8Str_array is not null) ArrayPool<byte>.Shared.Return(nullTerminatedUtf8Str_array, true);
                 return returnValue;
             }
             /// <inheritdoc cref="CreateShaderProgramvEXT(ShaderType, int, byte**)"/>
@@ -7300,14 +7267,12 @@ namespace OpenTK.Graphics.OpenGLES2
             public static unsafe int GetFragDataIndexEXT(int program, ReadOnlySpan<byte> nullTerminatedUtf8Name)
             {
                 int returnValue;
-                if (nullTerminatedUtf8Name.Length < 1 || nullTerminatedUtf8Name[^1] != 0)
-                {
-                    throw new ArgumentException("The provided span is not null-terminated.", nameof(nullTerminatedUtf8Name));
-                }
-                fixed (byte* name_ptr = nullTerminatedUtf8Name)
+                var nullTerminatedUtf8Name_span = NativeString.EnsureNullTerminated(nullTerminatedUtf8Name, out var nullTerminatedUtf8Name_array);
+                fixed (byte* name_ptr = nullTerminatedUtf8Name_span)
                 {
                     returnValue = GetFragDataIndexEXT(program, name_ptr);
                 }
+                if (nullTerminatedUtf8Name_array is not null) ArrayPool<byte>.Shared.Return(nullTerminatedUtf8Name_array, true);
                 return returnValue;
             }
             /// <inheritdoc cref="GetFragmentShadingRatesEXT(int, int, int*, ShadingRate*)"/>
@@ -7581,14 +7546,12 @@ namespace OpenTK.Graphics.OpenGLES2
             public static unsafe int GetProgramResourceLocationIndexEXT(int program, ProgramInterface programInterface, ReadOnlySpan<byte> nullTerminatedUtf8Name)
             {
                 int returnValue;
-                if (nullTerminatedUtf8Name.Length < 1 || nullTerminatedUtf8Name[^1] != 0)
-                {
-                    throw new ArgumentException("The provided span is not null-terminated.", nameof(nullTerminatedUtf8Name));
-                }
-                fixed (byte* name_ptr = nullTerminatedUtf8Name)
+                var nullTerminatedUtf8Name_span = NativeString.EnsureNullTerminated(nullTerminatedUtf8Name, out var nullTerminatedUtf8Name_array);
+                fixed (byte* name_ptr = nullTerminatedUtf8Name_span)
                 {
                     returnValue = GetProgramResourceLocationIndexEXT(program, programInterface, name_ptr);
                 }
+                if (nullTerminatedUtf8Name_array is not null) ArrayPool<byte>.Shared.Return(nullTerminatedUtf8Name_array, true);
                 return returnValue;
             }
             /// <inheritdoc cref="GetQueryivEXT(QueryTarget, QueryParameterName, int*)"/>
@@ -8145,14 +8108,12 @@ namespace OpenTK.Graphics.OpenGLES2
             /// <inheritdoc cref="InsertEventMarkerEXT(int, byte*)"/>
             public static unsafe void InsertEventMarkerEXT(int length, ReadOnlySpan<byte> nullTerminatedUtf8Marker)
             {
-                if (nullTerminatedUtf8Marker.Length < 1 || nullTerminatedUtf8Marker[^1] != 0)
-                {
-                    throw new ArgumentException("The provided span is not null-terminated.", nameof(nullTerminatedUtf8Marker));
-                }
-                fixed (byte* marker_ptr = nullTerminatedUtf8Marker)
+                var nullTerminatedUtf8Marker_span = NativeString.EnsureNullTerminated(nullTerminatedUtf8Marker, out var nullTerminatedUtf8Marker_array);
+                fixed (byte* marker_ptr = nullTerminatedUtf8Marker_span)
                 {
                     InsertEventMarkerEXT(length, marker_ptr);
                 }
+                if (nullTerminatedUtf8Marker_array is not null) ArrayPool<byte>.Shared.Return(nullTerminatedUtf8Marker_array, true);
             }
             /// <inheritdoc cref="LabelObjectEXT(All, uint, int, byte*)"/>
             public static unsafe void LabelObjectEXT(All type, uint obj, int length, string label)
@@ -8164,14 +8125,12 @@ namespace OpenTK.Graphics.OpenGLES2
             /// <inheritdoc cref="LabelObjectEXT(All, uint, int, byte*)"/>
             public static unsafe void LabelObjectEXT(All type, uint obj, int length, ReadOnlySpan<byte> nullTerminatedUtf8Label)
             {
-                if (nullTerminatedUtf8Label.Length < 1 || nullTerminatedUtf8Label[^1] != 0)
-                {
-                    throw new ArgumentException("The provided span is not null-terminated.", nameof(nullTerminatedUtf8Label));
-                }
-                fixed (byte* label_ptr = nullTerminatedUtf8Label)
+                var nullTerminatedUtf8Label_span = NativeString.EnsureNullTerminated(nullTerminatedUtf8Label, out var nullTerminatedUtf8Label_array);
+                fixed (byte* label_ptr = nullTerminatedUtf8Label_span)
                 {
                     LabelObjectEXT(type, obj, length, label_ptr);
                 }
+                if (nullTerminatedUtf8Label_array is not null) ArrayPool<byte>.Shared.Return(nullTerminatedUtf8Label_array, true);
             }
             /// <inheritdoc cref="MemoryObjectParameterivEXT(uint, MemoryObjectParameterName, int*)"/>
             public static unsafe void MemoryObjectParameterivEXT(uint memoryObject, MemoryObjectParameterName pname, ref readonly int parameters)
@@ -9054,14 +9013,12 @@ namespace OpenTK.Graphics.OpenGLES2
             /// <inheritdoc cref="PushGroupMarkerEXT(int, byte*)"/>
             public static unsafe void PushGroupMarkerEXT(int length, ReadOnlySpan<byte> nullTerminatedUtf8Marker)
             {
-                if (nullTerminatedUtf8Marker.Length < 1 || nullTerminatedUtf8Marker[^1] != 0)
-                {
-                    throw new ArgumentException("The provided span is not null-terminated.", nameof(nullTerminatedUtf8Marker));
-                }
-                fixed (byte* marker_ptr = nullTerminatedUtf8Marker)
+                var nullTerminatedUtf8Marker_span = NativeString.EnsureNullTerminated(nullTerminatedUtf8Marker, out var nullTerminatedUtf8Marker_array);
+                fixed (byte* marker_ptr = nullTerminatedUtf8Marker_span)
                 {
                     PushGroupMarkerEXT(length, marker_ptr);
                 }
+                if (nullTerminatedUtf8Marker_array is not null) ArrayPool<byte>.Shared.Return(nullTerminatedUtf8Marker_array, true);
             }
             /// <inheritdoc cref="ReadnPixelsEXT(int, int, int, int, PixelFormat, PixelType, int, void*)"/>
             public static unsafe void ReadnPixelsEXT(int x, int y, int width, int height, PixelFormat format, PixelType type, int bufSize, IntPtr data)
@@ -9986,14 +9943,12 @@ namespace OpenTK.Graphics.OpenGLES2
             /// <inheritdoc cref="DebugMessageInsert(DebugSource, DebugType, uint, DebugSeverity, int, byte*)"/>
             public static unsafe void DebugMessageInsert(DebugSource source, DebugType type, uint id, DebugSeverity severity, int length, ReadOnlySpan<byte> nullTerminatedUtf8Buf)
             {
-                if (nullTerminatedUtf8Buf.Length < 1 || nullTerminatedUtf8Buf[^1] != 0)
-                {
-                    throw new ArgumentException("The provided span is not null-terminated.", nameof(nullTerminatedUtf8Buf));
-                }
-                fixed (byte* buf_ptr = nullTerminatedUtf8Buf)
+                var nullTerminatedUtf8Buf_span = NativeString.EnsureNullTerminated(nullTerminatedUtf8Buf, out var nullTerminatedUtf8Buf_array);
+                fixed (byte* buf_ptr = nullTerminatedUtf8Buf_span)
                 {
                     DebugMessageInsert(source, type, id, severity, length, buf_ptr);
                 }
+                if (nullTerminatedUtf8Buf_array is not null) ArrayPool<byte>.Shared.Return(nullTerminatedUtf8Buf_array, true);
             }
             /// <inheritdoc cref="DebugMessageInsertKHR(DebugSource, DebugType, uint, DebugSeverity, int, byte*)"/>
             public static unsafe void DebugMessageInsertKHR(DebugSource source, DebugType type, uint id, DebugSeverity severity, int length, string buf)
@@ -10005,14 +9960,12 @@ namespace OpenTK.Graphics.OpenGLES2
             /// <inheritdoc cref="DebugMessageInsertKHR(DebugSource, DebugType, uint, DebugSeverity, int, byte*)"/>
             public static unsafe void DebugMessageInsertKHR(DebugSource source, DebugType type, uint id, DebugSeverity severity, int length, ReadOnlySpan<byte> nullTerminatedUtf8Buf)
             {
-                if (nullTerminatedUtf8Buf.Length < 1 || nullTerminatedUtf8Buf[^1] != 0)
-                {
-                    throw new ArgumentException("The provided span is not null-terminated.", nameof(nullTerminatedUtf8Buf));
-                }
-                fixed (byte* buf_ptr = nullTerminatedUtf8Buf)
+                var nullTerminatedUtf8Buf_span = NativeString.EnsureNullTerminated(nullTerminatedUtf8Buf, out var nullTerminatedUtf8Buf_array);
+                fixed (byte* buf_ptr = nullTerminatedUtf8Buf_span)
                 {
                     DebugMessageInsertKHR(source, type, id, severity, length, buf_ptr);
                 }
+                if (nullTerminatedUtf8Buf_array is not null) ArrayPool<byte>.Shared.Return(nullTerminatedUtf8Buf_array, true);
             }
             /// <inheritdoc cref="GetDebugMessageLog(uint, int, DebugSource*, DebugType*, uint*, DebugSeverity*, int*, byte*)"/>
             public static unsafe uint GetDebugMessageLog(uint count, ref DebugSource sources, ref DebugType types, ref uint ids, ref DebugSeverity severities, ref int lengths, Span<byte> messageLog)
@@ -10919,14 +10872,12 @@ namespace OpenTK.Graphics.OpenGLES2
             /// <inheritdoc cref="ObjectLabel(ObjectIdentifier, uint, int, byte*)"/>
             public static unsafe void ObjectLabel(ObjectIdentifier identifier, uint name, int length, ReadOnlySpan<byte> nullTerminatedUtf8Label)
             {
-                if (nullTerminatedUtf8Label.Length < 1 || nullTerminatedUtf8Label[^1] != 0)
-                {
-                    throw new ArgumentException("The provided span is not null-terminated.", nameof(nullTerminatedUtf8Label));
-                }
-                fixed (byte* label_ptr = nullTerminatedUtf8Label)
+                var nullTerminatedUtf8Label_span = NativeString.EnsureNullTerminated(nullTerminatedUtf8Label, out var nullTerminatedUtf8Label_array);
+                fixed (byte* label_ptr = nullTerminatedUtf8Label_span)
                 {
                     ObjectLabel(identifier, name, length, label_ptr);
                 }
+                if (nullTerminatedUtf8Label_array is not null) ArrayPool<byte>.Shared.Return(nullTerminatedUtf8Label_array, true);
             }
             /// <inheritdoc cref="ObjectLabelKHR(ObjectIdentifier, uint, int, byte*)"/>
             public static unsafe void ObjectLabelKHR(ObjectIdentifier identifier, uint name, int length, string label)
@@ -10938,14 +10889,12 @@ namespace OpenTK.Graphics.OpenGLES2
             /// <inheritdoc cref="ObjectLabelKHR(ObjectIdentifier, uint, int, byte*)"/>
             public static unsafe void ObjectLabelKHR(ObjectIdentifier identifier, uint name, int length, ReadOnlySpan<byte> nullTerminatedUtf8Label)
             {
-                if (nullTerminatedUtf8Label.Length < 1 || nullTerminatedUtf8Label[^1] != 0)
-                {
-                    throw new ArgumentException("The provided span is not null-terminated.", nameof(nullTerminatedUtf8Label));
-                }
-                fixed (byte* label_ptr = nullTerminatedUtf8Label)
+                var nullTerminatedUtf8Label_span = NativeString.EnsureNullTerminated(nullTerminatedUtf8Label, out var nullTerminatedUtf8Label_array);
+                fixed (byte* label_ptr = nullTerminatedUtf8Label_span)
                 {
                     ObjectLabelKHR(identifier, name, length, label_ptr);
                 }
+                if (nullTerminatedUtf8Label_array is not null) ArrayPool<byte>.Shared.Return(nullTerminatedUtf8Label_array, true);
             }
             /// <inheritdoc cref="ObjectPtrLabel(void*, int, byte*)"/>
             public static unsafe void ObjectPtrLabel(IntPtr ptr, int length, string label)
@@ -10958,15 +10907,13 @@ namespace OpenTK.Graphics.OpenGLES2
             /// <inheritdoc cref="ObjectPtrLabel(void*, int, byte*)"/>
             public static unsafe void ObjectPtrLabel(IntPtr ptr, int length, ReadOnlySpan<byte> nullTerminatedUtf8Label)
             {
-                if (nullTerminatedUtf8Label.Length < 1 || nullTerminatedUtf8Label[^1] != 0)
-                {
-                    throw new ArgumentException("The provided span is not null-terminated.", nameof(nullTerminatedUtf8Label));
-                }
-                fixed (byte* label_ptr = nullTerminatedUtf8Label)
+                var nullTerminatedUtf8Label_span = NativeString.EnsureNullTerminated(nullTerminatedUtf8Label, out var nullTerminatedUtf8Label_array);
+                fixed (byte* label_ptr = nullTerminatedUtf8Label_span)
                 {
                     void* ptr_vptr = (void*)ptr;
                     ObjectPtrLabel(ptr_vptr, length, label_ptr);
                 }
+                if (nullTerminatedUtf8Label_array is not null) ArrayPool<byte>.Shared.Return(nullTerminatedUtf8Label_array, true);
             }
             /// <inheritdoc cref="ObjectPtrLabel(void*, int, byte*)"/>
             public static unsafe void ObjectPtrLabel<T1>(ref readonly T1 ptr, int length, string label)
@@ -11014,14 +10961,12 @@ namespace OpenTK.Graphics.OpenGLES2
             {
                 fixed (void* ptr_ptr = &ptr)
                 {
-                    if (nullTerminatedUtf8Label.Length < 1 || nullTerminatedUtf8Label[^1] != 0)
-                    {
-                        throw new ArgumentException("The provided span is not null-terminated.", nameof(nullTerminatedUtf8Label));
-                    }
-                    fixed (byte* label_ptr = nullTerminatedUtf8Label)
+                    var nullTerminatedUtf8Label_span = NativeString.EnsureNullTerminated(nullTerminatedUtf8Label, out var nullTerminatedUtf8Label_array);
+                    fixed (byte* label_ptr = nullTerminatedUtf8Label_span)
                     {
                         ObjectPtrLabel(ptr_ptr, length, label_ptr);
                     }
+                    if (nullTerminatedUtf8Label_array is not null) ArrayPool<byte>.Shared.Return(nullTerminatedUtf8Label_array, true);
                 }
             }
             /// <inheritdoc cref="ObjectPtrLabel(void*, int, byte*)"/>
@@ -11030,14 +10975,12 @@ namespace OpenTK.Graphics.OpenGLES2
             {
                 fixed (void* ptr_ptr = ptr)
                 {
-                    if (nullTerminatedUtf8Label.Length < 1 || nullTerminatedUtf8Label[^1] != 0)
-                    {
-                        throw new ArgumentException("The provided span is not null-terminated.", nameof(nullTerminatedUtf8Label));
-                    }
-                    fixed (byte* label_ptr = nullTerminatedUtf8Label)
+                    var nullTerminatedUtf8Label_span = NativeString.EnsureNullTerminated(nullTerminatedUtf8Label, out var nullTerminatedUtf8Label_array);
+                    fixed (byte* label_ptr = nullTerminatedUtf8Label_span)
                     {
                         ObjectPtrLabel(ptr_ptr, length, label_ptr);
                     }
+                    if (nullTerminatedUtf8Label_array is not null) ArrayPool<byte>.Shared.Return(nullTerminatedUtf8Label_array, true);
                 }
             }
             /// <inheritdoc cref="ObjectPtrLabel{T1}(ReadOnlySpan{T1}, int, ReadOnlySpan{byte})"/>
@@ -11053,14 +10996,12 @@ namespace OpenTK.Graphics.OpenGLES2
             {
                 fixed (void* ptr_ptr = ptr)
                 {
-                    if (nullTerminatedUtf8Label.Length < 1 || nullTerminatedUtf8Label[^1] != 0)
-                    {
-                        throw new ArgumentException("The provided span is not null-terminated.", nameof(nullTerminatedUtf8Label));
-                    }
-                    fixed (byte* label_ptr = nullTerminatedUtf8Label)
+                    var nullTerminatedUtf8Label_span = NativeString.EnsureNullTerminated(nullTerminatedUtf8Label, out var nullTerminatedUtf8Label_array);
+                    fixed (byte* label_ptr = nullTerminatedUtf8Label_span)
                     {
                         ObjectPtrLabel(ptr_ptr, length, label_ptr);
                     }
+                    if (nullTerminatedUtf8Label_array is not null) ArrayPool<byte>.Shared.Return(nullTerminatedUtf8Label_array, true);
                 }
             }
             /// <inheritdoc cref="ObjectPtrLabelKHR(void*, int, byte*)"/>
@@ -11074,15 +11015,13 @@ namespace OpenTK.Graphics.OpenGLES2
             /// <inheritdoc cref="ObjectPtrLabelKHR(void*, int, byte*)"/>
             public static unsafe void ObjectPtrLabelKHR(IntPtr ptr, int length, ReadOnlySpan<byte> nullTerminatedUtf8Label)
             {
-                if (nullTerminatedUtf8Label.Length < 1 || nullTerminatedUtf8Label[^1] != 0)
-                {
-                    throw new ArgumentException("The provided span is not null-terminated.", nameof(nullTerminatedUtf8Label));
-                }
-                fixed (byte* label_ptr = nullTerminatedUtf8Label)
+                var nullTerminatedUtf8Label_span = NativeString.EnsureNullTerminated(nullTerminatedUtf8Label, out var nullTerminatedUtf8Label_array);
+                fixed (byte* label_ptr = nullTerminatedUtf8Label_span)
                 {
                     void* ptr_vptr = (void*)ptr;
                     ObjectPtrLabelKHR(ptr_vptr, length, label_ptr);
                 }
+                if (nullTerminatedUtf8Label_array is not null) ArrayPool<byte>.Shared.Return(nullTerminatedUtf8Label_array, true);
             }
             /// <inheritdoc cref="ObjectPtrLabelKHR(void*, int, byte*)"/>
             public static unsafe void ObjectPtrLabelKHR<T1>(ref readonly T1 ptr, int length, string label)
@@ -11130,14 +11069,12 @@ namespace OpenTK.Graphics.OpenGLES2
             {
                 fixed (void* ptr_ptr = &ptr)
                 {
-                    if (nullTerminatedUtf8Label.Length < 1 || nullTerminatedUtf8Label[^1] != 0)
-                    {
-                        throw new ArgumentException("The provided span is not null-terminated.", nameof(nullTerminatedUtf8Label));
-                    }
-                    fixed (byte* label_ptr = nullTerminatedUtf8Label)
+                    var nullTerminatedUtf8Label_span = NativeString.EnsureNullTerminated(nullTerminatedUtf8Label, out var nullTerminatedUtf8Label_array);
+                    fixed (byte* label_ptr = nullTerminatedUtf8Label_span)
                     {
                         ObjectPtrLabelKHR(ptr_ptr, length, label_ptr);
                     }
+                    if (nullTerminatedUtf8Label_array is not null) ArrayPool<byte>.Shared.Return(nullTerminatedUtf8Label_array, true);
                 }
             }
             /// <inheritdoc cref="ObjectPtrLabelKHR(void*, int, byte*)"/>
@@ -11146,14 +11083,12 @@ namespace OpenTK.Graphics.OpenGLES2
             {
                 fixed (void* ptr_ptr = ptr)
                 {
-                    if (nullTerminatedUtf8Label.Length < 1 || nullTerminatedUtf8Label[^1] != 0)
-                    {
-                        throw new ArgumentException("The provided span is not null-terminated.", nameof(nullTerminatedUtf8Label));
-                    }
-                    fixed (byte* label_ptr = nullTerminatedUtf8Label)
+                    var nullTerminatedUtf8Label_span = NativeString.EnsureNullTerminated(nullTerminatedUtf8Label, out var nullTerminatedUtf8Label_array);
+                    fixed (byte* label_ptr = nullTerminatedUtf8Label_span)
                     {
                         ObjectPtrLabelKHR(ptr_ptr, length, label_ptr);
                     }
+                    if (nullTerminatedUtf8Label_array is not null) ArrayPool<byte>.Shared.Return(nullTerminatedUtf8Label_array, true);
                 }
             }
             /// <inheritdoc cref="ObjectPtrLabelKHR{T1}(ReadOnlySpan{T1}, int, ReadOnlySpan{byte})"/>
@@ -11169,14 +11104,12 @@ namespace OpenTK.Graphics.OpenGLES2
             {
                 fixed (void* ptr_ptr = ptr)
                 {
-                    if (nullTerminatedUtf8Label.Length < 1 || nullTerminatedUtf8Label[^1] != 0)
-                    {
-                        throw new ArgumentException("The provided span is not null-terminated.", nameof(nullTerminatedUtf8Label));
-                    }
-                    fixed (byte* label_ptr = nullTerminatedUtf8Label)
+                    var nullTerminatedUtf8Label_span = NativeString.EnsureNullTerminated(nullTerminatedUtf8Label, out var nullTerminatedUtf8Label_array);
+                    fixed (byte* label_ptr = nullTerminatedUtf8Label_span)
                     {
                         ObjectPtrLabelKHR(ptr_ptr, length, label_ptr);
                     }
+                    if (nullTerminatedUtf8Label_array is not null) ArrayPool<byte>.Shared.Return(nullTerminatedUtf8Label_array, true);
                 }
             }
             /// <inheritdoc cref="PushDebugGroup(DebugSource, uint, int, byte*)"/>
@@ -11189,14 +11122,12 @@ namespace OpenTK.Graphics.OpenGLES2
             /// <inheritdoc cref="PushDebugGroup(DebugSource, uint, int, byte*)"/>
             public static unsafe void PushDebugGroup(DebugSource source, uint id, int length, ReadOnlySpan<byte> nullTerminatedUtf8Message)
             {
-                if (nullTerminatedUtf8Message.Length < 1 || nullTerminatedUtf8Message[^1] != 0)
-                {
-                    throw new ArgumentException("The provided span is not null-terminated.", nameof(nullTerminatedUtf8Message));
-                }
-                fixed (byte* message_ptr = nullTerminatedUtf8Message)
+                var nullTerminatedUtf8Message_span = NativeString.EnsureNullTerminated(nullTerminatedUtf8Message, out var nullTerminatedUtf8Message_array);
+                fixed (byte* message_ptr = nullTerminatedUtf8Message_span)
                 {
                     PushDebugGroup(source, id, length, message_ptr);
                 }
+                if (nullTerminatedUtf8Message_array is not null) ArrayPool<byte>.Shared.Return(nullTerminatedUtf8Message_array, true);
             }
             /// <inheritdoc cref="PushDebugGroupKHR(DebugSource, uint, int, byte*)"/>
             public static unsafe void PushDebugGroupKHR(DebugSource source, uint id, int length, string message)
@@ -11208,14 +11139,12 @@ namespace OpenTK.Graphics.OpenGLES2
             /// <inheritdoc cref="PushDebugGroupKHR(DebugSource, uint, int, byte*)"/>
             public static unsafe void PushDebugGroupKHR(DebugSource source, uint id, int length, ReadOnlySpan<byte> nullTerminatedUtf8Message)
             {
-                if (nullTerminatedUtf8Message.Length < 1 || nullTerminatedUtf8Message[^1] != 0)
-                {
-                    throw new ArgumentException("The provided span is not null-terminated.", nameof(nullTerminatedUtf8Message));
-                }
-                fixed (byte* message_ptr = nullTerminatedUtf8Message)
+                var nullTerminatedUtf8Message_span = NativeString.EnsureNullTerminated(nullTerminatedUtf8Message, out var nullTerminatedUtf8Message_array);
+                fixed (byte* message_ptr = nullTerminatedUtf8Message_span)
                 {
                     PushDebugGroupKHR(source, id, length, message_ptr);
                 }
+                if (nullTerminatedUtf8Message_array is not null) ArrayPool<byte>.Shared.Return(nullTerminatedUtf8Message_array, true);
             }
             /// <inheritdoc cref="ReadnPixels(int, int, int, int, PixelFormat, PixelType, int, void*)"/>
             public static unsafe void ReadnPixels(int x, int y, int width, int height, PixelFormat format, PixelType type, int bufSize, IntPtr data)
@@ -12670,14 +12599,12 @@ namespace OpenTK.Graphics.OpenGLES2
             public static unsafe IntPtr GetVkProcAddrNV(ReadOnlySpan<byte> nullTerminatedUtf8Name)
             {
                 IntPtr returnValue;
-                if (nullTerminatedUtf8Name.Length < 1 || nullTerminatedUtf8Name[^1] != 0)
-                {
-                    throw new ArgumentException("The provided span is not null-terminated.", nameof(nullTerminatedUtf8Name));
-                }
-                fixed (byte* name_ptr = nullTerminatedUtf8Name)
+                var nullTerminatedUtf8Name_span = NativeString.EnsureNullTerminated(nullTerminatedUtf8Name, out var nullTerminatedUtf8Name_array);
+                fixed (byte* name_ptr = nullTerminatedUtf8Name_span)
                 {
                     returnValue = GetVkProcAddrNV(name_ptr);
                 }
+                if (nullTerminatedUtf8Name_array is not null) ArrayPool<byte>.Shared.Return(nullTerminatedUtf8Name_array, true);
                 return returnValue;
             }
             /// <inheritdoc cref="MatrixLoad3x2fNV(All, float*)"/>

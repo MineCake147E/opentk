@@ -12,7 +12,7 @@ using OpenTK.Audio.OpenAL.ALC;
 namespace OpenTK.Audio
 {
     /// <summary>
-    /// A container of all OpenAL API frontends.
+    /// A container of all OpenAL function pointers.
     /// It also manages the lifetime of <see cref="ALPointers"/> and <see cref="ALCPointers"/> storages.
     /// </summary>
     public readonly unsafe partial struct ALLoader

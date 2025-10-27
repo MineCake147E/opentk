@@ -203,18 +203,15 @@ namespace GeneratorBase.Overloading
 
             public void WritePrologue(IndentedTextWriter writer, NameTable nameTable)
             {
-                writer.WriteLine($"if ({nameTable[StringParameter]}.Length < 1 || {nameTable[StringParameter]}[^1] != 0)");
-                using (writer.CsScope())
-                {
-                    writer.WriteLine($"throw new ArgumentException(\"The provided span is not null-terminated.\", nameof({nameTable[StringParameter]}));");
-                }
-                writer.WriteLine($"fixed (byte* {nameTable[PointerParameter]} = {nameTable[StringParameter]})");
+                writer.WriteLine($"var {nameTable[StringParameter]}_span = NativeString.EnsureNullTerminated({nameTable[StringParameter]}, out var {nameTable[StringParameter]}_array);");
+                writer.WriteLine($"fixed (byte* {nameTable[PointerParameter]} = {nameTable[StringParameter]}_span)");
                 _csScope = writer.CsScope();
             }
 
             public string? WriteEpilogue(IndentedTextWriter writer, NameTable nameTable, string? returnName)
             {
                 _csScope?.Dispose();
+                writer.WriteLine($"if ({nameTable[StringParameter]}_array is not null) ArrayPool<byte>.Shared.Return({nameTable[StringParameter]}_array, true);");
                 return returnName;
             }
         }

@@ -23,6 +23,7 @@ namespace GLGenerator
         private const string GraphicsNamespace = BaseNamespace + ".Graphics";
         private static IReadOnlyList<string> Usings => [
             "System",
+            "System.Buffers",
             "System.Diagnostics.CodeAnalysis",
             "System.Runtime.CompilerServices",
             "System.Runtime.InteropServices",

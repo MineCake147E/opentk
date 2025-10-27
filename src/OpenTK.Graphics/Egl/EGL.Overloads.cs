@@ -2,6 +2,7 @@
 // This file is auto generated, do not edit.
 #nullable enable
 using System;
+using System.Buffers;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -627,14 +628,12 @@ namespace OpenTK.Graphics.Egl
         public static unsafe IntPtr GetProcAddress(ReadOnlySpan<byte> nullTerminatedUtf8Procname)
         {
             IntPtr returnValue;
-            if (nullTerminatedUtf8Procname.Length < 1 || nullTerminatedUtf8Procname[^1] != 0)
-            {
-                throw new ArgumentException("The provided span is not null-terminated.", nameof(nullTerminatedUtf8Procname));
-            }
-            fixed (byte* procname_ptr = nullTerminatedUtf8Procname)
+            var nullTerminatedUtf8Procname_span = NativeString.EnsureNullTerminated(nullTerminatedUtf8Procname, out var nullTerminatedUtf8Procname_array);
+            fixed (byte* procname_ptr = nullTerminatedUtf8Procname_span)
             {
                 returnValue = GetProcAddress(procname_ptr);
             }
+            if (nullTerminatedUtf8Procname_array is not null) ArrayPool<byte>.Shared.Return(nullTerminatedUtf8Procname_array, true);
             return returnValue;
         }
         /// <inheritdoc cref="GetSyncAttrib(EGLDisplay, EGLSync, int, IntPtr*)"/>
