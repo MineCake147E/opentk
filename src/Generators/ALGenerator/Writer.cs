@@ -170,7 +170,6 @@ namespace ALGenerator
 
                 // FIXME: Merge the writing of these function pointers for the relevant namespaces!
                 WriteFunctionPointers(outputProjectPath, strings, pointers.NativeFunctions);
-                WriteFunctionNameList(outputProjectPath, strings, pointers.NativeFunctions);
                 WriteLazyFunctions(outputProjectPath, strings, pointers.NativeFunctions);
                 WriteDefaultFunctionPointerInitializers(outputProjectPath, strings, pointers.NativeFunctions);
             }
@@ -197,6 +196,7 @@ namespace ALGenerator
             WriteContainers(directoryPath, strings, @namespace);
             WriteNativeFunctions(directoryPath, strings, @namespace.VendorFunctions, @namespace.Documentation);
             WriteOverloads(directoryPath, strings, @namespace.VendorFunctions, @namespace.Documentation);
+            WriteFunctionNameList(outputProjectPath, strings, @namespace);
             const string LoadFunctionName = "loadFunction";
             switch (@namespace.Name)
             {
@@ -334,7 +334,28 @@ namespace ALGenerator
             writer.WriteLine();
         }
 
-        private static void WriteFunctionNameList(string directoryPath, FileStrings strings, List<Function> nativeFunctions)
+        private static readonly EqualityComparer<List<string>> StringListComparer = EqualityComparer<List<string>>.Create(
+            (a, b) =>
+            {
+                if (a is null) return b is null;
+                if (b is null) return false;
+                if (a.Count != b.Count) return false;
+                for (int i = 0; i < a.Count; i++)
+                {
+                    if (a[i] != b[i]) return false;
+                }
+                return true;
+            }, a =>
+            {
+                var h = new HashCode();
+                foreach (var item in a)
+                {
+                    h.Add(item);
+                }
+                return h.ToHashCode();
+            });
+
+        private static void WriteFunctionNameList(string directoryPath, FileStrings strings, Namespace @namespace)
         {
             using StreamWriter stream = File.CreateText(Path.Combine(directoryPath, $"{strings.FileNamePrefix}.Pointers.Names.cs"));
             using IndentedTextWriter writer = new IndentedTextWriter(stream);
@@ -352,13 +373,42 @@ namespace ALGenerator
                     List<(string entryPoint, int offset)> offsets = new();
                     int currentOffset = 0;
                     var builder = new StringBuilder();
-                    var entryPoints = nativeFunctions.Select(a => a.EntryPoint).ToList();
-                    foreach (var entryPoint in entryPoints)
+                    HashSet<string> exportedEndpoints = [];
+                    IEnumerable<VendorFunctions> items = @namespace.VendorFunctions;
+                    if (@namespace.Name == OutputApi.AL) items = items.Where(a => a.Vendor != "Direct");
+                    foreach (var item in items)
                     {
-                        // Write delegate field initialized to the lazy loader.
-                        builder.Append($"{entryPoint}\\0");
-                        offsets.Add((entryPoint, currentOffset));
-                        currentOffset += entryPoint.Length + 1;
+                        var vendorFunctions = item.Functions.Select(a => a.NativeFunction).GroupBy(a => @namespace.Documentation.TryGetValue(a, out var documentation) ? documentation.AddedIn : [""], StringListComparer).ToList();
+                        foreach (var dependency in vendorFunctions)
+                        {
+                            var extensionFunctions = dependency.ExceptBy(exportedEndpoints, a => a.EntryPoint).OrderBy(a => a.EntryPoint).Select(a => a.EntryPoint).ToList();
+                            exportedEndpoints.UnionWith(extensionFunctions);
+                            foreach (var entryPoint in extensionFunctions)
+                            {
+                                builder.Append($"{entryPoint}\\0");
+                                offsets.Add((entryPoint, currentOffset));
+                                currentOffset += entryPoint.Length + 1;
+                            }
+                        }
+                    }
+                    if (@namespace.Name == OutputApi.AL)
+                    {
+                        foreach (var item in @namespace.VendorFunctions.Where(a => a.Vendor == "Direct"))
+                        {
+                            var vendorDirectFunctions = item.Functions.Select(a => a.NativeFunction).GroupBy(a => @namespace.Documentation.TryGetValue(a, out var documentation) ? documentation.Dependency : "")
+                                .OrderBy(a => a.Key == "v1.0" ? "" : a.Key).ToList();
+                            foreach (var dependency in vendorDirectFunctions)
+                            {
+                                var extensionFunctions = dependency.ExceptBy(exportedEndpoints, a => a.EntryPoint).OrderBy(a => a.EntryPoint).Select(a => a.EntryPoint).ToList();
+                                exportedEndpoints.UnionWith(extensionFunctions);
+                                foreach (var entryPoint in extensionFunctions)
+                                {
+                                    builder.Append($"{entryPoint}\\0");
+                                    offsets.Add((entryPoint, currentOffset));
+                                    currentOffset += entryPoint.Length + 1;
+                                }
+                            }
+                        }
                     }
                     writer.WriteLine($"{builder}\"u8;");
                     var constType = $"internal const {offsets[^1].offset switch
@@ -367,9 +417,9 @@ namespace ALGenerator
                         <= ushort.MaxValue => "ushort",
                         _ => "int"
                     }}";
-                    foreach (var item in offsets)
+                    foreach (var (entryPoint, offset) in offsets)
                     {
-                        writer.WriteLine($"{constType} {item.entryPoint}_offset = {item.offset};");
+                        writer.WriteLine($"{constType} {entryPoint}_offset = {offset};");
                     }
                 }
             }
@@ -450,26 +500,7 @@ namespace ALGenerator
                         if (@namespace.Name == OutputApi.AL) items = items.Where(a => a.Vendor != "Direct");
                         foreach (var item in items)
                         {
-                            var vendorFunctions = item.Functions.Select(a => a.NativeFunction).GroupBy(a => @namespace.Documentation.TryGetValue(a, out var documentation) ? documentation.AddedIn : [""], EqualityComparer<List<string>>.Create(
-                                (a, b) =>
-                                {
-                                    if (a is null) return b is null;
-                                    if (b is null) return false;
-                                    if (a.Count != b.Count) return false;
-                                    for (int i = 0; i < a.Count; i++)
-                                    {
-                                        if (a[i] != b[i]) return false;
-                                    }
-                                    return true;
-                                }, a =>
-                                {
-                                    var h = new HashCode();
-                                    foreach (var item in a)
-                                    {
-                                        h.Add(item);
-                                    }
-                                    return h.ToHashCode();
-                                })).ToList();
+                            var vendorFunctions = item.Functions.Select(a => a.NativeFunction).GroupBy(a => @namespace.Documentation.TryGetValue(a, out var documentation) ? documentation.AddedIn : [""], StringListComparer).ToList();
                             foreach (var dependency in vendorFunctions)
                             {
                                 writer.WriteLine();
