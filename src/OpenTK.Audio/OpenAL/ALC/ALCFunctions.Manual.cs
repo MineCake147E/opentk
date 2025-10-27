@@ -24,6 +24,9 @@ namespace OpenTK.Audio.OpenAL.ALC
             return res;
         }
 
+        /// <inheritdoc cref="CreateContext(ALC, ALCDevice, int*)"/>
+        public static ALCContext CreateContext(this ALC alc, ALCDevice device) => alc.CreateContext(device, (int*)null);
+
         /// <inheritdoc cref="GetIntegerv(ALC, ALCDevice, GetPNameIV, int, int*)"/>
         public static unsafe int GetInteger(this ALC alc, ALCDevice device, GetPNameIV name)
         {
