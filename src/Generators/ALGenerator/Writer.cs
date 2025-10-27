@@ -169,9 +169,7 @@ namespace ALGenerator
                 };
 
                 // FIXME: Merge the writing of these function pointers for the relevant namespaces!
-                WriteFunctionPointers(outputProjectPath, strings, pointers.NativeFunctions);
                 WriteLazyFunctions(outputProjectPath, strings, pointers.NativeFunctions);
-                WriteDefaultFunctionPointerInitializers(outputProjectPath, strings, pointers.NativeFunctions);
             }
 
             foreach (Namespace @namespace in data.Namespaces)
@@ -192,22 +190,25 @@ namespace ALGenerator
 
             string directoryPath = Path.Combine(outputProjectPath, Path.Combine(strings.Namespace.Split('.')));
             if (!Directory.Exists(directoryPath)) Directory.CreateDirectory(directoryPath);
+            var sortedNativeFunctions = SortNativeFunctions(@namespace);
 
             WriteContainers(directoryPath, strings, @namespace);
+            WriteFunctionPointers(outputProjectPath, strings, sortedNativeFunctions);
             WriteNativeFunctions(directoryPath, strings, @namespace.VendorFunctions, @namespace.Documentation);
             WriteOverloads(directoryPath, strings, @namespace.VendorFunctions, @namespace.Documentation);
-            WriteFunctionNameList(outputProjectPath, strings, @namespace);
+            WriteFunctionNameList(outputProjectPath, strings, sortedNativeFunctions);
+            WriteDefaultFunctionPointerInitializers(outputProjectPath, strings, sortedNativeFunctions);
             const string LoadFunctionName = "loadFunction";
             switch (@namespace.Name)
             {
                 case OutputApi.AL:
-                    WriteFunctionPointerInitializers(outputProjectPath, strings, @namespace, "ByDeviceOrContext",
+                    WriteFunctionPointerInitializers(outputProjectPath, strings, @namespace, sortedNativeFunctions, "ByDeviceOrContext",
                         ("delegate* unmanaged[Cdecl]<IntPtr, byte*, void*>", "delegate* unmanaged[Cdecl, SuppressGCTransition]<IntPtr, byte*, void*>", LoadFunctionName), [("IntPtr", "handle")]);
-                    WriteFunctionPointerInitializers(outputProjectPath, strings, @namespace, "",
+                    WriteFunctionPointerInitializers(outputProjectPath, strings, @namespace, sortedNativeFunctions, "",
                         ("delegate* unmanaged[Cdecl]<byte*, void*>", "delegate* unmanaged[Cdecl, SuppressGCTransition]<byte*, void*>", LoadFunctionName), []);
                     break;
                 case OutputApi.ALC:
-                    WriteFunctionPointerInitializers(outputProjectPath, strings, @namespace, "",
+                    WriteFunctionPointerInitializers(outputProjectPath, strings, @namespace, sortedNativeFunctions, "",
                         ("delegate* unmanaged[Cdecl]<IntPtr, byte*, void*>", "delegate* unmanaged[Cdecl, SuppressGCTransition]<IntPtr, byte*, void*>", LoadFunctionName), [("IntPtr", "device")]);
                     break;
                 default:
@@ -234,7 +235,7 @@ namespace ALGenerator
         }
 
         // FIXME: Maybe we should nest this 
-        private static void WriteFunctionPointers(string directoryPath, FileStrings strings, List<Function> nativeFunctions)
+        private static void WriteFunctionPointers(string directoryPath, FileStrings strings, SortedNativeFunctions sortedNativeFunctions)
         {
             using StreamWriter stream = File.CreateText(Path.Combine(directoryPath, $"{strings.FileNamePrefix}.Pointers.cs"));
             using IndentedTextWriter writer = new IndentedTextWriter(stream);
@@ -250,7 +251,10 @@ namespace ALGenerator
                 writer.WriteLine($"public unsafe partial struct {strings.ClassName}Pointers");
                 using (writer.CsScope())
                 {
-                    foreach (Function function in nativeFunctions)
+                    var groupsFunctions = sortedNativeFunctions.Groups.SelectMany(a => a.SelectMany(b => b.functions));
+                    var directGroupsFunctions = sortedNativeFunctions.DirectGroups.SelectMany(a => a.SelectMany(b => b.functions));
+
+                    foreach (var function in groupsFunctions.Concat(directGroupsFunctions).Distinct())
                     {
                         WriteFunctionPointer(writer, function, strings);
                     }
@@ -355,7 +359,19 @@ namespace ALGenerator
                 return h.ToHashCode();
             });
 
-        private static void WriteFunctionNameList(string directoryPath, FileStrings strings, Namespace @namespace)
+        private static SortedNativeFunctions SortNativeFunctions(Namespace @namespace)
+        {
+            var items = @namespace.VendorFunctions;
+            var nonDirectItems = @namespace.Name == OutputApi.AL ? items.Where(a => a.Vendor != "Direct") : items;
+            var directItems = @namespace.Name == OutputApi.AL ? items.Where(a => a.Vendor == "Direct") : [];
+            var groups = nonDirectItems.Select(a => a.Functions.Select(a => a.NativeFunction).GroupBy(a => @namespace.Documentation.TryGetValue(a, out var documentation) ? documentation.AddedIn : [""], StringListComparer)
+                        .Select(g => (g.Key, g.OrderBy(f => f.EntryPoint).ToList())).ToList()).ToList();
+            var directGroups = directItems.Select(a => a.Functions.Select(a => a.NativeFunction).GroupBy(a => @namespace.Documentation.TryGetValue(a, out var documentation) ? documentation.Dependency : "")
+                                .OrderBy(a => a.Key == "v1.0" ? "" : a.Key).Select(g => (g.Key, g.OrderBy(f => f.EntryPoint).ToList())).ToList()).ToList();
+            return new(groups, directGroups);
+        }
+
+        private static void WriteFunctionNameList(string directoryPath, FileStrings strings, SortedNativeFunctions sortedNativeFunctions)
         {
             using StreamWriter stream = File.CreateText(Path.Combine(directoryPath, $"{strings.FileNamePrefix}.Pointers.Names.cs"));
             using IndentedTextWriter writer = new IndentedTextWriter(stream);
@@ -373,42 +389,15 @@ namespace ALGenerator
                     List<(string entryPoint, int offset)> offsets = new();
                     int currentOffset = 0;
                     var builder = new StringBuilder();
-                    HashSet<string> exportedEndpoints = [];
-                    IEnumerable<VendorFunctions> items = @namespace.VendorFunctions;
-                    if (@namespace.Name == OutputApi.AL) items = items.Where(a => a.Vendor != "Direct");
-                    foreach (var item in items)
+                    var groupsFunctions = sortedNativeFunctions.Groups.SelectMany(a => a.SelectMany(b => b.functions));
+                    var directGroupsFunctions = sortedNativeFunctions.DirectGroups.SelectMany(a => a.SelectMany(b => b.functions));
+                    var nativeFunctions = groupsFunctions.Concat(directGroupsFunctions);
+                    var entryPoints = nativeFunctions.Select(a => a.EntryPoint).Distinct().ToList();
+                    foreach (var entryPoint in entryPoints)
                     {
-                        var vendorFunctions = item.Functions.Select(a => a.NativeFunction).GroupBy(a => @namespace.Documentation.TryGetValue(a, out var documentation) ? documentation.AddedIn : [""], StringListComparer).ToList();
-                        foreach (var dependency in vendorFunctions)
-                        {
-                            var extensionFunctions = dependency.ExceptBy(exportedEndpoints, a => a.EntryPoint).OrderBy(a => a.EntryPoint).Select(a => a.EntryPoint).ToList();
-                            exportedEndpoints.UnionWith(extensionFunctions);
-                            foreach (var entryPoint in extensionFunctions)
-                            {
-                                builder.Append($"{entryPoint}\\0");
-                                offsets.Add((entryPoint, currentOffset));
-                                currentOffset += entryPoint.Length + 1;
-                            }
-                        }
-                    }
-                    if (@namespace.Name == OutputApi.AL)
-                    {
-                        foreach (var item in @namespace.VendorFunctions.Where(a => a.Vendor == "Direct"))
-                        {
-                            var vendorDirectFunctions = item.Functions.Select(a => a.NativeFunction).GroupBy(a => @namespace.Documentation.TryGetValue(a, out var documentation) ? documentation.Dependency : "")
-                                .OrderBy(a => a.Key == "v1.0" ? "" : a.Key).ToList();
-                            foreach (var dependency in vendorDirectFunctions)
-                            {
-                                var extensionFunctions = dependency.ExceptBy(exportedEndpoints, a => a.EntryPoint).OrderBy(a => a.EntryPoint).Select(a => a.EntryPoint).ToList();
-                                exportedEndpoints.UnionWith(extensionFunctions);
-                                foreach (var entryPoint in extensionFunctions)
-                                {
-                                    builder.Append($"{entryPoint}\\0");
-                                    offsets.Add((entryPoint, currentOffset));
-                                    currentOffset += entryPoint.Length + 1;
-                                }
-                            }
-                        }
+                        builder.Append($"{entryPoint}\\0");
+                        offsets.Add((entryPoint, currentOffset));
+                        currentOffset += entryPoint.Length + 1;
                     }
                     writer.WriteLine($"{builder}\"u8;");
                     var constType = $"internal const {offsets[^1].offset switch
@@ -425,7 +414,7 @@ namespace ALGenerator
             }
         }
 
-        private static void WriteDefaultFunctionPointerInitializers(string directoryPath, FileStrings strings, List<Function> nativeFunctions)
+        private static void WriteDefaultFunctionPointerInitializers(string directoryPath, FileStrings strings, SortedNativeFunctions sortedNativeFunctions)
         {
             using StreamWriter stream = File.CreateText(Path.Combine(directoryPath, $"{strings.FileNamePrefix}.Pointers.InitializeLazy.cs"));
             using IndentedTextWriter writer = new IndentedTextWriter(stream);
@@ -443,7 +432,10 @@ namespace ALGenerator
                     writer.WriteLine($"internal static void InitializeLazyLoaders(ref {strings.ClassName}Pointers pointers)");
                     using (writer.CsScope())
                     {
-                        var entryPoints = nativeFunctions.Select(a => a.EntryPoint).ToList();
+                        var groupsFunctions = sortedNativeFunctions.Groups.SelectMany(a => a.SelectMany(b => b.functions));
+                        var directGroupsFunctions = sortedNativeFunctions.DirectGroups.SelectMany(a => a.SelectMany(b => b.functions));
+                        var nativeFunctions = groupsFunctions.Concat(directGroupsFunctions);
+                        var entryPoints = nativeFunctions.Select(a => a.EntryPoint).Distinct().ToList();
                         foreach (var entryPoint in entryPoints.Intersect(["alcGetProcAddress", "alGetProcAddress"]))
                         {
                             // Write delegate field initialized to the lazy loader.
@@ -459,7 +451,7 @@ namespace ALGenerator
             }
         }
 
-        private static void WriteFunctionPointerInitializers(string directoryPath, FileStrings strings, Namespace @namespace, string overloadName, (string type, string suppressedType, string name) loadFunction, IReadOnlyList<(string type, string name)> additionalParameters)
+        private static void WriteFunctionPointerInitializers(string directoryPath, FileStrings strings, Namespace @namespace, SortedNativeFunctions sortedNativeFunctions, string overloadName, (string type, string suppressedType, string name) loadFunction, IReadOnlyList<(string type, string name)> additionalParameters)
         {
             using StreamWriter stream = File.CreateText(Path.Combine(directoryPath, $"{strings.FileNamePrefix}.Pointers.Initialize{overloadName}.cs"));
             using IndentedTextWriter writer = new IndentedTextWriter(stream);
@@ -496,30 +488,26 @@ namespace ALGenerator
                         writer.WriteLine($"var {suppressedFunctionName} = ({loadFunction.suppressedType}){loadFunction.name};");
                         var joinedAdditionalParameters = string.Join(", ", additionalParameters.Select(a => a.name));
                         HashSet<string> exportedEndpoints = [];
-                        IEnumerable<VendorFunctions> items = @namespace.VendorFunctions;
-                        if (@namespace.Name == OutputApi.AL) items = items.Where(a => a.Vendor != "Direct");
-                        foreach (var item in items)
+                        foreach (var vendor in sortedNativeFunctions.Groups)
                         {
-                            var vendorFunctions = item.Functions.Select(a => a.NativeFunction).GroupBy(a => @namespace.Documentation.TryGetValue(a, out var documentation) ? documentation.AddedIn : [""], StringListComparer).ToList();
-                            foreach (var dependency in vendorFunctions)
+                            foreach (var (_, functions) in vendor)
                             {
                                 writer.WriteLine();
-                                var extensionFunctions = dependency.ExceptBy(exportedEndpoints, a => a.EntryPoint).OrderBy(a => a.EntryPoint).ToList();
+                                var extensionFunctions = functions.ExceptBy(exportedEndpoints, a => a.EntryPoint).OrderBy(a => a.EntryPoint).ToList();
                                 exportedEndpoints.UnionWith(extensionFunctions.Select(a => a.EntryPoint));
                                 WriteExtensionBlock(suppressedFunctionName, writer, joinedAdditionalParameters, extensionFunctions);
                             }
                         }
                         if (@namespace.Name != OutputApi.AL) return;
                         writer.WriteLine();
-                        foreach (var item in @namespace.VendorFunctions.Where(a => a.Vendor == "Direct"))
+                        foreach (var item in sortedNativeFunctions.DirectGroups)
                         {
-                            var vendorDirectFunctions = item.Functions.Select(a => a.NativeFunction).GroupBy(a => @namespace.Documentation.TryGetValue(a, out var documentation) ? documentation.Dependency : "")
-                                .OrderBy(a => a.Key == "v1.0" ? "" : a.Key).ToList();
+                            var vendorDirectFunctions = item.ToList();
                             CsScope? scope = null;
                             if (vendorDirectFunctions.Count > 0)
                             {
-                                var firstDependency = vendorDirectFunctions[0];
-                                var extensionFunctions = firstDependency.OrderBy(a => a.Name).ToList();
+                                var firstDependency = vendorDirectFunctions[0].functions;
+                                var extensionFunctions = firstDependency.ToList();
                                 var functions = extensionFunctions.GetEnumerator();
                                 if (functions.MoveNext())
                                 {
@@ -537,10 +525,10 @@ namespace ALGenerator
                                     }
                                 }
                             }
-                            foreach (var dependency in vendorDirectFunctions.Skip(1))
+                            foreach (var (_, functions) in vendorDirectFunctions.Skip(1))
                             {
                                 writer.WriteLine();
-                                WriteExtensionBlock(suppressedFunctionName, writer, joinedAdditionalParameters, [.. dependency.OrderBy(a => a.Name)]);
+                                WriteExtensionBlock(suppressedFunctionName, writer, joinedAdditionalParameters, [.. functions]);
                             }
                             scope?.Dispose();
                         }
@@ -660,11 +648,7 @@ namespace ALGenerator
             }
         }
 
-        private static void WriteNativeFunctions(
-            string directoryPath,
-            FileStrings strings,
-            List<VendorFunctions> groups,
-            Dictionary<Function, FunctionDocumentation> documentation)
+        private static void WriteNativeFunctions(string directoryPath, FileStrings strings, List<VendorFunctions> groups, Dictionary<Function, FunctionDocumentation> documentation)
         {
             using StreamWriter stream = File.CreateText(Path.Combine(directoryPath, $"{strings.FileNamePrefix}Functions.Native.cs"));
             using IndentedTextWriter writer = new IndentedTextWriter(stream);
@@ -744,12 +728,7 @@ namespace ALGenerator
             writer.WriteLine();
         }
 
-        private static void WriteOverloads(
-            string directoryPath,
-            FileStrings strings,
-            List<VendorFunctions> groups,
-            Dictionary<Function, FunctionDocumentation> documentation
-            )
+        private static void WriteOverloads(string directoryPath, FileStrings strings, List<VendorFunctions> groups, Dictionary<Function, FunctionDocumentation> documentation)
         {
             using StreamWriter stream = File.CreateText(Path.Combine(directoryPath, $"{strings.FileNamePrefix}Functions.Overloads.cs"));
             using IndentedTextWriter writer = new IndentedTextWriter(stream);
@@ -1048,4 +1027,6 @@ namespace ALGenerator
             }
         }
     }
+
+    internal record struct SortedNativeFunctions(List<List<(List<string> key, List<Function> functions)>> Groups, List<List<(string key, List<Function> functions)>> DirectGroups);
 }

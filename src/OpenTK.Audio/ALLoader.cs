@@ -248,7 +248,7 @@ namespace OpenTK.Audio
                     var alPointersPinnedArray = AllocatePinned<ALPointers>();
                     var alPointers = (ALPointers*)Unsafe.AsPointer(ref MemoryMarshal.GetArrayDataReference(alPointersPinnedArray));
                     ALPointers.InitializePointersByDeviceOrContext((delegate* unmanaged[Cdecl]<IntPtr, byte*, void*>)alGetProcAddressDirect_fnptr, context, alPointers);
-                    newLoader = new ALLoader(_alHandle, default, alPointersPinnedArray, _alcPointersPinnedArray);
+                    newLoader = new ALLoader(_alHandle, _device, alPointersPinnedArray, _alcPointersPinnedArray);
                 }
             }
             return newLoader;

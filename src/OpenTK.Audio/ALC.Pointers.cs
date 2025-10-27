@@ -15,18 +15,6 @@ namespace OpenTK.Audio.OpenAL.ALC
     /// <summary>A collection of all function pointers to all OpenAL <c>alc</c> entry points.</summary>
     public unsafe partial struct ALCPointers
     {
-        /// <summary><b>[entry point: <c>alcASAGetListener</c>]</b></summary>
-        public delegate* unmanaged[Cdecl]<uint, void*, uint*, int> _alcASAGetListener_fnptr;
-        
-        /// <summary><b>[entry point: <c>alcASAGetSource</c>]</b></summary>
-        public delegate* unmanaged[Cdecl]<uint, uint, void*, uint*, int> _alcASAGetSource_fnptr;
-        
-        /// <summary><b>[entry point: <c>alcASASetListener</c>]</b></summary>
-        public delegate* unmanaged[Cdecl]<uint, void*, uint, int> _alcASASetListener_fnptr;
-        
-        /// <summary><b>[entry point: <c>alcASASetSource</c>]</b></summary>
-        public delegate* unmanaged[Cdecl]<uint, uint, void*, uint, int> _alcASASetSource_fnptr;
-        
         /// <summary><b>[entry point: <c>alcCaptureCloseDevice</c>]</b></summary>
         public delegate* unmanaged[Cdecl]<IntPtr, byte> _alcCaptureCloseDevice_fnptr;
         
@@ -51,21 +39,6 @@ namespace OpenTK.Audio.OpenAL.ALC
         /// <summary><b>[entry point: <c>alcDestroyContext</c>]</b></summary>
         public delegate* unmanaged[Cdecl]<IntPtr, void> _alcDestroyContext_fnptr;
         
-        /// <summary><b>[entry point: <c>alcDevicePauseSOFT</c>]</b></summary>
-        public delegate* unmanaged[Cdecl]<IntPtr, void> _alcDevicePauseSOFT_fnptr;
-        
-        /// <summary><b>[entry point: <c>alcDeviceResumeSOFT</c>]</b></summary>
-        public delegate* unmanaged[Cdecl]<IntPtr, void> _alcDeviceResumeSOFT_fnptr;
-        
-        /// <summary><b>[entry point: <c>alcEventCallbackSOFT</c>]</b></summary>
-        public delegate* unmanaged[Cdecl]<delegate* unmanaged[Cdecl]<All, All, ALCDevice, nuint, byte*, void*, void>, void*, void> _alcEventCallbackSOFT_fnptr;
-        
-        /// <summary><b>[entry point: <c>alcEventControlSOFT</c>]</b></summary>
-        public delegate* unmanaged[Cdecl]<int, int*, byte, byte> _alcEventControlSOFT_fnptr;
-        
-        /// <summary><b>[entry point: <c>alcEventIsSupportedSOFT</c>]</b></summary>
-        public delegate* unmanaged[Cdecl]<int, int, int> _alcEventIsSupportedSOFT_fnptr;
-        
         /// <summary><b>[entry point: <c>alcGetContextsDevice</c>]</b></summary>
         public delegate* unmanaged[Cdecl]<IntPtr, IntPtr> _alcGetContextsDevice_fnptr;
         
@@ -78,35 +51,50 @@ namespace OpenTK.Audio.OpenAL.ALC
         /// <summary><b>[entry point: <c>alcGetError</c>]</b></summary>
         public delegate* unmanaged[Cdecl]<IntPtr, int> _alcGetError_fnptr;
         
-        /// <summary><b>[entry point: <c>alcGetInteger64vSOFT</c>]</b></summary>
-        public delegate* unmanaged[Cdecl]<IntPtr, int, int, long*, void> _alcGetInteger64vSOFT_fnptr;
-        
         /// <summary><b>[entry point: <c>alcGetIntegerv</c>]</b></summary>
         public delegate* unmanaged[Cdecl]<IntPtr, int, int, int*, void> _alcGetIntegerv_fnptr;
         
         /// <summary><b>[entry point: <c>alcGetProcAddress</c>]</b></summary>
         public delegate* unmanaged[Cdecl]<IntPtr, byte*, void*> _alcGetProcAddress_fnptr;
         
-        /// <summary><b>[entry point: <c>alcGetProcAddress2</c>]</b></summary>
-        public delegate* unmanaged[Cdecl]<IntPtr, byte*, void*> _alcGetProcAddress2_fnptr;
-        
         /// <summary><b>[entry point: <c>alcGetString</c>]</b></summary>
         public delegate* unmanaged[Cdecl]<IntPtr, int, byte*> _alcGetString_fnptr;
-        
-        /// <summary><b>[entry point: <c>alcGetStringiSOFT</c>]</b></summary>
-        public delegate* unmanaged[Cdecl]<IntPtr, int, int, byte*> _alcGetStringiSOFT_fnptr;
-        
-        /// <summary><b>[entry point: <c>alcGetThreadContext</c>]</b></summary>
-        public delegate* unmanaged[Cdecl]<IntPtr> _alcGetThreadContext_fnptr;
         
         /// <summary><b>[entry point: <c>alcIsExtensionPresent</c>]</b></summary>
         public delegate* unmanaged[Cdecl]<IntPtr, byte*, byte> _alcIsExtensionPresent_fnptr;
         
-        /// <summary><b>[entry point: <c>alcIsRenderFormatSupportedSOFT</c>]</b></summary>
-        public delegate* unmanaged[Cdecl]<IntPtr, int, int, int, byte> _alcIsRenderFormatSupportedSOFT_fnptr;
+        /// <summary><b>[entry point: <c>alcMakeContextCurrent</c>]</b></summary>
+        public delegate* unmanaged[Cdecl]<IntPtr, byte> _alcMakeContextCurrent_fnptr;
         
-        /// <summary><b>[entry point: <c>alcLoopbackOpenDeviceSOFT</c>]</b></summary>
-        public delegate* unmanaged[Cdecl]<IntPtr, IntPtr> _alcLoopbackOpenDeviceSOFT_fnptr;
+        /// <summary><b>[entry point: <c>alcOpenDevice</c>]</b></summary>
+        public delegate* unmanaged[Cdecl]<byte*, IntPtr> _alcOpenDevice_fnptr;
+        
+        /// <summary><b>[entry point: <c>alcProcessContext</c>]</b></summary>
+        public delegate* unmanaged[Cdecl]<IntPtr, void> _alcProcessContext_fnptr;
+        
+        /// <summary><b>[entry point: <c>alcSuspendContext</c>]</b></summary>
+        public delegate* unmanaged[Cdecl]<IntPtr, void> _alcSuspendContext_fnptr;
+        
+        /// <summary><b>[entry point: <c>alcGetProcAddress2</c>]</b></summary>
+        public delegate* unmanaged[Cdecl]<IntPtr, byte*, void*> _alcGetProcAddress2_fnptr;
+        
+        /// <summary><b>[entry point: <c>alcASAGetListener</c>]</b></summary>
+        public delegate* unmanaged[Cdecl]<uint, void*, uint*, int> _alcASAGetListener_fnptr;
+        
+        /// <summary><b>[entry point: <c>alcASAGetSource</c>]</b></summary>
+        public delegate* unmanaged[Cdecl]<uint, uint, void*, uint*, int> _alcASAGetSource_fnptr;
+        
+        /// <summary><b>[entry point: <c>alcASASetListener</c>]</b></summary>
+        public delegate* unmanaged[Cdecl]<uint, void*, uint, int> _alcASASetListener_fnptr;
+        
+        /// <summary><b>[entry point: <c>alcASASetSource</c>]</b></summary>
+        public delegate* unmanaged[Cdecl]<uint, uint, void*, uint, int> _alcASASetSource_fnptr;
+        
+        /// <summary><b>[entry point: <c>alcGetThreadContext</c>]</b></summary>
+        public delegate* unmanaged[Cdecl]<IntPtr> _alcGetThreadContext_fnptr;
+        
+        /// <summary><b>[entry point: <c>alcSetThreadContext</c>]</b></summary>
+        public delegate* unmanaged[Cdecl]<IntPtr, byte> _alcSetThreadContext_fnptr;
         
         /// <summary><b>[entry point: <c>alcMacOSXGetMixerMaxiumumBusses</c>]</b></summary>
         public delegate* unmanaged[Cdecl]<int> _alcMacOSXGetMixerMaxiumumBusses_fnptr;
@@ -126,12 +114,6 @@ namespace OpenTK.Audio.OpenAL.ALC
         /// <summary><b>[entry point: <c>alcMacOSXRenderingQuality</c>]</b></summary>
         public delegate* unmanaged[Cdecl]<int, void> _alcMacOSXRenderingQuality_fnptr;
         
-        /// <summary><b>[entry point: <c>alcMakeContextCurrent</c>]</b></summary>
-        public delegate* unmanaged[Cdecl]<IntPtr, byte> _alcMakeContextCurrent_fnptr;
-        
-        /// <summary><b>[entry point: <c>alcOpenDevice</c>]</b></summary>
-        public delegate* unmanaged[Cdecl]<byte*, IntPtr> _alcOpenDevice_fnptr;
-        
         /// <summary><b>[entry point: <c>alcOutputCapturerAvailableSamples</c>]</b></summary>
         public delegate* unmanaged[Cdecl]<void> _alcOutputCapturerAvailableSamples_fnptr;
         
@@ -147,8 +129,38 @@ namespace OpenTK.Audio.OpenAL.ALC
         /// <summary><b>[entry point: <c>alcOutputCapturerStop</c>]</b></summary>
         public delegate* unmanaged[Cdecl]<void> _alcOutputCapturerStop_fnptr;
         
-        /// <summary><b>[entry point: <c>alcProcessContext</c>]</b></summary>
-        public delegate* unmanaged[Cdecl]<IntPtr, void> _alcProcessContext_fnptr;
+        /// <summary><b>[entry point: <c>GetAudioChannel_LOKI</c>]</b></summary>
+        public delegate* unmanaged[Cdecl]<uint, float> _GetAudioChannel_LOKI_fnptr;
+        
+        /// <summary><b>[entry point: <c>SetAudioChannel_LOKI</c>]</b></summary>
+        public delegate* unmanaged[Cdecl]<uint, float, void> _SetAudioChannel_LOKI_fnptr;
+        
+        /// <summary><b>[entry point: <c>alcDevicePauseSOFT</c>]</b></summary>
+        public delegate* unmanaged[Cdecl]<IntPtr, void> _alcDevicePauseSOFT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alcDeviceResumeSOFT</c>]</b></summary>
+        public delegate* unmanaged[Cdecl]<IntPtr, void> _alcDeviceResumeSOFT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alcEventCallbackSOFT</c>]</b></summary>
+        public delegate* unmanaged[Cdecl]<delegate* unmanaged[Cdecl]<All, All, ALCDevice, nuint, byte*, void*, void>, void*, void> _alcEventCallbackSOFT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alcEventControlSOFT</c>]</b></summary>
+        public delegate* unmanaged[Cdecl]<int, int*, byte, byte> _alcEventControlSOFT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alcEventIsSupportedSOFT</c>]</b></summary>
+        public delegate* unmanaged[Cdecl]<int, int, int> _alcEventIsSupportedSOFT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alcGetInteger64vSOFT</c>]</b></summary>
+        public delegate* unmanaged[Cdecl]<IntPtr, int, int, long*, void> _alcGetInteger64vSOFT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alcGetStringiSOFT</c>]</b></summary>
+        public delegate* unmanaged[Cdecl]<IntPtr, int, int, byte*> _alcGetStringiSOFT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alcIsRenderFormatSupportedSOFT</c>]</b></summary>
+        public delegate* unmanaged[Cdecl]<IntPtr, int, int, int, byte> _alcIsRenderFormatSupportedSOFT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alcLoopbackOpenDeviceSOFT</c>]</b></summary>
+        public delegate* unmanaged[Cdecl]<IntPtr, IntPtr> _alcLoopbackOpenDeviceSOFT_fnptr;
         
         /// <summary><b>[entry point: <c>alcRenderSamplesSOFT</c>]</b></summary>
         public delegate* unmanaged[Cdecl]<IntPtr, void*, int, void> _alcRenderSamplesSOFT_fnptr;
@@ -158,18 +170,6 @@ namespace OpenTK.Audio.OpenAL.ALC
         
         /// <summary><b>[entry point: <c>alcResetDeviceSOFT</c>]</b></summary>
         public delegate* unmanaged[Cdecl]<IntPtr, int*, byte> _alcResetDeviceSOFT_fnptr;
-        
-        /// <summary><b>[entry point: <c>alcSetThreadContext</c>]</b></summary>
-        public delegate* unmanaged[Cdecl]<IntPtr, byte> _alcSetThreadContext_fnptr;
-        
-        /// <summary><b>[entry point: <c>alcSuspendContext</c>]</b></summary>
-        public delegate* unmanaged[Cdecl]<IntPtr, void> _alcSuspendContext_fnptr;
-        
-        /// <summary><b>[entry point: <c>GetAudioChannel_LOKI</c>]</b></summary>
-        public delegate* unmanaged[Cdecl]<uint, float> _GetAudioChannel_LOKI_fnptr;
-        
-        /// <summary><b>[entry point: <c>SetAudioChannel_LOKI</c>]</b></summary>
-        public delegate* unmanaged[Cdecl]<uint, float, void> _SetAudioChannel_LOKI_fnptr;
         
     }
 }
