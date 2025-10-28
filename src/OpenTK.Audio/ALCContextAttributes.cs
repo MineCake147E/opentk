@@ -195,6 +195,7 @@ namespace OpenTK.Audio.OpenAL
             var l = (valuesToEncode.Count * 2) + 1;
             var array = arrayPool.Rent(l);
             var span = array.AsSpan(0, l);
+            span.Clear();
             var enumerator = valuesToEncode.GetEnumerator();
             var len2 = span.Length - 1;
             ref var head = ref MemoryMarshal.GetReference(span);

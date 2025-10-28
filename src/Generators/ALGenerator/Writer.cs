@@ -27,35 +27,6 @@ namespace ALGenerator
         private const string AudioNamespace = BaseNamespace + ".Audio";
 
         private const string APIExtensionSuffix = "Extensions";
-        private static readonly FrozenSet<string> SuppressableFunctions = FrozenSet.ToFrozenSet([
-            "alIsExtensionPresent",
-            "alBufferi",
-            "alBufferiv",
-            "alGenBuffers",
-            "alGenSources",
-            "alGetError",
-            "alGetInteger",
-            "alGetSourcei",
-            "alGetSourceiv",
-            "alListener3f",
-            "alListener3i",
-            "alSource3f",
-            "alSourcef",
-            "alSourcefv",
-            "alSourcei",
-            "alSourceiv",
-            "alSourcePause",
-            "alSourcePausev",
-            "alSourcePlay",
-            "alSourcePlayv",
-            "alSourceQueueBuffers",
-            "alSourceRewind",
-            "alSourceRewindv",
-            "alSourceStop",
-            "alSourceStopv",
-            "alSourceUnqueueBuffers",
-            "alSpeedOfSound",
-            ]);
         private static IReadOnlyList<string> Usings => [
             "System",
             "System.Buffers",
