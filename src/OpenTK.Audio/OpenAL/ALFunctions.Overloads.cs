@@ -64,6 +64,51 @@ namespace OpenTK.Audio.OpenAL
         }
         /// <inheritdoc cref="Bufferfv(AL, int, BufferPNameFV, float*)"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void Bufferfv(this AL al, int buffer, BufferPNameFV param, Vector2 value)
+        {
+            var value_ptr = (float*)&value;
+            al.Bufferfv(buffer, param, value_ptr);
+        }
+        /// <inheritdoc cref="Bufferfv(AL, int, BufferPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [OverloadResolutionPriority(1)]
+        public static unsafe void Bufferfv(this AL al, int buffer, BufferPNameFV param, System.Numerics.Vector2 value)
+        {
+            var value_ptr = (float*)&value;
+            al.Bufferfv(buffer, param, value_ptr);
+        }
+        /// <inheritdoc cref="Bufferfv(AL, int, BufferPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void Bufferfv(this AL al, int buffer, BufferPNameFV param, Vector3 value)
+        {
+            var value_ptr = (float*)&value;
+            al.Bufferfv(buffer, param, value_ptr);
+        }
+        /// <inheritdoc cref="Bufferfv(AL, int, BufferPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [OverloadResolutionPriority(1)]
+        public static unsafe void Bufferfv(this AL al, int buffer, BufferPNameFV param, System.Numerics.Vector3 value)
+        {
+            var value_ptr = (float*)&value;
+            al.Bufferfv(buffer, param, value_ptr);
+        }
+        /// <inheritdoc cref="Bufferfv(AL, int, BufferPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void Bufferfv(this AL al, int buffer, BufferPNameFV param, Vector4 value)
+        {
+            var value_ptr = (float*)&value;
+            al.Bufferfv(buffer, param, value_ptr);
+        }
+        /// <inheritdoc cref="Bufferfv(AL, int, BufferPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [OverloadResolutionPriority(1)]
+        public static unsafe void Bufferfv(this AL al, int buffer, BufferPNameFV param, System.Numerics.Vector4 value)
+        {
+            var value_ptr = (float*)&value;
+            al.Bufferfv(buffer, param, value_ptr);
+        }
+        /// <inheritdoc cref="Bufferfv(AL, int, BufferPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static unsafe void Bufferfv(this AL al, int buffer, BufferPNameFV param, ref readonly float value)
         {
             fixed (float* value_ptr = &value)
@@ -385,6 +430,51 @@ namespace OpenTK.Audio.OpenAL
         }
         /// <inheritdoc cref="GetBufferfv(AL, int, BufferGetPNameFV, float*)"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void GetBufferfv(this AL al, int buffer, BufferGetPNameFV param, Vector2 value)
+        {
+            var value_ptr = (float*)&value;
+            al.GetBufferfv(buffer, param, value_ptr);
+        }
+        /// <inheritdoc cref="GetBufferfv(AL, int, BufferGetPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [OverloadResolutionPriority(1)]
+        public static unsafe void GetBufferfv(this AL al, int buffer, BufferGetPNameFV param, System.Numerics.Vector2 value)
+        {
+            var value_ptr = (float*)&value;
+            al.GetBufferfv(buffer, param, value_ptr);
+        }
+        /// <inheritdoc cref="GetBufferfv(AL, int, BufferGetPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void GetBufferfv(this AL al, int buffer, BufferGetPNameFV param, Vector3 value)
+        {
+            var value_ptr = (float*)&value;
+            al.GetBufferfv(buffer, param, value_ptr);
+        }
+        /// <inheritdoc cref="GetBufferfv(AL, int, BufferGetPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [OverloadResolutionPriority(1)]
+        public static unsafe void GetBufferfv(this AL al, int buffer, BufferGetPNameFV param, System.Numerics.Vector3 value)
+        {
+            var value_ptr = (float*)&value;
+            al.GetBufferfv(buffer, param, value_ptr);
+        }
+        /// <inheritdoc cref="GetBufferfv(AL, int, BufferGetPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void GetBufferfv(this AL al, int buffer, BufferGetPNameFV param, Vector4 value)
+        {
+            var value_ptr = (float*)&value;
+            al.GetBufferfv(buffer, param, value_ptr);
+        }
+        /// <inheritdoc cref="GetBufferfv(AL, int, BufferGetPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [OverloadResolutionPriority(1)]
+        public static unsafe void GetBufferfv(this AL al, int buffer, BufferGetPNameFV param, System.Numerics.Vector4 value)
+        {
+            var value_ptr = (float*)&value;
+            al.GetBufferfv(buffer, param, value_ptr);
+        }
+        /// <inheritdoc cref="GetBufferfv(AL, int, BufferGetPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static unsafe void GetBufferfv(this AL al, int buffer, BufferGetPNameFV param, ref float value)
         {
             fixed (float* value_ptr = &value)
@@ -631,6 +721,51 @@ namespace OpenTK.Audio.OpenAL
         }
         /// <inheritdoc cref="GetListenerfv(AL, ListenerGetPNameFV, float*)"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void GetListenerfv(this AL al, ListenerGetPNameFV param, Vector2 values)
+        {
+            var values_ptr = (float*)&values;
+            al.GetListenerfv(param, values_ptr);
+        }
+        /// <inheritdoc cref="GetListenerfv(AL, ListenerGetPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [OverloadResolutionPriority(1)]
+        public static unsafe void GetListenerfv(this AL al, ListenerGetPNameFV param, System.Numerics.Vector2 values)
+        {
+            var values_ptr = (float*)&values;
+            al.GetListenerfv(param, values_ptr);
+        }
+        /// <inheritdoc cref="GetListenerfv(AL, ListenerGetPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void GetListenerfv(this AL al, ListenerGetPNameFV param, Vector3 values)
+        {
+            var values_ptr = (float*)&values;
+            al.GetListenerfv(param, values_ptr);
+        }
+        /// <inheritdoc cref="GetListenerfv(AL, ListenerGetPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [OverloadResolutionPriority(1)]
+        public static unsafe void GetListenerfv(this AL al, ListenerGetPNameFV param, System.Numerics.Vector3 values)
+        {
+            var values_ptr = (float*)&values;
+            al.GetListenerfv(param, values_ptr);
+        }
+        /// <inheritdoc cref="GetListenerfv(AL, ListenerGetPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void GetListenerfv(this AL al, ListenerGetPNameFV param, Vector4 values)
+        {
+            var values_ptr = (float*)&values;
+            al.GetListenerfv(param, values_ptr);
+        }
+        /// <inheritdoc cref="GetListenerfv(AL, ListenerGetPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [OverloadResolutionPriority(1)]
+        public static unsafe void GetListenerfv(this AL al, ListenerGetPNameFV param, System.Numerics.Vector4 values)
+        {
+            var values_ptr = (float*)&values;
+            al.GetListenerfv(param, values_ptr);
+        }
+        /// <inheritdoc cref="GetListenerfv(AL, ListenerGetPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static unsafe void GetListenerfv(this AL al, ListenerGetPNameFV param, ref float values)
         {
             fixed (float* values_ptr = &values)
@@ -796,6 +931,51 @@ namespace OpenTK.Audio.OpenAL
         }
         /// <inheritdoc cref="GetSourcefv(AL, int, SourceGetPNameFV, float*)"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void GetSourcefv(this AL al, int source, SourceGetPNameFV param, Vector2 values)
+        {
+            var values_ptr = (float*)&values;
+            al.GetSourcefv(source, param, values_ptr);
+        }
+        /// <inheritdoc cref="GetSourcefv(AL, int, SourceGetPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [OverloadResolutionPriority(1)]
+        public static unsafe void GetSourcefv(this AL al, int source, SourceGetPNameFV param, System.Numerics.Vector2 values)
+        {
+            var values_ptr = (float*)&values;
+            al.GetSourcefv(source, param, values_ptr);
+        }
+        /// <inheritdoc cref="GetSourcefv(AL, int, SourceGetPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void GetSourcefv(this AL al, int source, SourceGetPNameFV param, Vector3 values)
+        {
+            var values_ptr = (float*)&values;
+            al.GetSourcefv(source, param, values_ptr);
+        }
+        /// <inheritdoc cref="GetSourcefv(AL, int, SourceGetPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [OverloadResolutionPriority(1)]
+        public static unsafe void GetSourcefv(this AL al, int source, SourceGetPNameFV param, System.Numerics.Vector3 values)
+        {
+            var values_ptr = (float*)&values;
+            al.GetSourcefv(source, param, values_ptr);
+        }
+        /// <inheritdoc cref="GetSourcefv(AL, int, SourceGetPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void GetSourcefv(this AL al, int source, SourceGetPNameFV param, Vector4 values)
+        {
+            var values_ptr = (float*)&values;
+            al.GetSourcefv(source, param, values_ptr);
+        }
+        /// <inheritdoc cref="GetSourcefv(AL, int, SourceGetPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [OverloadResolutionPriority(1)]
+        public static unsafe void GetSourcefv(this AL al, int source, SourceGetPNameFV param, System.Numerics.Vector4 values)
+        {
+            var values_ptr = (float*)&values;
+            al.GetSourcefv(source, param, values_ptr);
+        }
+        /// <inheritdoc cref="GetSourcefv(AL, int, SourceGetPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static unsafe void GetSourcefv(this AL al, int source, SourceGetPNameFV param, ref float values)
         {
             fixed (float* values_ptr = &values)
@@ -913,6 +1093,51 @@ namespace OpenTK.Audio.OpenAL
         }
         /// <inheritdoc cref="Listenerfv(AL, ListenerPNameFV, float*)"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void Listenerfv(this AL al, ListenerPNameFV param, Vector2 values)
+        {
+            var values_ptr = (float*)&values;
+            al.Listenerfv(param, values_ptr);
+        }
+        /// <inheritdoc cref="Listenerfv(AL, ListenerPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [OverloadResolutionPriority(1)]
+        public static unsafe void Listenerfv(this AL al, ListenerPNameFV param, System.Numerics.Vector2 values)
+        {
+            var values_ptr = (float*)&values;
+            al.Listenerfv(param, values_ptr);
+        }
+        /// <inheritdoc cref="Listenerfv(AL, ListenerPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void Listenerfv(this AL al, ListenerPNameFV param, Vector3 values)
+        {
+            var values_ptr = (float*)&values;
+            al.Listenerfv(param, values_ptr);
+        }
+        /// <inheritdoc cref="Listenerfv(AL, ListenerPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [OverloadResolutionPriority(1)]
+        public static unsafe void Listenerfv(this AL al, ListenerPNameFV param, System.Numerics.Vector3 values)
+        {
+            var values_ptr = (float*)&values;
+            al.Listenerfv(param, values_ptr);
+        }
+        /// <inheritdoc cref="Listenerfv(AL, ListenerPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void Listenerfv(this AL al, ListenerPNameFV param, Vector4 values)
+        {
+            var values_ptr = (float*)&values;
+            al.Listenerfv(param, values_ptr);
+        }
+        /// <inheritdoc cref="Listenerfv(AL, ListenerPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [OverloadResolutionPriority(1)]
+        public static unsafe void Listenerfv(this AL al, ListenerPNameFV param, System.Numerics.Vector4 values)
+        {
+            var values_ptr = (float*)&values;
+            al.Listenerfv(param, values_ptr);
+        }
+        /// <inheritdoc cref="Listenerfv(AL, ListenerPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static unsafe void Listenerfv(this AL al, ListenerPNameFV param, ref float values)
         {
             fixed (float* values_ptr = &values)
@@ -964,6 +1189,51 @@ namespace OpenTK.Audio.OpenAL
             {
                 al.Listeneriv(param, values_ptr);
             }
+        }
+        /// <inheritdoc cref="Sourcefv(AL, int, SourcePNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void Sourcefv(this AL al, int source, SourcePNameFV param, Vector2 value)
+        {
+            var value_ptr = (float*)&value;
+            al.Sourcefv(source, param, value_ptr);
+        }
+        /// <inheritdoc cref="Sourcefv(AL, int, SourcePNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [OverloadResolutionPriority(1)]
+        public static unsafe void Sourcefv(this AL al, int source, SourcePNameFV param, System.Numerics.Vector2 value)
+        {
+            var value_ptr = (float*)&value;
+            al.Sourcefv(source, param, value_ptr);
+        }
+        /// <inheritdoc cref="Sourcefv(AL, int, SourcePNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void Sourcefv(this AL al, int source, SourcePNameFV param, Vector3 value)
+        {
+            var value_ptr = (float*)&value;
+            al.Sourcefv(source, param, value_ptr);
+        }
+        /// <inheritdoc cref="Sourcefv(AL, int, SourcePNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [OverloadResolutionPriority(1)]
+        public static unsafe void Sourcefv(this AL al, int source, SourcePNameFV param, System.Numerics.Vector3 value)
+        {
+            var value_ptr = (float*)&value;
+            al.Sourcefv(source, param, value_ptr);
+        }
+        /// <inheritdoc cref="Sourcefv(AL, int, SourcePNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void Sourcefv(this AL al, int source, SourcePNameFV param, Vector4 value)
+        {
+            var value_ptr = (float*)&value;
+            al.Sourcefv(source, param, value_ptr);
+        }
+        /// <inheritdoc cref="Sourcefv(AL, int, SourcePNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [OverloadResolutionPriority(1)]
+        public static unsafe void Sourcefv(this AL al, int source, SourcePNameFV param, System.Numerics.Vector4 value)
+        {
+            var value_ptr = (float*)&value;
+            al.Sourcefv(source, param, value_ptr);
         }
         /// <inheritdoc cref="Sourcefv(AL, int, SourcePNameFV, float*)"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1366,6 +1636,51 @@ namespace OpenTK.Audio.OpenAL
         }
         /// <inheritdoc cref="AuxiliaryEffectSlotfvDirect(ALExtensions.Direct{ALExtensions.EXT}, ALCContext, int, AuxEffectSlotPNameFV, float*)"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void AuxiliaryEffectSlotfvDirect(this ALExtensions.Direct<ALExtensions.EXT> direct, ALCContext context, int effectslot, AuxEffectSlotPNameFV param, Vector2 pflValues)
+        {
+            var pflValues_ptr = (float*)&pflValues;
+            direct.AuxiliaryEffectSlotfvDirect(context, effectslot, param, pflValues_ptr);
+        }
+        /// <inheritdoc cref="AuxiliaryEffectSlotfvDirect(ALExtensions.Direct{ALExtensions.EXT}, ALCContext, int, AuxEffectSlotPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [OverloadResolutionPriority(1)]
+        public static unsafe void AuxiliaryEffectSlotfvDirect(this ALExtensions.Direct<ALExtensions.EXT> direct, ALCContext context, int effectslot, AuxEffectSlotPNameFV param, System.Numerics.Vector2 pflValues)
+        {
+            var pflValues_ptr = (float*)&pflValues;
+            direct.AuxiliaryEffectSlotfvDirect(context, effectslot, param, pflValues_ptr);
+        }
+        /// <inheritdoc cref="AuxiliaryEffectSlotfvDirect(ALExtensions.Direct{ALExtensions.EXT}, ALCContext, int, AuxEffectSlotPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void AuxiliaryEffectSlotfvDirect(this ALExtensions.Direct<ALExtensions.EXT> direct, ALCContext context, int effectslot, AuxEffectSlotPNameFV param, Vector3 pflValues)
+        {
+            var pflValues_ptr = (float*)&pflValues;
+            direct.AuxiliaryEffectSlotfvDirect(context, effectslot, param, pflValues_ptr);
+        }
+        /// <inheritdoc cref="AuxiliaryEffectSlotfvDirect(ALExtensions.Direct{ALExtensions.EXT}, ALCContext, int, AuxEffectSlotPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [OverloadResolutionPriority(1)]
+        public static unsafe void AuxiliaryEffectSlotfvDirect(this ALExtensions.Direct<ALExtensions.EXT> direct, ALCContext context, int effectslot, AuxEffectSlotPNameFV param, System.Numerics.Vector3 pflValues)
+        {
+            var pflValues_ptr = (float*)&pflValues;
+            direct.AuxiliaryEffectSlotfvDirect(context, effectslot, param, pflValues_ptr);
+        }
+        /// <inheritdoc cref="AuxiliaryEffectSlotfvDirect(ALExtensions.Direct{ALExtensions.EXT}, ALCContext, int, AuxEffectSlotPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void AuxiliaryEffectSlotfvDirect(this ALExtensions.Direct<ALExtensions.EXT> direct, ALCContext context, int effectslot, AuxEffectSlotPNameFV param, Vector4 pflValues)
+        {
+            var pflValues_ptr = (float*)&pflValues;
+            direct.AuxiliaryEffectSlotfvDirect(context, effectslot, param, pflValues_ptr);
+        }
+        /// <inheritdoc cref="AuxiliaryEffectSlotfvDirect(ALExtensions.Direct{ALExtensions.EXT}, ALCContext, int, AuxEffectSlotPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [OverloadResolutionPriority(1)]
+        public static unsafe void AuxiliaryEffectSlotfvDirect(this ALExtensions.Direct<ALExtensions.EXT> direct, ALCContext context, int effectslot, AuxEffectSlotPNameFV param, System.Numerics.Vector4 pflValues)
+        {
+            var pflValues_ptr = (float*)&pflValues;
+            direct.AuxiliaryEffectSlotfvDirect(context, effectslot, param, pflValues_ptr);
+        }
+        /// <inheritdoc cref="AuxiliaryEffectSlotfvDirect(ALExtensions.Direct{ALExtensions.EXT}, ALCContext, int, AuxEffectSlotPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static unsafe void AuxiliaryEffectSlotfvDirect(this ALExtensions.Direct<ALExtensions.EXT> direct, ALCContext context, int effectslot, AuxEffectSlotPNameFV param, ref float pflValues)
         {
             fixed (float* pflValues_ptr = &pflValues)
@@ -1502,6 +1817,51 @@ namespace OpenTK.Audio.OpenAL
             {
                 direct.BufferDataDirect(context, buffer, format, data_ptr, size, samplerate);
             }
+        }
+        /// <inheritdoc cref="BufferfvDirect(ALExtensions.Direct, ALCContext, int, BufferPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void BufferfvDirect(this ALExtensions.Direct direct, ALCContext context, int buffer, BufferPNameFV param, Vector2 value)
+        {
+            var value_ptr = (float*)&value;
+            direct.BufferfvDirect(context, buffer, param, value_ptr);
+        }
+        /// <inheritdoc cref="BufferfvDirect(ALExtensions.Direct, ALCContext, int, BufferPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [OverloadResolutionPriority(1)]
+        public static unsafe void BufferfvDirect(this ALExtensions.Direct direct, ALCContext context, int buffer, BufferPNameFV param, System.Numerics.Vector2 value)
+        {
+            var value_ptr = (float*)&value;
+            direct.BufferfvDirect(context, buffer, param, value_ptr);
+        }
+        /// <inheritdoc cref="BufferfvDirect(ALExtensions.Direct, ALCContext, int, BufferPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void BufferfvDirect(this ALExtensions.Direct direct, ALCContext context, int buffer, BufferPNameFV param, Vector3 value)
+        {
+            var value_ptr = (float*)&value;
+            direct.BufferfvDirect(context, buffer, param, value_ptr);
+        }
+        /// <inheritdoc cref="BufferfvDirect(ALExtensions.Direct, ALCContext, int, BufferPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [OverloadResolutionPriority(1)]
+        public static unsafe void BufferfvDirect(this ALExtensions.Direct direct, ALCContext context, int buffer, BufferPNameFV param, System.Numerics.Vector3 value)
+        {
+            var value_ptr = (float*)&value;
+            direct.BufferfvDirect(context, buffer, param, value_ptr);
+        }
+        /// <inheritdoc cref="BufferfvDirect(ALExtensions.Direct, ALCContext, int, BufferPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void BufferfvDirect(this ALExtensions.Direct direct, ALCContext context, int buffer, BufferPNameFV param, Vector4 value)
+        {
+            var value_ptr = (float*)&value;
+            direct.BufferfvDirect(context, buffer, param, value_ptr);
+        }
+        /// <inheritdoc cref="BufferfvDirect(ALExtensions.Direct, ALCContext, int, BufferPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [OverloadResolutionPriority(1)]
+        public static unsafe void BufferfvDirect(this ALExtensions.Direct direct, ALCContext context, int buffer, BufferPNameFV param, System.Numerics.Vector4 value)
+        {
+            var value_ptr = (float*)&value;
+            direct.BufferfvDirect(context, buffer, param, value_ptr);
         }
         /// <inheritdoc cref="BufferfvDirect(ALExtensions.Direct, ALCContext, int, BufferPNameFV, float*)"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -2140,6 +2500,51 @@ namespace OpenTK.Audio.OpenAL
         }
         /// <inheritdoc cref="EffectfvDirect(ALExtensions.Direct{ALExtensions.EXT}, ALCContext, int, EffectPNameFV, float*)"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void EffectfvDirect(this ALExtensions.Direct<ALExtensions.EXT> direct, ALCContext context, int effect, EffectPNameFV param, Vector2 pflValues)
+        {
+            var pflValues_ptr = (float*)&pflValues;
+            direct.EffectfvDirect(context, effect, param, pflValues_ptr);
+        }
+        /// <inheritdoc cref="EffectfvDirect(ALExtensions.Direct{ALExtensions.EXT}, ALCContext, int, EffectPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [OverloadResolutionPriority(1)]
+        public static unsafe void EffectfvDirect(this ALExtensions.Direct<ALExtensions.EXT> direct, ALCContext context, int effect, EffectPNameFV param, System.Numerics.Vector2 pflValues)
+        {
+            var pflValues_ptr = (float*)&pflValues;
+            direct.EffectfvDirect(context, effect, param, pflValues_ptr);
+        }
+        /// <inheritdoc cref="EffectfvDirect(ALExtensions.Direct{ALExtensions.EXT}, ALCContext, int, EffectPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void EffectfvDirect(this ALExtensions.Direct<ALExtensions.EXT> direct, ALCContext context, int effect, EffectPNameFV param, Vector3 pflValues)
+        {
+            var pflValues_ptr = (float*)&pflValues;
+            direct.EffectfvDirect(context, effect, param, pflValues_ptr);
+        }
+        /// <inheritdoc cref="EffectfvDirect(ALExtensions.Direct{ALExtensions.EXT}, ALCContext, int, EffectPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [OverloadResolutionPriority(1)]
+        public static unsafe void EffectfvDirect(this ALExtensions.Direct<ALExtensions.EXT> direct, ALCContext context, int effect, EffectPNameFV param, System.Numerics.Vector3 pflValues)
+        {
+            var pflValues_ptr = (float*)&pflValues;
+            direct.EffectfvDirect(context, effect, param, pflValues_ptr);
+        }
+        /// <inheritdoc cref="EffectfvDirect(ALExtensions.Direct{ALExtensions.EXT}, ALCContext, int, EffectPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void EffectfvDirect(this ALExtensions.Direct<ALExtensions.EXT> direct, ALCContext context, int effect, EffectPNameFV param, Vector4 pflValues)
+        {
+            var pflValues_ptr = (float*)&pflValues;
+            direct.EffectfvDirect(context, effect, param, pflValues_ptr);
+        }
+        /// <inheritdoc cref="EffectfvDirect(ALExtensions.Direct{ALExtensions.EXT}, ALCContext, int, EffectPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [OverloadResolutionPriority(1)]
+        public static unsafe void EffectfvDirect(this ALExtensions.Direct<ALExtensions.EXT> direct, ALCContext context, int effect, EffectPNameFV param, System.Numerics.Vector4 pflValues)
+        {
+            var pflValues_ptr = (float*)&pflValues;
+            direct.EffectfvDirect(context, effect, param, pflValues_ptr);
+        }
+        /// <inheritdoc cref="EffectfvDirect(ALExtensions.Direct{ALExtensions.EXT}, ALCContext, int, EffectPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static unsafe void EffectfvDirect(this ALExtensions.Direct<ALExtensions.EXT> direct, ALCContext context, int effect, EffectPNameFV param, ref float pflValues)
         {
             fixed (float* pflValues_ptr = &pflValues)
@@ -2256,6 +2661,51 @@ namespace OpenTK.Audio.OpenAL
             {
                 direct.EventControlDirectSOFT(context, count, types_ptr, enable);
             }
+        }
+        /// <inheritdoc cref="FilterfvDirect(ALExtensions.Direct{ALExtensions.EXT}, ALCContext, int, FilterPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void FilterfvDirect(this ALExtensions.Direct<ALExtensions.EXT> direct, ALCContext context, int filter, FilterPNameFV param, Vector2 pflValues)
+        {
+            var pflValues_ptr = (float*)&pflValues;
+            direct.FilterfvDirect(context, filter, param, pflValues_ptr);
+        }
+        /// <inheritdoc cref="FilterfvDirect(ALExtensions.Direct{ALExtensions.EXT}, ALCContext, int, FilterPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [OverloadResolutionPriority(1)]
+        public static unsafe void FilterfvDirect(this ALExtensions.Direct<ALExtensions.EXT> direct, ALCContext context, int filter, FilterPNameFV param, System.Numerics.Vector2 pflValues)
+        {
+            var pflValues_ptr = (float*)&pflValues;
+            direct.FilterfvDirect(context, filter, param, pflValues_ptr);
+        }
+        /// <inheritdoc cref="FilterfvDirect(ALExtensions.Direct{ALExtensions.EXT}, ALCContext, int, FilterPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void FilterfvDirect(this ALExtensions.Direct<ALExtensions.EXT> direct, ALCContext context, int filter, FilterPNameFV param, Vector3 pflValues)
+        {
+            var pflValues_ptr = (float*)&pflValues;
+            direct.FilterfvDirect(context, filter, param, pflValues_ptr);
+        }
+        /// <inheritdoc cref="FilterfvDirect(ALExtensions.Direct{ALExtensions.EXT}, ALCContext, int, FilterPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [OverloadResolutionPriority(1)]
+        public static unsafe void FilterfvDirect(this ALExtensions.Direct<ALExtensions.EXT> direct, ALCContext context, int filter, FilterPNameFV param, System.Numerics.Vector3 pflValues)
+        {
+            var pflValues_ptr = (float*)&pflValues;
+            direct.FilterfvDirect(context, filter, param, pflValues_ptr);
+        }
+        /// <inheritdoc cref="FilterfvDirect(ALExtensions.Direct{ALExtensions.EXT}, ALCContext, int, FilterPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void FilterfvDirect(this ALExtensions.Direct<ALExtensions.EXT> direct, ALCContext context, int filter, FilterPNameFV param, Vector4 pflValues)
+        {
+            var pflValues_ptr = (float*)&pflValues;
+            direct.FilterfvDirect(context, filter, param, pflValues_ptr);
+        }
+        /// <inheritdoc cref="FilterfvDirect(ALExtensions.Direct{ALExtensions.EXT}, ALCContext, int, FilterPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [OverloadResolutionPriority(1)]
+        public static unsafe void FilterfvDirect(this ALExtensions.Direct<ALExtensions.EXT> direct, ALCContext context, int filter, FilterPNameFV param, System.Numerics.Vector4 pflValues)
+        {
+            var pflValues_ptr = (float*)&pflValues;
+            direct.FilterfvDirect(context, filter, param, pflValues_ptr);
         }
         /// <inheritdoc cref="FilterfvDirect(ALExtensions.Direct{ALExtensions.EXT}, ALCContext, int, FilterPNameFV, float*)"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -2583,6 +3033,51 @@ namespace OpenTK.Audio.OpenAL
         }
         /// <inheritdoc cref="GetAuxiliaryEffectSlotfvDirect(ALExtensions.Direct{ALExtensions.EXT}, ALCContext, int, AuxEffectSlotGetPNameFV, float*)"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void GetAuxiliaryEffectSlotfvDirect(this ALExtensions.Direct<ALExtensions.EXT> direct, ALCContext context, int effectslot, AuxEffectSlotGetPNameFV param, Vector2 pflValues)
+        {
+            var pflValues_ptr = (float*)&pflValues;
+            direct.GetAuxiliaryEffectSlotfvDirect(context, effectslot, param, pflValues_ptr);
+        }
+        /// <inheritdoc cref="GetAuxiliaryEffectSlotfvDirect(ALExtensions.Direct{ALExtensions.EXT}, ALCContext, int, AuxEffectSlotGetPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [OverloadResolutionPriority(1)]
+        public static unsafe void GetAuxiliaryEffectSlotfvDirect(this ALExtensions.Direct<ALExtensions.EXT> direct, ALCContext context, int effectslot, AuxEffectSlotGetPNameFV param, System.Numerics.Vector2 pflValues)
+        {
+            var pflValues_ptr = (float*)&pflValues;
+            direct.GetAuxiliaryEffectSlotfvDirect(context, effectslot, param, pflValues_ptr);
+        }
+        /// <inheritdoc cref="GetAuxiliaryEffectSlotfvDirect(ALExtensions.Direct{ALExtensions.EXT}, ALCContext, int, AuxEffectSlotGetPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void GetAuxiliaryEffectSlotfvDirect(this ALExtensions.Direct<ALExtensions.EXT> direct, ALCContext context, int effectslot, AuxEffectSlotGetPNameFV param, Vector3 pflValues)
+        {
+            var pflValues_ptr = (float*)&pflValues;
+            direct.GetAuxiliaryEffectSlotfvDirect(context, effectslot, param, pflValues_ptr);
+        }
+        /// <inheritdoc cref="GetAuxiliaryEffectSlotfvDirect(ALExtensions.Direct{ALExtensions.EXT}, ALCContext, int, AuxEffectSlotGetPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [OverloadResolutionPriority(1)]
+        public static unsafe void GetAuxiliaryEffectSlotfvDirect(this ALExtensions.Direct<ALExtensions.EXT> direct, ALCContext context, int effectslot, AuxEffectSlotGetPNameFV param, System.Numerics.Vector3 pflValues)
+        {
+            var pflValues_ptr = (float*)&pflValues;
+            direct.GetAuxiliaryEffectSlotfvDirect(context, effectslot, param, pflValues_ptr);
+        }
+        /// <inheritdoc cref="GetAuxiliaryEffectSlotfvDirect(ALExtensions.Direct{ALExtensions.EXT}, ALCContext, int, AuxEffectSlotGetPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void GetAuxiliaryEffectSlotfvDirect(this ALExtensions.Direct<ALExtensions.EXT> direct, ALCContext context, int effectslot, AuxEffectSlotGetPNameFV param, Vector4 pflValues)
+        {
+            var pflValues_ptr = (float*)&pflValues;
+            direct.GetAuxiliaryEffectSlotfvDirect(context, effectslot, param, pflValues_ptr);
+        }
+        /// <inheritdoc cref="GetAuxiliaryEffectSlotfvDirect(ALExtensions.Direct{ALExtensions.EXT}, ALCContext, int, AuxEffectSlotGetPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [OverloadResolutionPriority(1)]
+        public static unsafe void GetAuxiliaryEffectSlotfvDirect(this ALExtensions.Direct<ALExtensions.EXT> direct, ALCContext context, int effectslot, AuxEffectSlotGetPNameFV param, System.Numerics.Vector4 pflValues)
+        {
+            var pflValues_ptr = (float*)&pflValues;
+            direct.GetAuxiliaryEffectSlotfvDirect(context, effectslot, param, pflValues_ptr);
+        }
+        /// <inheritdoc cref="GetAuxiliaryEffectSlotfvDirect(ALExtensions.Direct{ALExtensions.EXT}, ALCContext, int, AuxEffectSlotGetPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static unsafe void GetAuxiliaryEffectSlotfvDirect(this ALExtensions.Direct<ALExtensions.EXT> direct, ALCContext context, int effectslot, AuxEffectSlotGetPNameFV param, ref float pflValues)
         {
             fixed (float* pflValues_ptr = &pflValues)
@@ -2749,6 +3244,51 @@ namespace OpenTK.Audio.OpenAL
             {
                 direct.GetBufferfDirect(context, buffer, param, value_ptr);
             }
+        }
+        /// <inheritdoc cref="GetBufferfvDirect(ALExtensions.Direct, ALCContext, int, BufferGetPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void GetBufferfvDirect(this ALExtensions.Direct direct, ALCContext context, int buffer, BufferGetPNameFV param, Vector2 value)
+        {
+            var value_ptr = (float*)&value;
+            direct.GetBufferfvDirect(context, buffer, param, value_ptr);
+        }
+        /// <inheritdoc cref="GetBufferfvDirect(ALExtensions.Direct, ALCContext, int, BufferGetPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [OverloadResolutionPriority(1)]
+        public static unsafe void GetBufferfvDirect(this ALExtensions.Direct direct, ALCContext context, int buffer, BufferGetPNameFV param, System.Numerics.Vector2 value)
+        {
+            var value_ptr = (float*)&value;
+            direct.GetBufferfvDirect(context, buffer, param, value_ptr);
+        }
+        /// <inheritdoc cref="GetBufferfvDirect(ALExtensions.Direct, ALCContext, int, BufferGetPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void GetBufferfvDirect(this ALExtensions.Direct direct, ALCContext context, int buffer, BufferGetPNameFV param, Vector3 value)
+        {
+            var value_ptr = (float*)&value;
+            direct.GetBufferfvDirect(context, buffer, param, value_ptr);
+        }
+        /// <inheritdoc cref="GetBufferfvDirect(ALExtensions.Direct, ALCContext, int, BufferGetPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [OverloadResolutionPriority(1)]
+        public static unsafe void GetBufferfvDirect(this ALExtensions.Direct direct, ALCContext context, int buffer, BufferGetPNameFV param, System.Numerics.Vector3 value)
+        {
+            var value_ptr = (float*)&value;
+            direct.GetBufferfvDirect(context, buffer, param, value_ptr);
+        }
+        /// <inheritdoc cref="GetBufferfvDirect(ALExtensions.Direct, ALCContext, int, BufferGetPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void GetBufferfvDirect(this ALExtensions.Direct direct, ALCContext context, int buffer, BufferGetPNameFV param, Vector4 value)
+        {
+            var value_ptr = (float*)&value;
+            direct.GetBufferfvDirect(context, buffer, param, value_ptr);
+        }
+        /// <inheritdoc cref="GetBufferfvDirect(ALExtensions.Direct, ALCContext, int, BufferGetPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [OverloadResolutionPriority(1)]
+        public static unsafe void GetBufferfvDirect(this ALExtensions.Direct direct, ALCContext context, int buffer, BufferGetPNameFV param, System.Numerics.Vector4 value)
+        {
+            var value_ptr = (float*)&value;
+            direct.GetBufferfvDirect(context, buffer, param, value_ptr);
         }
         /// <inheritdoc cref="GetBufferfvDirect(ALExtensions.Direct, ALCContext, int, BufferGetPNameFV, float*)"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -3053,6 +3593,51 @@ namespace OpenTK.Audio.OpenAL
         }
         /// <inheritdoc cref="GetEffectfvDirect(ALExtensions.Direct{ALExtensions.EXT}, ALCContext, int, EffectGetPNameFV, float*)"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void GetEffectfvDirect(this ALExtensions.Direct<ALExtensions.EXT> direct, ALCContext context, int effect, EffectGetPNameFV param, Vector2 pflValues)
+        {
+            var pflValues_ptr = (float*)&pflValues;
+            direct.GetEffectfvDirect(context, effect, param, pflValues_ptr);
+        }
+        /// <inheritdoc cref="GetEffectfvDirect(ALExtensions.Direct{ALExtensions.EXT}, ALCContext, int, EffectGetPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [OverloadResolutionPriority(1)]
+        public static unsafe void GetEffectfvDirect(this ALExtensions.Direct<ALExtensions.EXT> direct, ALCContext context, int effect, EffectGetPNameFV param, System.Numerics.Vector2 pflValues)
+        {
+            var pflValues_ptr = (float*)&pflValues;
+            direct.GetEffectfvDirect(context, effect, param, pflValues_ptr);
+        }
+        /// <inheritdoc cref="GetEffectfvDirect(ALExtensions.Direct{ALExtensions.EXT}, ALCContext, int, EffectGetPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void GetEffectfvDirect(this ALExtensions.Direct<ALExtensions.EXT> direct, ALCContext context, int effect, EffectGetPNameFV param, Vector3 pflValues)
+        {
+            var pflValues_ptr = (float*)&pflValues;
+            direct.GetEffectfvDirect(context, effect, param, pflValues_ptr);
+        }
+        /// <inheritdoc cref="GetEffectfvDirect(ALExtensions.Direct{ALExtensions.EXT}, ALCContext, int, EffectGetPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [OverloadResolutionPriority(1)]
+        public static unsafe void GetEffectfvDirect(this ALExtensions.Direct<ALExtensions.EXT> direct, ALCContext context, int effect, EffectGetPNameFV param, System.Numerics.Vector3 pflValues)
+        {
+            var pflValues_ptr = (float*)&pflValues;
+            direct.GetEffectfvDirect(context, effect, param, pflValues_ptr);
+        }
+        /// <inheritdoc cref="GetEffectfvDirect(ALExtensions.Direct{ALExtensions.EXT}, ALCContext, int, EffectGetPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void GetEffectfvDirect(this ALExtensions.Direct<ALExtensions.EXT> direct, ALCContext context, int effect, EffectGetPNameFV param, Vector4 pflValues)
+        {
+            var pflValues_ptr = (float*)&pflValues;
+            direct.GetEffectfvDirect(context, effect, param, pflValues_ptr);
+        }
+        /// <inheritdoc cref="GetEffectfvDirect(ALExtensions.Direct{ALExtensions.EXT}, ALCContext, int, EffectGetPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [OverloadResolutionPriority(1)]
+        public static unsafe void GetEffectfvDirect(this ALExtensions.Direct<ALExtensions.EXT> direct, ALCContext context, int effect, EffectGetPNameFV param, System.Numerics.Vector4 pflValues)
+        {
+            var pflValues_ptr = (float*)&pflValues;
+            direct.GetEffectfvDirect(context, effect, param, pflValues_ptr);
+        }
+        /// <inheritdoc cref="GetEffectfvDirect(ALExtensions.Direct{ALExtensions.EXT}, ALCContext, int, EffectGetPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static unsafe void GetEffectfvDirect(this ALExtensions.Direct<ALExtensions.EXT> direct, ALCContext context, int effect, EffectGetPNameFV param, ref float pflValues)
         {
             fixed (float* pflValues_ptr = &pflValues)
@@ -3167,6 +3752,51 @@ namespace OpenTK.Audio.OpenAL
             {
                 direct.GetFilterfDirect(context, filter, param, pflValue_ptr);
             }
+        }
+        /// <inheritdoc cref="GetFilterfvDirect(ALExtensions.Direct{ALExtensions.EXT}, ALCContext, int, FilterGetPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void GetFilterfvDirect(this ALExtensions.Direct<ALExtensions.EXT> direct, ALCContext context, int filter, FilterGetPNameFV param, Vector2 pflValues)
+        {
+            var pflValues_ptr = (float*)&pflValues;
+            direct.GetFilterfvDirect(context, filter, param, pflValues_ptr);
+        }
+        /// <inheritdoc cref="GetFilterfvDirect(ALExtensions.Direct{ALExtensions.EXT}, ALCContext, int, FilterGetPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [OverloadResolutionPriority(1)]
+        public static unsafe void GetFilterfvDirect(this ALExtensions.Direct<ALExtensions.EXT> direct, ALCContext context, int filter, FilterGetPNameFV param, System.Numerics.Vector2 pflValues)
+        {
+            var pflValues_ptr = (float*)&pflValues;
+            direct.GetFilterfvDirect(context, filter, param, pflValues_ptr);
+        }
+        /// <inheritdoc cref="GetFilterfvDirect(ALExtensions.Direct{ALExtensions.EXT}, ALCContext, int, FilterGetPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void GetFilterfvDirect(this ALExtensions.Direct<ALExtensions.EXT> direct, ALCContext context, int filter, FilterGetPNameFV param, Vector3 pflValues)
+        {
+            var pflValues_ptr = (float*)&pflValues;
+            direct.GetFilterfvDirect(context, filter, param, pflValues_ptr);
+        }
+        /// <inheritdoc cref="GetFilterfvDirect(ALExtensions.Direct{ALExtensions.EXT}, ALCContext, int, FilterGetPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [OverloadResolutionPriority(1)]
+        public static unsafe void GetFilterfvDirect(this ALExtensions.Direct<ALExtensions.EXT> direct, ALCContext context, int filter, FilterGetPNameFV param, System.Numerics.Vector3 pflValues)
+        {
+            var pflValues_ptr = (float*)&pflValues;
+            direct.GetFilterfvDirect(context, filter, param, pflValues_ptr);
+        }
+        /// <inheritdoc cref="GetFilterfvDirect(ALExtensions.Direct{ALExtensions.EXT}, ALCContext, int, FilterGetPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void GetFilterfvDirect(this ALExtensions.Direct<ALExtensions.EXT> direct, ALCContext context, int filter, FilterGetPNameFV param, Vector4 pflValues)
+        {
+            var pflValues_ptr = (float*)&pflValues;
+            direct.GetFilterfvDirect(context, filter, param, pflValues_ptr);
+        }
+        /// <inheritdoc cref="GetFilterfvDirect(ALExtensions.Direct{ALExtensions.EXT}, ALCContext, int, FilterGetPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [OverloadResolutionPriority(1)]
+        public static unsafe void GetFilterfvDirect(this ALExtensions.Direct<ALExtensions.EXT> direct, ALCContext context, int filter, FilterGetPNameFV param, System.Numerics.Vector4 pflValues)
+        {
+            var pflValues_ptr = (float*)&pflValues;
+            direct.GetFilterfvDirect(context, filter, param, pflValues_ptr);
         }
         /// <inheritdoc cref="GetFilterfvDirect(ALExtensions.Direct{ALExtensions.EXT}, ALCContext, int, FilterGetPNameFV, float*)"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -3363,6 +3993,51 @@ namespace OpenTK.Audio.OpenAL
             {
                 direct.GetListenerfDirect(context, param, value_ptr);
             }
+        }
+        /// <inheritdoc cref="GetListenerfvDirect(ALExtensions.Direct, ALCContext, ListenerGetPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void GetListenerfvDirect(this ALExtensions.Direct direct, ALCContext context, ListenerGetPNameFV param, Vector2 values)
+        {
+            var values_ptr = (float*)&values;
+            direct.GetListenerfvDirect(context, param, values_ptr);
+        }
+        /// <inheritdoc cref="GetListenerfvDirect(ALExtensions.Direct, ALCContext, ListenerGetPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [OverloadResolutionPriority(1)]
+        public static unsafe void GetListenerfvDirect(this ALExtensions.Direct direct, ALCContext context, ListenerGetPNameFV param, System.Numerics.Vector2 values)
+        {
+            var values_ptr = (float*)&values;
+            direct.GetListenerfvDirect(context, param, values_ptr);
+        }
+        /// <inheritdoc cref="GetListenerfvDirect(ALExtensions.Direct, ALCContext, ListenerGetPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void GetListenerfvDirect(this ALExtensions.Direct direct, ALCContext context, ListenerGetPNameFV param, Vector3 values)
+        {
+            var values_ptr = (float*)&values;
+            direct.GetListenerfvDirect(context, param, values_ptr);
+        }
+        /// <inheritdoc cref="GetListenerfvDirect(ALExtensions.Direct, ALCContext, ListenerGetPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [OverloadResolutionPriority(1)]
+        public static unsafe void GetListenerfvDirect(this ALExtensions.Direct direct, ALCContext context, ListenerGetPNameFV param, System.Numerics.Vector3 values)
+        {
+            var values_ptr = (float*)&values;
+            direct.GetListenerfvDirect(context, param, values_ptr);
+        }
+        /// <inheritdoc cref="GetListenerfvDirect(ALExtensions.Direct, ALCContext, ListenerGetPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void GetListenerfvDirect(this ALExtensions.Direct direct, ALCContext context, ListenerGetPNameFV param, Vector4 values)
+        {
+            var values_ptr = (float*)&values;
+            direct.GetListenerfvDirect(context, param, values_ptr);
+        }
+        /// <inheritdoc cref="GetListenerfvDirect(ALExtensions.Direct, ALCContext, ListenerGetPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [OverloadResolutionPriority(1)]
+        public static unsafe void GetListenerfvDirect(this ALExtensions.Direct direct, ALCContext context, ListenerGetPNameFV param, System.Numerics.Vector4 values)
+        {
+            var values_ptr = (float*)&values;
+            direct.GetListenerfvDirect(context, param, values_ptr);
         }
         /// <inheritdoc cref="GetListenerfvDirect(ALExtensions.Direct, ALCContext, ListenerGetPNameFV, float*)"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -3665,6 +4340,51 @@ namespace OpenTK.Audio.OpenAL
         }
         /// <inheritdoc cref="GetSourcefvDirect(ALExtensions.Direct, ALCContext, int, SourceGetPNameFV, float*)"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void GetSourcefvDirect(this ALExtensions.Direct direct, ALCContext context, int source, SourceGetPNameFV param, Vector2 values)
+        {
+            var values_ptr = (float*)&values;
+            direct.GetSourcefvDirect(context, source, param, values_ptr);
+        }
+        /// <inheritdoc cref="GetSourcefvDirect(ALExtensions.Direct, ALCContext, int, SourceGetPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [OverloadResolutionPriority(1)]
+        public static unsafe void GetSourcefvDirect(this ALExtensions.Direct direct, ALCContext context, int source, SourceGetPNameFV param, System.Numerics.Vector2 values)
+        {
+            var values_ptr = (float*)&values;
+            direct.GetSourcefvDirect(context, source, param, values_ptr);
+        }
+        /// <inheritdoc cref="GetSourcefvDirect(ALExtensions.Direct, ALCContext, int, SourceGetPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void GetSourcefvDirect(this ALExtensions.Direct direct, ALCContext context, int source, SourceGetPNameFV param, Vector3 values)
+        {
+            var values_ptr = (float*)&values;
+            direct.GetSourcefvDirect(context, source, param, values_ptr);
+        }
+        /// <inheritdoc cref="GetSourcefvDirect(ALExtensions.Direct, ALCContext, int, SourceGetPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [OverloadResolutionPriority(1)]
+        public static unsafe void GetSourcefvDirect(this ALExtensions.Direct direct, ALCContext context, int source, SourceGetPNameFV param, System.Numerics.Vector3 values)
+        {
+            var values_ptr = (float*)&values;
+            direct.GetSourcefvDirect(context, source, param, values_ptr);
+        }
+        /// <inheritdoc cref="GetSourcefvDirect(ALExtensions.Direct, ALCContext, int, SourceGetPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void GetSourcefvDirect(this ALExtensions.Direct direct, ALCContext context, int source, SourceGetPNameFV param, Vector4 values)
+        {
+            var values_ptr = (float*)&values;
+            direct.GetSourcefvDirect(context, source, param, values_ptr);
+        }
+        /// <inheritdoc cref="GetSourcefvDirect(ALExtensions.Direct, ALCContext, int, SourceGetPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [OverloadResolutionPriority(1)]
+        public static unsafe void GetSourcefvDirect(this ALExtensions.Direct direct, ALCContext context, int source, SourceGetPNameFV param, System.Numerics.Vector4 values)
+        {
+            var values_ptr = (float*)&values;
+            direct.GetSourcefvDirect(context, source, param, values_ptr);
+        }
+        /// <inheritdoc cref="GetSourcefvDirect(ALExtensions.Direct, ALCContext, int, SourceGetPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static unsafe void GetSourcefvDirect(this ALExtensions.Direct direct, ALCContext context, int source, SourceGetPNameFV param, ref float values)
         {
             fixed (float* values_ptr = &values)
@@ -3846,6 +4566,51 @@ namespace OpenTK.Audio.OpenAL
             }
             if (nullTerminatedUtf8Extname_array is not null) ArrayPool<byte>.Shared.Return(nullTerminatedUtf8Extname_array, true);
             return returnValue;
+        }
+        /// <inheritdoc cref="ListenerfvDirect(ALExtensions.Direct, ALCContext, ListenerPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void ListenerfvDirect(this ALExtensions.Direct direct, ALCContext context, ListenerPNameFV param, Vector2 values)
+        {
+            var values_ptr = (float*)&values;
+            direct.ListenerfvDirect(context, param, values_ptr);
+        }
+        /// <inheritdoc cref="ListenerfvDirect(ALExtensions.Direct, ALCContext, ListenerPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [OverloadResolutionPriority(1)]
+        public static unsafe void ListenerfvDirect(this ALExtensions.Direct direct, ALCContext context, ListenerPNameFV param, System.Numerics.Vector2 values)
+        {
+            var values_ptr = (float*)&values;
+            direct.ListenerfvDirect(context, param, values_ptr);
+        }
+        /// <inheritdoc cref="ListenerfvDirect(ALExtensions.Direct, ALCContext, ListenerPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void ListenerfvDirect(this ALExtensions.Direct direct, ALCContext context, ListenerPNameFV param, Vector3 values)
+        {
+            var values_ptr = (float*)&values;
+            direct.ListenerfvDirect(context, param, values_ptr);
+        }
+        /// <inheritdoc cref="ListenerfvDirect(ALExtensions.Direct, ALCContext, ListenerPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [OverloadResolutionPriority(1)]
+        public static unsafe void ListenerfvDirect(this ALExtensions.Direct direct, ALCContext context, ListenerPNameFV param, System.Numerics.Vector3 values)
+        {
+            var values_ptr = (float*)&values;
+            direct.ListenerfvDirect(context, param, values_ptr);
+        }
+        /// <inheritdoc cref="ListenerfvDirect(ALExtensions.Direct, ALCContext, ListenerPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void ListenerfvDirect(this ALExtensions.Direct direct, ALCContext context, ListenerPNameFV param, Vector4 values)
+        {
+            var values_ptr = (float*)&values;
+            direct.ListenerfvDirect(context, param, values_ptr);
+        }
+        /// <inheritdoc cref="ListenerfvDirect(ALExtensions.Direct, ALCContext, ListenerPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [OverloadResolutionPriority(1)]
+        public static unsafe void ListenerfvDirect(this ALExtensions.Direct direct, ALCContext context, ListenerPNameFV param, System.Numerics.Vector4 values)
+        {
+            var values_ptr = (float*)&values;
+            direct.ListenerfvDirect(context, param, values_ptr);
         }
         /// <inheritdoc cref="ListenerfvDirect(ALExtensions.Direct, ALCContext, ListenerPNameFV, float*)"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -4036,6 +4801,51 @@ namespace OpenTK.Audio.OpenAL
             {
                 direct.SourcedvDirectSOFT(context, source, param, values_ptr);
             }
+        }
+        /// <inheritdoc cref="SourcefvDirect(ALExtensions.Direct, ALCContext, int, SourcePNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void SourcefvDirect(this ALExtensions.Direct direct, ALCContext context, int source, SourcePNameFV param, Vector2 value)
+        {
+            var value_ptr = (float*)&value;
+            direct.SourcefvDirect(context, source, param, value_ptr);
+        }
+        /// <inheritdoc cref="SourcefvDirect(ALExtensions.Direct, ALCContext, int, SourcePNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [OverloadResolutionPriority(1)]
+        public static unsafe void SourcefvDirect(this ALExtensions.Direct direct, ALCContext context, int source, SourcePNameFV param, System.Numerics.Vector2 value)
+        {
+            var value_ptr = (float*)&value;
+            direct.SourcefvDirect(context, source, param, value_ptr);
+        }
+        /// <inheritdoc cref="SourcefvDirect(ALExtensions.Direct, ALCContext, int, SourcePNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void SourcefvDirect(this ALExtensions.Direct direct, ALCContext context, int source, SourcePNameFV param, Vector3 value)
+        {
+            var value_ptr = (float*)&value;
+            direct.SourcefvDirect(context, source, param, value_ptr);
+        }
+        /// <inheritdoc cref="SourcefvDirect(ALExtensions.Direct, ALCContext, int, SourcePNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [OverloadResolutionPriority(1)]
+        public static unsafe void SourcefvDirect(this ALExtensions.Direct direct, ALCContext context, int source, SourcePNameFV param, System.Numerics.Vector3 value)
+        {
+            var value_ptr = (float*)&value;
+            direct.SourcefvDirect(context, source, param, value_ptr);
+        }
+        /// <inheritdoc cref="SourcefvDirect(ALExtensions.Direct, ALCContext, int, SourcePNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void SourcefvDirect(this ALExtensions.Direct direct, ALCContext context, int source, SourcePNameFV param, Vector4 value)
+        {
+            var value_ptr = (float*)&value;
+            direct.SourcefvDirect(context, source, param, value_ptr);
+        }
+        /// <inheritdoc cref="SourcefvDirect(ALExtensions.Direct, ALCContext, int, SourcePNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [OverloadResolutionPriority(1)]
+        public static unsafe void SourcefvDirect(this ALExtensions.Direct direct, ALCContext context, int source, SourcePNameFV param, System.Numerics.Vector4 value)
+        {
+            var value_ptr = (float*)&value;
+            direct.SourcefvDirect(context, source, param, value_ptr);
         }
         /// <inheritdoc cref="SourcefvDirect(ALExtensions.Direct, ALCContext, int, SourcePNameFV, float*)"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -4353,6 +5163,51 @@ namespace OpenTK.Audio.OpenAL
         }
         /// <inheritdoc cref="AuxiliaryEffectSlotfv(ALExtensions.EXT, int, AuxEffectSlotPNameFV, float*)"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void AuxiliaryEffectSlotfv(this ALExtensions.EXT ext, int effectslot, AuxEffectSlotPNameFV param, Vector2 pflValues)
+        {
+            var pflValues_ptr = (float*)&pflValues;
+            ext.AuxiliaryEffectSlotfv(effectslot, param, pflValues_ptr);
+        }
+        /// <inheritdoc cref="AuxiliaryEffectSlotfv(ALExtensions.EXT, int, AuxEffectSlotPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [OverloadResolutionPriority(1)]
+        public static unsafe void AuxiliaryEffectSlotfv(this ALExtensions.EXT ext, int effectslot, AuxEffectSlotPNameFV param, System.Numerics.Vector2 pflValues)
+        {
+            var pflValues_ptr = (float*)&pflValues;
+            ext.AuxiliaryEffectSlotfv(effectslot, param, pflValues_ptr);
+        }
+        /// <inheritdoc cref="AuxiliaryEffectSlotfv(ALExtensions.EXT, int, AuxEffectSlotPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void AuxiliaryEffectSlotfv(this ALExtensions.EXT ext, int effectslot, AuxEffectSlotPNameFV param, Vector3 pflValues)
+        {
+            var pflValues_ptr = (float*)&pflValues;
+            ext.AuxiliaryEffectSlotfv(effectslot, param, pflValues_ptr);
+        }
+        /// <inheritdoc cref="AuxiliaryEffectSlotfv(ALExtensions.EXT, int, AuxEffectSlotPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [OverloadResolutionPriority(1)]
+        public static unsafe void AuxiliaryEffectSlotfv(this ALExtensions.EXT ext, int effectslot, AuxEffectSlotPNameFV param, System.Numerics.Vector3 pflValues)
+        {
+            var pflValues_ptr = (float*)&pflValues;
+            ext.AuxiliaryEffectSlotfv(effectslot, param, pflValues_ptr);
+        }
+        /// <inheritdoc cref="AuxiliaryEffectSlotfv(ALExtensions.EXT, int, AuxEffectSlotPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void AuxiliaryEffectSlotfv(this ALExtensions.EXT ext, int effectslot, AuxEffectSlotPNameFV param, Vector4 pflValues)
+        {
+            var pflValues_ptr = (float*)&pflValues;
+            ext.AuxiliaryEffectSlotfv(effectslot, param, pflValues_ptr);
+        }
+        /// <inheritdoc cref="AuxiliaryEffectSlotfv(ALExtensions.EXT, int, AuxEffectSlotPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [OverloadResolutionPriority(1)]
+        public static unsafe void AuxiliaryEffectSlotfv(this ALExtensions.EXT ext, int effectslot, AuxEffectSlotPNameFV param, System.Numerics.Vector4 pflValues)
+        {
+            var pflValues_ptr = (float*)&pflValues;
+            ext.AuxiliaryEffectSlotfv(effectslot, param, pflValues_ptr);
+        }
+        /// <inheritdoc cref="AuxiliaryEffectSlotfv(ALExtensions.EXT, int, AuxEffectSlotPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static unsafe void AuxiliaryEffectSlotfv(this ALExtensions.EXT ext, int effectslot, AuxEffectSlotPNameFV param, ref float pflValues)
         {
             fixed (float* pflValues_ptr = &pflValues)
@@ -4599,6 +5454,51 @@ namespace OpenTK.Audio.OpenAL
         }
         /// <inheritdoc cref="Effectfv(ALExtensions.EXT, int, EffectPNameFV, float*)"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void Effectfv(this ALExtensions.EXT ext, int effect, EffectPNameFV param, Vector2 pflValues)
+        {
+            var pflValues_ptr = (float*)&pflValues;
+            ext.Effectfv(effect, param, pflValues_ptr);
+        }
+        /// <inheritdoc cref="Effectfv(ALExtensions.EXT, int, EffectPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [OverloadResolutionPriority(1)]
+        public static unsafe void Effectfv(this ALExtensions.EXT ext, int effect, EffectPNameFV param, System.Numerics.Vector2 pflValues)
+        {
+            var pflValues_ptr = (float*)&pflValues;
+            ext.Effectfv(effect, param, pflValues_ptr);
+        }
+        /// <inheritdoc cref="Effectfv(ALExtensions.EXT, int, EffectPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void Effectfv(this ALExtensions.EXT ext, int effect, EffectPNameFV param, Vector3 pflValues)
+        {
+            var pflValues_ptr = (float*)&pflValues;
+            ext.Effectfv(effect, param, pflValues_ptr);
+        }
+        /// <inheritdoc cref="Effectfv(ALExtensions.EXT, int, EffectPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [OverloadResolutionPriority(1)]
+        public static unsafe void Effectfv(this ALExtensions.EXT ext, int effect, EffectPNameFV param, System.Numerics.Vector3 pflValues)
+        {
+            var pflValues_ptr = (float*)&pflValues;
+            ext.Effectfv(effect, param, pflValues_ptr);
+        }
+        /// <inheritdoc cref="Effectfv(ALExtensions.EXT, int, EffectPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void Effectfv(this ALExtensions.EXT ext, int effect, EffectPNameFV param, Vector4 pflValues)
+        {
+            var pflValues_ptr = (float*)&pflValues;
+            ext.Effectfv(effect, param, pflValues_ptr);
+        }
+        /// <inheritdoc cref="Effectfv(ALExtensions.EXT, int, EffectPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [OverloadResolutionPriority(1)]
+        public static unsafe void Effectfv(this ALExtensions.EXT ext, int effect, EffectPNameFV param, System.Numerics.Vector4 pflValues)
+        {
+            var pflValues_ptr = (float*)&pflValues;
+            ext.Effectfv(effect, param, pflValues_ptr);
+        }
+        /// <inheritdoc cref="Effectfv(ALExtensions.EXT, int, EffectPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static unsafe void Effectfv(this ALExtensions.EXT ext, int effect, EffectPNameFV param, ref float pflValues)
         {
             fixed (float* pflValues_ptr = &pflValues)
@@ -4650,6 +5550,51 @@ namespace OpenTK.Audio.OpenAL
             {
                 ext.Effectiv(effect, param, piValues_ptr);
             }
+        }
+        /// <inheritdoc cref="Filterfv(ALExtensions.EXT, int, FilterPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void Filterfv(this ALExtensions.EXT ext, int filter, FilterPNameFV param, Vector2 pflValues)
+        {
+            var pflValues_ptr = (float*)&pflValues;
+            ext.Filterfv(filter, param, pflValues_ptr);
+        }
+        /// <inheritdoc cref="Filterfv(ALExtensions.EXT, int, FilterPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [OverloadResolutionPriority(1)]
+        public static unsafe void Filterfv(this ALExtensions.EXT ext, int filter, FilterPNameFV param, System.Numerics.Vector2 pflValues)
+        {
+            var pflValues_ptr = (float*)&pflValues;
+            ext.Filterfv(filter, param, pflValues_ptr);
+        }
+        /// <inheritdoc cref="Filterfv(ALExtensions.EXT, int, FilterPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void Filterfv(this ALExtensions.EXT ext, int filter, FilterPNameFV param, Vector3 pflValues)
+        {
+            var pflValues_ptr = (float*)&pflValues;
+            ext.Filterfv(filter, param, pflValues_ptr);
+        }
+        /// <inheritdoc cref="Filterfv(ALExtensions.EXT, int, FilterPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [OverloadResolutionPriority(1)]
+        public static unsafe void Filterfv(this ALExtensions.EXT ext, int filter, FilterPNameFV param, System.Numerics.Vector3 pflValues)
+        {
+            var pflValues_ptr = (float*)&pflValues;
+            ext.Filterfv(filter, param, pflValues_ptr);
+        }
+        /// <inheritdoc cref="Filterfv(ALExtensions.EXT, int, FilterPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void Filterfv(this ALExtensions.EXT ext, int filter, FilterPNameFV param, Vector4 pflValues)
+        {
+            var pflValues_ptr = (float*)&pflValues;
+            ext.Filterfv(filter, param, pflValues_ptr);
+        }
+        /// <inheritdoc cref="Filterfv(ALExtensions.EXT, int, FilterPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [OverloadResolutionPriority(1)]
+        public static unsafe void Filterfv(this ALExtensions.EXT ext, int filter, FilterPNameFV param, System.Numerics.Vector4 pflValues)
+        {
+            var pflValues_ptr = (float*)&pflValues;
+            ext.Filterfv(filter, param, pflValues_ptr);
         }
         /// <inheritdoc cref="Filterfv(ALExtensions.EXT, int, FilterPNameFV, float*)"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -4874,6 +5819,51 @@ namespace OpenTK.Audio.OpenAL
             {
                 ext.GetAuxiliaryEffectSlotf(effectslot, param, pflValue_ptr);
             }
+        }
+        /// <inheritdoc cref="GetAuxiliaryEffectSlotfv(ALExtensions.EXT, int, AuxEffectSlotGetPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void GetAuxiliaryEffectSlotfv(this ALExtensions.EXT ext, int effectslot, AuxEffectSlotGetPNameFV param, Vector2 pflValues)
+        {
+            var pflValues_ptr = (float*)&pflValues;
+            ext.GetAuxiliaryEffectSlotfv(effectslot, param, pflValues_ptr);
+        }
+        /// <inheritdoc cref="GetAuxiliaryEffectSlotfv(ALExtensions.EXT, int, AuxEffectSlotGetPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [OverloadResolutionPriority(1)]
+        public static unsafe void GetAuxiliaryEffectSlotfv(this ALExtensions.EXT ext, int effectslot, AuxEffectSlotGetPNameFV param, System.Numerics.Vector2 pflValues)
+        {
+            var pflValues_ptr = (float*)&pflValues;
+            ext.GetAuxiliaryEffectSlotfv(effectslot, param, pflValues_ptr);
+        }
+        /// <inheritdoc cref="GetAuxiliaryEffectSlotfv(ALExtensions.EXT, int, AuxEffectSlotGetPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void GetAuxiliaryEffectSlotfv(this ALExtensions.EXT ext, int effectslot, AuxEffectSlotGetPNameFV param, Vector3 pflValues)
+        {
+            var pflValues_ptr = (float*)&pflValues;
+            ext.GetAuxiliaryEffectSlotfv(effectslot, param, pflValues_ptr);
+        }
+        /// <inheritdoc cref="GetAuxiliaryEffectSlotfv(ALExtensions.EXT, int, AuxEffectSlotGetPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [OverloadResolutionPriority(1)]
+        public static unsafe void GetAuxiliaryEffectSlotfv(this ALExtensions.EXT ext, int effectslot, AuxEffectSlotGetPNameFV param, System.Numerics.Vector3 pflValues)
+        {
+            var pflValues_ptr = (float*)&pflValues;
+            ext.GetAuxiliaryEffectSlotfv(effectslot, param, pflValues_ptr);
+        }
+        /// <inheritdoc cref="GetAuxiliaryEffectSlotfv(ALExtensions.EXT, int, AuxEffectSlotGetPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void GetAuxiliaryEffectSlotfv(this ALExtensions.EXT ext, int effectslot, AuxEffectSlotGetPNameFV param, Vector4 pflValues)
+        {
+            var pflValues_ptr = (float*)&pflValues;
+            ext.GetAuxiliaryEffectSlotfv(effectslot, param, pflValues_ptr);
+        }
+        /// <inheritdoc cref="GetAuxiliaryEffectSlotfv(ALExtensions.EXT, int, AuxEffectSlotGetPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [OverloadResolutionPriority(1)]
+        public static unsafe void GetAuxiliaryEffectSlotfv(this ALExtensions.EXT ext, int effectslot, AuxEffectSlotGetPNameFV param, System.Numerics.Vector4 pflValues)
+        {
+            var pflValues_ptr = (float*)&pflValues;
+            ext.GetAuxiliaryEffectSlotfv(effectslot, param, pflValues_ptr);
         }
         /// <inheritdoc cref="GetAuxiliaryEffectSlotfv(ALExtensions.EXT, int, AuxEffectSlotGetPNameFV, float*)"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -5114,6 +6104,51 @@ namespace OpenTK.Audio.OpenAL
         }
         /// <inheritdoc cref="GetEffectfv(ALExtensions.EXT, int, EffectGetPNameFV, float*)"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void GetEffectfv(this ALExtensions.EXT ext, int effect, EffectGetPNameFV param, Vector2 pflValues)
+        {
+            var pflValues_ptr = (float*)&pflValues;
+            ext.GetEffectfv(effect, param, pflValues_ptr);
+        }
+        /// <inheritdoc cref="GetEffectfv(ALExtensions.EXT, int, EffectGetPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [OverloadResolutionPriority(1)]
+        public static unsafe void GetEffectfv(this ALExtensions.EXT ext, int effect, EffectGetPNameFV param, System.Numerics.Vector2 pflValues)
+        {
+            var pflValues_ptr = (float*)&pflValues;
+            ext.GetEffectfv(effect, param, pflValues_ptr);
+        }
+        /// <inheritdoc cref="GetEffectfv(ALExtensions.EXT, int, EffectGetPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void GetEffectfv(this ALExtensions.EXT ext, int effect, EffectGetPNameFV param, Vector3 pflValues)
+        {
+            var pflValues_ptr = (float*)&pflValues;
+            ext.GetEffectfv(effect, param, pflValues_ptr);
+        }
+        /// <inheritdoc cref="GetEffectfv(ALExtensions.EXT, int, EffectGetPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [OverloadResolutionPriority(1)]
+        public static unsafe void GetEffectfv(this ALExtensions.EXT ext, int effect, EffectGetPNameFV param, System.Numerics.Vector3 pflValues)
+        {
+            var pflValues_ptr = (float*)&pflValues;
+            ext.GetEffectfv(effect, param, pflValues_ptr);
+        }
+        /// <inheritdoc cref="GetEffectfv(ALExtensions.EXT, int, EffectGetPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void GetEffectfv(this ALExtensions.EXT ext, int effect, EffectGetPNameFV param, Vector4 pflValues)
+        {
+            var pflValues_ptr = (float*)&pflValues;
+            ext.GetEffectfv(effect, param, pflValues_ptr);
+        }
+        /// <inheritdoc cref="GetEffectfv(ALExtensions.EXT, int, EffectGetPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [OverloadResolutionPriority(1)]
+        public static unsafe void GetEffectfv(this ALExtensions.EXT ext, int effect, EffectGetPNameFV param, System.Numerics.Vector4 pflValues)
+        {
+            var pflValues_ptr = (float*)&pflValues;
+            ext.GetEffectfv(effect, param, pflValues_ptr);
+        }
+        /// <inheritdoc cref="GetEffectfv(ALExtensions.EXT, int, EffectGetPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static unsafe void GetEffectfv(this ALExtensions.EXT ext, int effect, EffectGetPNameFV param, ref float pflValues)
         {
             fixed (float* pflValues_ptr = &pflValues)
@@ -5205,6 +6240,51 @@ namespace OpenTK.Audio.OpenAL
             {
                 ext.GetFilterf(filter, param, pflValue_ptr);
             }
+        }
+        /// <inheritdoc cref="GetFilterfv(ALExtensions.EXT, int, FilterGetPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void GetFilterfv(this ALExtensions.EXT ext, int filter, FilterGetPNameFV param, Vector2 pflValues)
+        {
+            var pflValues_ptr = (float*)&pflValues;
+            ext.GetFilterfv(filter, param, pflValues_ptr);
+        }
+        /// <inheritdoc cref="GetFilterfv(ALExtensions.EXT, int, FilterGetPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [OverloadResolutionPriority(1)]
+        public static unsafe void GetFilterfv(this ALExtensions.EXT ext, int filter, FilterGetPNameFV param, System.Numerics.Vector2 pflValues)
+        {
+            var pflValues_ptr = (float*)&pflValues;
+            ext.GetFilterfv(filter, param, pflValues_ptr);
+        }
+        /// <inheritdoc cref="GetFilterfv(ALExtensions.EXT, int, FilterGetPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void GetFilterfv(this ALExtensions.EXT ext, int filter, FilterGetPNameFV param, Vector3 pflValues)
+        {
+            var pflValues_ptr = (float*)&pflValues;
+            ext.GetFilterfv(filter, param, pflValues_ptr);
+        }
+        /// <inheritdoc cref="GetFilterfv(ALExtensions.EXT, int, FilterGetPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [OverloadResolutionPriority(1)]
+        public static unsafe void GetFilterfv(this ALExtensions.EXT ext, int filter, FilterGetPNameFV param, System.Numerics.Vector3 pflValues)
+        {
+            var pflValues_ptr = (float*)&pflValues;
+            ext.GetFilterfv(filter, param, pflValues_ptr);
+        }
+        /// <inheritdoc cref="GetFilterfv(ALExtensions.EXT, int, FilterGetPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void GetFilterfv(this ALExtensions.EXT ext, int filter, FilterGetPNameFV param, Vector4 pflValues)
+        {
+            var pflValues_ptr = (float*)&pflValues;
+            ext.GetFilterfv(filter, param, pflValues_ptr);
+        }
+        /// <inheritdoc cref="GetFilterfv(ALExtensions.EXT, int, FilterGetPNameFV, float*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [OverloadResolutionPriority(1)]
+        public static unsafe void GetFilterfv(this ALExtensions.EXT ext, int filter, FilterGetPNameFV param, System.Numerics.Vector4 pflValues)
+        {
+            var pflValues_ptr = (float*)&pflValues;
+            ext.GetFilterfv(filter, param, pflValues_ptr);
         }
         /// <inheritdoc cref="GetFilterfv(ALExtensions.EXT, int, FilterGetPNameFV, float*)"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

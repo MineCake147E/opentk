@@ -5,6 +5,7 @@ using System.Linq;
 
 using ALGenerator.Parsing;
 using ALGenerator.Process;
+using ALGenerator.Process.Overloading;
 
 using GeneratorBase;
 using GeneratorBase.Overloading;
@@ -715,6 +716,7 @@ namespace ALGenerator.Process
 
             new ColorTypeOverloader(),
             new MathTypeOverloader(),
+            new ALVectorOverloader(),
             new FunctionPtrToDelegateOverloader(),
             new PointerToOffsetOverloader(),
             new VoidPtrToIntPtrOverloader(),

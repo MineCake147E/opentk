@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -61,6 +62,54 @@ namespace OpenTK.Audio.OpenAL
         }
 
         /// <summary>
+        /// Load all <see cref="EffectType.EffectEaxreverb"/> properties while minimizing the number of GC Transitions.
+        /// </summary>
+        /// <param name="direct">The container of native function pointers.</param>
+        /// <param name="context">The ALC context to access.</param>
+        /// <param name="effect">The effect ID.</param>
+        /// <param name="properties">A set of predefined reverb properties.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void EffectEaxReverbDirect(this ALExtensions.Direct<ALExtensions.EXT> direct, ALCContext context, int effect, ReverbProperties properties)
+        {
+            delegate* unmanaged[Cdecl]<ALCContext, int, ReverbProperties*, ALPointers*, void> ptr = &EffectEaxReverbDirectInternal;
+            var pointers = direct.AL._pointers;
+            // Perform GC Transition once for all calls.
+            ptr(context, effect, &properties, pointers);
+        }
+
+        [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+        private static unsafe void EffectEaxReverbDirectInternal(ALCContext context, int effect, ReverbProperties* properties, ALPointers* pointers)
+        {
+            var alEffectfDirect = (delegate* unmanaged[Cdecl, SuppressGCTransition]<nint, int, int, float, void>)pointers->_alEffectfDirect_fnptr;
+            var alEffectfvDirect = (delegate* unmanaged[Cdecl, SuppressGCTransition]<nint, int, int, float*, void>)pointers->_alGetEffectfvDirect_fnptr;
+            var alEffectiDirect = (delegate* unmanaged[Cdecl, SuppressGCTransition]<nint, int, int, int, void>)pointers->_alEffectiDirect_fnptr;
+            alEffectfDirect(context, effect, (int)EffectPNameF.EaxreverbDensity, properties->Density);
+            alEffectfDirect(context, effect, (int)EffectPNameF.EaxreverbDiffusion, properties->Diffusion);
+            alEffectfDirect(context, effect, (int)EffectPNameF.EaxreverbGain, properties->Gain);
+            alEffectfDirect(context, effect, (int)EffectPNameF.EaxreverbGainhf, properties->GainHF);
+            alEffectfDirect(context, effect, (int)EffectPNameF.EaxreverbGainlf, properties->GainLF);
+            alEffectfDirect(context, effect, (int)EffectPNameF.EaxreverbDecayTime, properties->DecayTime);
+            alEffectfDirect(context, effect, (int)EffectPNameF.EaxreverbDecayHfratio, properties->DecayHFRatio);
+            alEffectfDirect(context, effect, (int)EffectPNameF.EaxreverbDecayLfratio, properties->DecayLFRatio);
+            alEffectfDirect(context, effect, (int)EffectPNameF.EaxreverbReflectionsGain, properties->ReflectionsGain);
+            alEffectfDirect(context, effect, (int)EffectPNameF.EaxreverbReflectionsDelay, properties->ReflectionsDelay);
+            alEffectfvDirect(context, effect, (int)EffectPNameFV.EaxreverbReflectionsPan, (float*)&properties->ReflectionsPan);
+            alEffectfDirect(context, effect, (int)EffectPNameF.EaxreverbLateReverbGain, properties->LateReverbGain);
+            alEffectfDirect(context, effect, (int)EffectPNameF.EaxreverbLateReverbDelay, properties->LateReverbDelay);
+            alEffectfvDirect(context, effect, (int)EffectPNameFV.EaxreverbLateReverbPan, (float*)&properties->LateReverbPan);
+            alEffectfDirect(context, effect, (int)EffectPNameF.EaxreverbEchoTime, properties->EchoTime);
+            alEffectfDirect(context, effect, (int)EffectPNameF.EaxreverbEchoDepth, properties->EchoDepth);
+            alEffectfDirect(context, effect, (int)EffectPNameF.EaxreverbModulationTime, properties->ModulationTime);
+            alEffectfDirect(context, effect, (int)EffectPNameF.EaxreverbModulationDepth, properties->ModulationDepth);
+            alEffectfDirect(context, effect, (int)EffectPNameF.EaxreverbAirAbsorptionGainhf, properties->AirAbsorptionGainHF);
+            alEffectfDirect(context, effect, (int)EffectPNameF.EaxreverbHfreference, properties->HFReference);
+            alEffectfDirect(context, effect, (int)EffectPNameF.EaxreverbLfreference, properties->LFReference);
+            alEffectfDirect(context, effect, (int)EffectPNameF.EaxreverbRoomRolloffFactor, properties->RoomRolloffFactor);
+            alEffectiDirect(context, effect, (int)EffectPNameI.EaxreverbDecayHflimit, properties->DecayHFLimit);
+        }
+
+        /// <summary>
         /// Load all <see cref="EffectType.EffectReverb"/> properties while minimizing the number of GC Transitions.
         /// </summary>
         /// <param name="ext">The container of native function pointers.</param>
@@ -94,6 +143,43 @@ namespace OpenTK.Audio.OpenAL
             alEffectf(effect, (int)EffectPNameF.ReverbAirAbsorptionGainhf, properties->AirAbsorptionGainHF);
             alEffectf(effect, (int)EffectPNameF.ReverbRoomRolloffFactor, properties->RoomRolloffFactor);
             alEffecti(effect, (int)EffectPNameI.ReverbDecayHflimit, properties->DecayHFLimit);
+        }
+
+        /// <summary>
+        /// Load all <see cref="EffectType.EffectReverb"/> properties while minimizing the number of GC Transitions.
+        /// </summary>
+        /// <param name="direct">The container of native function pointers.</param>
+        /// <param name="context">The ALC context to access.</param>
+        /// <param name="effect">The effect ID.</param>
+        /// <param name="properties">A set of predefined reverb properties.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe void EffectReverbDirect(this ALExtensions.Direct<ALExtensions.EXT> direct, ALCContext context, int effect, ReverbProperties properties)
+        {
+            delegate* unmanaged[Cdecl]<ALCContext, int, ReverbProperties*, ALPointers*, void> ptr = &EffectReverbDirectInternal;
+            var pointers = direct.AL._pointers;
+            // Perform GC Transition once for all calls.
+            ptr(context, effect, &properties, pointers);
+        }
+
+        [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+        private static unsafe void EffectReverbDirectInternal(ALCContext context, int effect, ReverbProperties* properties, ALPointers* pointers)
+        {
+            var alEffectfDirect = (delegate* unmanaged[Cdecl, SuppressGCTransition]<nint, int, int, float, void>)pointers->_alEffectfDirect_fnptr;
+            var alEffectiDirect = (delegate* unmanaged[Cdecl, SuppressGCTransition]<nint, int, int, int, void>)pointers->_alEffectiDirect_fnptr;
+            alEffectfDirect(context, effect, (int)EffectPNameF.ReverbDensity, properties->Density);
+            alEffectfDirect(context, effect, (int)EffectPNameF.ReverbDiffusion, properties->Diffusion);
+            alEffectfDirect(context, effect, (int)EffectPNameF.ReverbGain, properties->Gain);
+            alEffectfDirect(context, effect, (int)EffectPNameF.ReverbGainhf, properties->GainHF);
+            alEffectfDirect(context, effect, (int)EffectPNameF.ReverbDecayTime, properties->DecayTime);
+            alEffectfDirect(context, effect, (int)EffectPNameF.ReverbDecayHfratio, properties->DecayHFRatio);
+            alEffectfDirect(context, effect, (int)EffectPNameF.ReverbReflectionsGain, properties->ReflectionsGain);
+            alEffectfDirect(context, effect, (int)EffectPNameF.ReverbReflectionsDelay, properties->ReflectionsDelay);
+            alEffectfDirect(context, effect, (int)EffectPNameF.ReverbLateReverbGain, properties->LateReverbGain);
+            alEffectfDirect(context, effect, (int)EffectPNameF.ReverbLateReverbDelay, properties->LateReverbDelay);
+            alEffectfDirect(context, effect, (int)EffectPNameF.ReverbAirAbsorptionGainhf, properties->AirAbsorptionGainHF);
+            alEffectfDirect(context, effect, (int)EffectPNameF.ReverbRoomRolloffFactor, properties->RoomRolloffFactor);
+            alEffectiDirect(context, effect, (int)EffectPNameI.ReverbDecayHflimit, properties->DecayHFLimit);
         }
     }
 }
