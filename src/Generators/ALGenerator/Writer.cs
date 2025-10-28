@@ -197,9 +197,10 @@ namespace ALGenerator
             writer.WriteLine($"#nullable enable");
         }
 
-        private static void WriteUsings(IndentedTextWriter writer)
+        private static void WriteUsings(IndentedTextWriter writer, params IReadOnlyList<string> additionalUsings)
         {
-            foreach (var item in Usings)
+            var allUsings = Usings.Concat(additionalUsings).OrderBy(a => a == "System" ? 0 : 1).ThenBy(a => a.StartsWith("System.") ? 0 : 1).ThenBy(a => a);
+            foreach (var item in allUsings)
             {
                 writer.WriteLine($"using {item};");
             }

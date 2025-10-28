@@ -6,9 +6,9 @@ using System.Buffers;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using OpenTK.Audio;
 using OpenTK.Core.Native;
 using OpenTK.Mathematics;
-using OpenTK.Audio;
 
 namespace OpenTK.Audio.OpenAL.ALC
 {
