@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -13,6 +14,7 @@ using OpenTK.Audio.OpenAL;
 using OpenTK.Audio.OpenAL.ALC;
 using OpenTK.Core.Utility;
 using OpenTK.Graphics.OpenGL;
+using OpenTK.Graphics.Vulkan;
 using OpenTK.Mathematics;
 using OpenTK.Platform;
 using OpenTK.Platform.Native;
@@ -956,9 +958,10 @@ namespace Bejeweled
         ALCDevice ALDevice;
         ALCContext ALContext;
 
-        ALLoader loader;
-        AL AL;
-        ALC ALC;
+        ALLoader alLoader;
+        ALCLoader alcLoader;
+        AL AL => alLoader.AL;
+        ALC ALC => alcLoader.ALC;
 
         private bool KHRDebugAvailable;
 
@@ -1080,8 +1083,7 @@ namespace Bejeweled
 
         public static ALCContextAttributes ALCGetContextAttributes(ALC ALC, ALCDevice device)
         {
-            int size = 0;
-            ALC.GetInteger(device, OpenTK.Audio.OpenAL.ALC.GetPNameIV.AttributesSize, 1, ref size);
+            int size = ALC.GetInteger(device, OpenTK.Audio.OpenAL.ALC.GetPNameIV.AttributesSize);
             int[] attributes = new int[size];
             ALC.GetInteger(device, OpenTK.Audio.OpenAL.ALC.GetPNameIV.AllAttributes, size, attributes);
             return ALCContextAttributes.FromArray(attributes);
@@ -1090,32 +1092,7 @@ namespace Bejeweled
         public static unsafe List<string> ALCGetStringList(ALC ALC, ALCDevice device, OpenTK.Audio.OpenAL.ALC.StringName name)
         {
             byte* result = ALC.GetString_(device, name);
-            return ALStringListToList(result);
-
-            static unsafe List<string> ALStringListToList(byte* alList)
-            {
-                if (alList == (byte*)0)
-                {
-                    return new List<string>();
-                }
-
-                var strings = new List<string>();
-
-                byte* currentPos = alList;
-                while (true)
-                {
-                    var currentString = Marshal.PtrToStringAnsi(new IntPtr(currentPos));
-                    if (string.IsNullOrEmpty(currentString))
-                    {
-                        break;
-                    }
-
-                    strings.Add(currentString);
-                    currentPos += currentString.Length + 1;
-                }
-
-                return strings;
-            }
+            return ALUtils.ALStringListToList(result);
         }
 
         public unsafe void Initialize(WindowHandle window, OpenGLContextHandle context, bool useGLES, ILogger logger)
@@ -1239,30 +1216,50 @@ namespace Bejeweled
             {
                 OpenALLibraryNameContainer.OverridePath = "win32-x64/soft_oal.dll";
             }
-            loader = ALLoader.Default;
-            (AL, ALC) = loader;
+            alcLoader = ALCLoader.Default;
             IEnumerable<string> devices = ALCGetStringList(ALC, ALCDevice.Null, OpenTK.Audio.OpenAL.ALC.StringName.DeviceSpecifier);
+            if (ALC.IsExtensionPresent(ALCDevice.Null, "ALC_ENUMERATE_ALL_EXT"))
+            {
+                IEnumerable<string> allDevices = ALCGetStringList(ALC, ALCDevice.Null, OpenTK.Audio.OpenAL.ALC.StringName.AllDevicesSpecifier);
+                devices = allDevices.Concat(devices);
+            }
             Logger.LogDebug($"Devices: {string.Join(", ", devices)}");
 
             // Get the default device, then go though all devices and select the AL soft device if it exists.
             string deviceName = ALC.GetString(ALCDevice.Null, OpenTK.Audio.OpenAL.ALC.StringName.DefaultDeviceSpecifier)!;
-            foreach (var d in devices)
-            {
-                if (d.Contains("OpenAL Soft"))
-                {
-                    deviceName = d;
-                }
-            }
-
-            if (ALC.IsExtensionPresent(ALCDevice.Null, "ALC_ENUMERATE_ALL_EXT"))
-            {
-                IEnumerable<string> allDevices = ALCGetStringList(ALC, ALCDevice.Null, OpenTK.Audio.OpenAL.ALC.StringName.AllDevicesSpecifier);
-                Logger.LogDebug($"All Devices: {string.Join(", ", allDevices)}");
-            }
+            deviceName = devices.FirstOrDefault(a => a.Contains("OpenAL Soft"), deviceName);
 
             ALDevice = ALC.OpenDevice(deviceName);
+            var newAlcLoader = alcLoader.WithDevice(ALDevice, out var deviceReconnectionRequired);
+            if (deviceReconnectionRequired)
+            {
+                var newALC = newAlcLoader.ALC;
+                devices = newALC.GetStringList(default, OpenTK.Audio.OpenAL.ALC.StringName.DeviceSpecifier);
+                if (ALC.IsExtensionPresent(default, "ALC_ENUMERATE_ALL_EXT"))
+                {
+                    IEnumerable<string> allDevices = newALC.GetStringList(default, OpenTK.Audio.OpenAL.ALC.StringName.AllDevicesSpecifier);
+                    devices = allDevices.Concat(devices);
+                }
+                deviceName = devices.FirstOrDefault(a => a.Contains("OpenAL Soft"), deviceName);
+                var newDevice = newAlcLoader.ALC.OpenDevice(deviceName);
+                alcLoader = newAlcLoader;
+                newAlcLoader = alcLoader.WithDevice(ALDevice, out deviceReconnectionRequired);
+                if (deviceReconnectionRequired)
+                {
+                    newDevice = newALC.OpenDevice();
+                    alcLoader = newAlcLoader;
+                    newAlcLoader = alcLoader.WithDevice(newDevice, out deviceReconnectionRequired);
+                    if (deviceReconnectionRequired)
+                    {
+                        throw new InvalidOperationException("Cannot initialize ALC!");
+                    }
+                }
+                ALDevice = newDevice;
+                alcLoader = newAlcLoader;
+            }
             ALContext = ALC.CreateContext(ALDevice);
             ALC.MakeContextCurrent(ALContext);
+            alLoader = alcLoader.LoadALWithContext(ALContext);
 
             int alcMajorVersion = ALC.GetInteger(ALDevice, OpenTK.Audio.OpenAL.ALC.GetPNameIV.MajorVersion);
             int alcMinorVersion = ALC.GetInteger(ALDevice, OpenTK.Audio.OpenAL.ALC.GetPNameIV.MinorVersion);
