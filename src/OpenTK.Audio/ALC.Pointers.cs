@@ -12,8 +12,168 @@ using OpenTK.Mathematics;
 
 namespace OpenTK.Audio.OpenAL.ALC
 {
-    /// <summary>A collection of all function pointers to all OpenAL <c>alc</c> entry points.</summary>
-    public unsafe partial struct ALCPointers
+    /// <summary>An immutable collection of all function pointers to all OpenAL <c>alc</c> entry points.</summary>
+    public readonly unsafe partial struct ALCPointers
+    {
+        /// <summary><b>[entry point: <c>alcCaptureCloseDevice</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, byte> _alcCaptureCloseDevice_fnptr;
+        
+        /// <summary><b>[entry point: <c>alcCaptureOpenDevice</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<byte*, uint, int, int, IntPtr> _alcCaptureOpenDevice_fnptr;
+        
+        /// <summary><b>[entry point: <c>alcCaptureSamples</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, void*, int, void> _alcCaptureSamples_fnptr;
+        
+        /// <summary><b>[entry point: <c>alcCaptureStart</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, void> _alcCaptureStart_fnptr;
+        
+        /// <summary><b>[entry point: <c>alcCaptureStop</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, void> _alcCaptureStop_fnptr;
+        
+        /// <summary><b>[entry point: <c>alcCloseDevice</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, byte> _alcCloseDevice_fnptr;
+        
+        /// <summary><b>[entry point: <c>alcCreateContext</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int*, IntPtr> _alcCreateContext_fnptr;
+        
+        /// <summary><b>[entry point: <c>alcDestroyContext</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, void> _alcDestroyContext_fnptr;
+        
+        /// <summary><b>[entry point: <c>alcGetContextsDevice</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, IntPtr> _alcGetContextsDevice_fnptr;
+        
+        /// <summary><b>[entry point: <c>alcGetCurrentContext</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr> _alcGetCurrentContext_fnptr;
+        
+        /// <summary><b>[entry point: <c>alcGetEnumValue</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, byte*, int> _alcGetEnumValue_fnptr;
+        
+        /// <summary><b>[entry point: <c>alcGetError</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int> _alcGetError_fnptr;
+        
+        /// <summary><b>[entry point: <c>alcGetIntegerv</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int, int*, void> _alcGetIntegerv_fnptr;
+        
+        /// <summary><b>[entry point: <c>alcGetProcAddress</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, byte*, void*> _alcGetProcAddress_fnptr;
+        
+        /// <summary><b>[entry point: <c>alcGetString</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, byte*> _alcGetString_fnptr;
+        
+        /// <summary><b>[entry point: <c>alcIsExtensionPresent</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, byte*, byte> _alcIsExtensionPresent_fnptr;
+        
+        /// <summary><b>[entry point: <c>alcMakeContextCurrent</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, byte> _alcMakeContextCurrent_fnptr;
+        
+        /// <summary><b>[entry point: <c>alcOpenDevice</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<byte*, IntPtr> _alcOpenDevice_fnptr;
+        
+        /// <summary><b>[entry point: <c>alcProcessContext</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, void> _alcProcessContext_fnptr;
+        
+        /// <summary><b>[entry point: <c>alcSuspendContext</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, void> _alcSuspendContext_fnptr;
+        
+        /// <summary><b>[entry point: <c>alcGetProcAddress2</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, byte*, void*> _alcGetProcAddress2_fnptr;
+        
+        /// <summary><b>[entry point: <c>alcASAGetListener</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<uint, void*, uint*, int> _alcASAGetListener_fnptr;
+        
+        /// <summary><b>[entry point: <c>alcASAGetSource</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<uint, uint, void*, uint*, int> _alcASAGetSource_fnptr;
+        
+        /// <summary><b>[entry point: <c>alcASASetListener</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<uint, void*, uint, int> _alcASASetListener_fnptr;
+        
+        /// <summary><b>[entry point: <c>alcASASetSource</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<uint, uint, void*, uint, int> _alcASASetSource_fnptr;
+        
+        /// <summary><b>[entry point: <c>alcGetThreadContext</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr> _alcGetThreadContext_fnptr;
+        
+        /// <summary><b>[entry point: <c>alcSetThreadContext</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, byte> _alcSetThreadContext_fnptr;
+        
+        /// <summary><b>[entry point: <c>alcMacOSXGetMixerMaxiumumBusses</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int> _alcMacOSXGetMixerMaxiumumBusses_fnptr;
+        
+        /// <summary><b>[entry point: <c>alcMacOSXGetMixerOutputRate</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<double> _alcMacOSXGetMixerOutputRate_fnptr;
+        
+        /// <summary><b>[entry point: <c>alcMacOSXGetRenderingQuality</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int> _alcMacOSXGetRenderingQuality_fnptr;
+        
+        /// <summary><b>[entry point: <c>alcMacOSXMixerMaxiumumBusses</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, void> _alcMacOSXMixerMaxiumumBusses_fnptr;
+        
+        /// <summary><b>[entry point: <c>alcMacOSXMixerOutputRate</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<double, void> _alcMacOSXMixerOutputRate_fnptr;
+        
+        /// <summary><b>[entry point: <c>alcMacOSXRenderingQuality</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, void> _alcMacOSXRenderingQuality_fnptr;
+        
+        /// <summary><b>[entry point: <c>alcOutputCapturerAvailableSamples</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<void> _alcOutputCapturerAvailableSamples_fnptr;
+        
+        /// <summary><b>[entry point: <c>alcOutputCapturerPrepare</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<uint, int, int, void> _alcOutputCapturerPrepare_fnptr;
+        
+        /// <summary><b>[entry point: <c>alcOutputCapturerSamples</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<void*, int, void> _alcOutputCapturerSamples_fnptr;
+        
+        /// <summary><b>[entry point: <c>alcOutputCapturerStart</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<void> _alcOutputCapturerStart_fnptr;
+        
+        /// <summary><b>[entry point: <c>alcOutputCapturerStop</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<void> _alcOutputCapturerStop_fnptr;
+        
+        /// <summary><b>[entry point: <c>GetAudioChannel_LOKI</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<uint, float> _GetAudioChannel_LOKI_fnptr;
+        
+        /// <summary><b>[entry point: <c>SetAudioChannel_LOKI</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<uint, float, void> _SetAudioChannel_LOKI_fnptr;
+        
+        /// <summary><b>[entry point: <c>alcDevicePauseSOFT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, void> _alcDevicePauseSOFT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alcDeviceResumeSOFT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, void> _alcDeviceResumeSOFT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alcEventCallbackSOFT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<delegate* unmanaged[Cdecl]<All, All, ALCDevice, nuint, byte*, void*, void>, void*, void> _alcEventCallbackSOFT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alcEventControlSOFT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int*, byte, byte> _alcEventControlSOFT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alcEventIsSupportedSOFT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int, int> _alcEventIsSupportedSOFT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alcGetInteger64vSOFT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int, long*, void> _alcGetInteger64vSOFT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alcGetStringiSOFT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int, byte*> _alcGetStringiSOFT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alcIsRenderFormatSupportedSOFT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int, int, byte> _alcIsRenderFormatSupportedSOFT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alcLoopbackOpenDeviceSOFT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, IntPtr> _alcLoopbackOpenDeviceSOFT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alcRenderSamplesSOFT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, void*, int, void> _alcRenderSamplesSOFT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alcReopenDeviceSOFT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, byte*, int*, byte> _alcReopenDeviceSOFT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alcResetDeviceSOFT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int*, byte> _alcResetDeviceSOFT_fnptr;
+        
+    }
+    /// <summary>A mutable collection of all function pointers to all OpenAL <c>alc</c> entry points.</summary>
+    public unsafe partial struct MutableALCPointers
     {
         /// <summary><b>[entry point: <c>alcCaptureCloseDevice</c>]</b></summary>
         public delegate* unmanaged[Cdecl]<IntPtr, byte> _alcCaptureCloseDevice_fnptr;

@@ -7,6 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
+using System.Xml.Linq;
 
 using OpenTK.Audio;
 using OpenTK.Audio.OpenAL;
@@ -49,29 +50,60 @@ namespace OpenALTest
         public static void Main()
         {
             Console.WriteLine("Hello!");
-            var loader = ALLoader.Default;
-            (var AL, var ALC) = loader;
+            var alcLoader = ALCLoader.Default;
+            var ALC = alcLoader.ALC;
             var devices = ALC.GetStringList(ALCDevice.Null, OpenTK.Audio.OpenAL.ALC.StringName.DeviceSpecifier);
             Console.WriteLine($"Devices: {string.Join(", ", devices)}");
 
             // Get the default device, then go though all devices and select the AL soft device if it exists.
             var defaultDeviceName = ALC.GetString(ALCDevice.Null, OpenTK.Audio.OpenAL.ALC.StringName.DefaultDeviceSpecifier);
-            string deviceName = defaultDeviceName;
-
-            foreach (var d in devices.Where(a => a.Contains("OpenAL Soft") && a.Contains(defaultDeviceName)))
+            Console.WriteLine($"Default Device: {defaultDeviceName}");
+            var allDevices = ALC.GetStringList(ALCDevice.Null, OpenTK.Audio.OpenAL.ALC.StringName.AllDevicesSpecifier);
+            Console.WriteLine($"All Devices:\n   {string.Join("\n   ", allDevices.Select((v, i) => $"{i}: {v}"))}");
+            Console.Write($"Select Device (Max: {allDevices.Count - 1}): ");
+            ushort index;
+            while (!ushort.TryParse(Console.ReadLine(), out index) || index >= allDevices.Count)
             {
-                deviceName = d;
+                Console.Write($"Select Device (Max: {allDevices.Count - 1}): ");
             }
 
-            var allDevices = ALC.GetStringList(ALCDevice.Null, OpenTK.Audio.OpenAL.ALC.StringName.AllDevicesSpecifier);
-            Console.WriteLine($"All Devices:\n   {string.Join("\n   ", allDevices)}");
+            var deviceName = allDevices[index];
+            Console.WriteLine($"Selected Device: {deviceName}");
 
             var device = ALC.OpenDevice(deviceName);
+            var newLoader = alcLoader.WithDevice(device, out var deviceReconnectionRequired);
+            if (deviceReconnectionRequired)
+            {
+                Console.WriteLine($"Device wrapping detected! Re-opening the device!");
+                var name = ALC.GetString(device, OpenTK.Audio.OpenAL.ALC.StringName.DeviceSpecifier);
+                var newALC = newLoader.ALC;
+                allDevices = ALC.GetStringList(ALCDevice.Null, OpenTK.Audio.OpenAL.ALC.StringName.AllDevicesSpecifier);
+                deviceName = allDevices.First(a => a.Contains(name));
+                device = newALC.OpenDevice(deviceName);
+                alcLoader = newLoader;
+                newLoader = alcLoader.WithDevice(device, out deviceReconnectionRequired);
+                if (deviceReconnectionRequired)
+                {
+                    device = newALC.OpenDevice();
+                    newLoader = alcLoader.WithDevice(device, out deviceReconnectionRequired);
+                    if (deviceReconnectionRequired)
+                    {
+                        throw new InvalidOperationException("Cannot initialize ALC!");
+                    }
+                }
+                alcLoader = newLoader;
+                ALC = newLoader.ALC;
+            }
+            else
+            {
+                alcLoader = newLoader;
+                ALC = newLoader.ALC;
+            }
 
-            var extensions = ALC.GetString(device, OpenTK.Audio.OpenAL.ALC.StringName.Extensions).Split(" ").Distinct().ToHashSet();
+            var alcExtensions = ALC.GetString(device, OpenTK.Audio.OpenAL.ALC.StringName.Extensions).Split(" ").Distinct().ToHashSet();
 
             var contextAttributes = new ALCContextAttributes();
-            if (extensions.Contains("ALC_SOFT_HRTF"))
+            if (alcExtensions.Contains("ALC_SOFT_HRTF"))
             {
                 // Enable HRTF if the extension is available.
                 contextAttributes[OpenTK.Audio.OpenAL.ALC.ContextAttribute.HrtfSoft] = 1;
@@ -80,9 +112,10 @@ namespace OpenALTest
             var context = ALC.CreateContext(device, contextAttributes);
             ALC.MakeContextCurrent(context);
 
-            loader = loader.LoadWithDevice(device);
-            (AL, ALC) = loader;
-            if (extensions.Contains("ALC_SOFT_HRTF"))
+            var alLoader = alcLoader.LoadALWithContext(context);
+            var AL = alLoader.AL;
+
+            if (alcExtensions.Contains("ALC_SOFT_HRTF"))
             {
                 int numHRTFs = ALC.GetInteger(device, OpenTK.Audio.OpenAL.ALC.GetPNameIV.NumHrtfSpecifiersSoft);
                 var hrtfs = ALC.SOFT.GetAllIndexedStringSOFT(device, OpenTK.Audio.OpenAL.ALC.IndexedStringName.HrtfSpecifierSoft, numHRTFs).ToList();
@@ -103,7 +136,7 @@ namespace OpenALTest
             string vend = AL.GetString(OpenTK.Audio.OpenAL.StringName.Vendor);
             string vers = AL.GetString(OpenTK.Audio.OpenAL.StringName.Version);
 
-            Console.WriteLine($"Vendor: {vend}, \nVersion: {vers}, \nRenderer: {rend}, \nExtensions: {exts}, \nALC Version: {alcMajorVersion}.{alcMinorVersion}, \nALC Extensions: {string.Join(", ", extensions)}");
+            Console.WriteLine($"Vendor: {vend}, \nVersion: {vers}, \nRenderer: {rend}, \nExtensions: {exts}, \nALC Version: {alcMajorVersion}.{alcMinorVersion}, \nALC Extensions: {string.Join(", ", alcExtensions)}");
 
             Console.WriteLine("Available devices: ");
             var list = ALC.GetStringList(ALCDevice.Null, OpenTK.Audio.OpenAL.ALC.StringName.AllDevicesSpecifier);
@@ -112,28 +145,27 @@ namespace OpenALTest
                 Console.WriteLine("  " + item);
             }
 
-            Console.WriteLine("Available capture devices: ");
-            list = ALC.GetStringList(ALCDevice.Null, OpenTK.Audio.OpenAL.ALC.StringName.CaptureDeviceSpecifier);
-            foreach (var item in list)
+            var allCaptureDevices = ALC.GetStringList(ALCDevice.Null, OpenTK.Audio.OpenAL.ALC.StringName.CaptureDeviceSpecifier);
+            string captureDeviceName = "";
+            if ((allCaptureDevices?.Count ?? 0) > 0)
             {
-                Console.WriteLine("  " + item);
-            }
-            int auxSlot = 0;
-            if (ALC.IsExtensionPresent(device, "ALC_EXT_EFX"))
-            {
-                Console.WriteLine("EFX extension is present!!");
-                int effect = LoadEffect(AL, ReverbPresets.CastleHall);
-                AL.EXT.GenAuxiliaryEffectSlot(out auxSlot);
-                AL.EXT.AuxiliaryEffectSloti(auxSlot, AuxEffectSlotPNameI.EffectslotEffect, effect);
+                Console.WriteLine($"Available Capture Devices:\n   {string.Join("\n   ", allCaptureDevices.Select((v, i) => $"{i}: {v}"))}");
+                Console.Write($"Select Capture Device (Max: {allCaptureDevices.Count - 1}): ");
+                while (!ushort.TryParse(Console.ReadLine(), out index) || index >= allCaptureDevices.Count)
+                {
+                    Console.Write($"Select Capture Device (Max: {allCaptureDevices.Count - 1}): ");
+                }
+                captureDeviceName = allCaptureDevices[index];
+                Console.WriteLine($"Selected Capture Device: {captureDeviceName}");
             }
 
             // Record a second of data
             CheckALError(AL, "Before record");
             short[] recording = new short[44100 * 4];
-            var captureDevice = ALC.CaptureOpenDevice((string)null, 44100u, Format.Mono16, 1024);
-            if (captureDevice.HasValue)
+            if (alcExtensions.Contains("ALC_EXT_CAPTURE") && !string.IsNullOrEmpty(captureDeviceName))
             {
-                string defaultCaptureName = ALC.GetString(captureDevice, OpenTK.Audio.OpenAL.ALC.StringName.CaptureDefaultDeviceSpecifier);
+                var captureDevice = ALC.CaptureOpenDevice(captureDeviceName, 44100u, Format.Mono16, 1024);
+                string defaultCaptureName = ALC.GetString(captureDevice, OpenTK.Audio.OpenAL.ALC.StringName.CaptureDeviceSpecifier);
                 string version = AL.GetString(OpenTK.Audio.OpenAL.StringName.Version);
                 string vendor = AL.GetString(OpenTK.Audio.OpenAL.StringName.Vendor);
                 string renderer = AL.GetString(OpenTK.Audio.OpenAL.StringName.Renderer);
@@ -154,8 +186,18 @@ namespace OpenALTest
                 }
 
                 ALC.CaptureStop(captureDevice);
+                ALC.CaptureCloseDevice(captureDevice);
             }
             CheckALError(AL, "After record");
+
+            int auxSlot = 0;
+            if (ALC.IsExtensionPresent(device, "ALC_EXT_EFX"))
+            {
+                Console.WriteLine("EFX extension is present!!");
+                int effect = LoadEffect(AL, ReverbPresets.CastleHall);
+                AL.EXT.GenAuxiliaryEffectSlot(out auxSlot);
+                AL.EXT.AuxiliaryEffectSloti(auxSlot, AuxEffectSlotPNameI.EffectslotEffect, effect);
+            }
 
             // Playback the recorded data
             CheckALError(AL, "Before data");
@@ -299,65 +341,49 @@ namespace OpenALTest
                 AL.SourceStop(alSource);
             }
 
-            ALC.MakeContextCurrent(ALCContext.Null);
-            ALC.DestroyContext(context);
-
-            if (ALC.IsExtensionPresent(device, "ALC_EXT_direct_context\0"u8))
+            if (AL.IsExtensionPresent("AL_EXT_direct_context"))
             {
-                ALC.CloseDevice(device);
-                Console.WriteLine("Testing ALC_EXT_direct_context extension with a sine wave...");
-                loader = loader.LoadDirectContextFunctions();
-                (_, ALC) = loader;
-                allDevices = ALC.GetStringList(ALCDevice.Null, OpenTK.Audio.OpenAL.ALC.StringName.AllDevicesSpecifier);
-                Console.WriteLine($"All Devices:\n   {string.Join("\n   ", allDevices)}");
-
-                device = ALC.OpenDevice(deviceName);
-                context = ALC.CreateContext(device, contextAttributes);
-                loader = loader.LoadWithContext(context);
-                (AL, ALC) = loader;
-                Console.WriteLine($"Loaded ALC_EXT_direct_context functions!");
-                if (AL.Direct.IsExtensionPresentDirect(context, "AL_EXT_float32\0"u8))
+                Console.WriteLine("Testing AL_EXT_direct_context extension with a sine wave...");
+                const int SampleRate = 44100;
+                const int Frequency = 440;
+                short[] sine = new short[SampleRate * 4];
+                for (int i = 0; i < sine.Length; i++)
                 {
-                    const int SampleRate = 44100;
-                    const int Frequency = 440;
-                    float[] sine = new float[SampleRate * 4];
-                    for (int i = 0; i < sine.Length; i++)
-                    {
-                        sine[i] = MathF.Sin(Frequency * MathF.PI * 2 * (i / (float)SampleRate));
-                    }
-
-                    alSource = AL.Direct.GenSourceDirect(context);
-                    var buffer = AL.Direct.GenBufferDirect(context);
-                    AL.Direct.BufferDataDirect(context, buffer, Format.MonoFloat32, sine.AsSpan(), SampleRate);
-
-                    AL.Direct.ListenerfDirect(context, ListenerPNameF.Gain, 0.1f);
-
-                    AL.Direct.SourcefDirect(context, alSource, SourcePNameF.Gain, 1f);
-                    AL.Direct.SourceiDirect(context, alSource, SourcePNameI.Buffer, buffer);
-
-                    AL.Direct.SourcePlayDirect(context, alSource);
-
-                    Console.WriteLine($"Start Playing...");
-                    Stopwatch watch = Stopwatch.StartNew();
-                    while ((SourceState)AL.Direct.GetSourceiDirect(context, alSource, SourceGetPNameI.SourceState) == SourceState.Playing)
-                    {
-                        float x = MathF.Cos((float)watch.Elapsed.TotalSeconds * MathF.PI * 1f);
-                        float y = MathF.Sin((float)watch.Elapsed.TotalSeconds * MathF.PI * 1f);
-                        float z = 0;
-
-                        AL.Direct.Source3fDirect(context, alSource, SourcePName3F.Position, x, y, z);
-                        AL.Direct.Source3fDirect(context, alSource, SourcePName3F.Velocity, y, -x, z);
-                        Thread.Sleep(10);
-                    }
-
-                    AL.Direct.SourceStopDirect(context, alSource);
-                    AL.Direct.Source3fDirect(context, alSource, SourcePName3F.Position, 0, 0, 0);
-                    ALC.DestroyContext(context);
+                    sine[i] = (short)Math.Clamp(MathF.Sin(Frequency * MathF.PI * 2 * (i / (float)SampleRate)) * -short.MinValue, short.MinValue, short.MaxValue);
                 }
+
+                alSource = AL.Direct.GenSourceDirect(context);
+                var buffer = AL.Direct.GenBufferDirect(context);
+                AL.Direct.BufferDataDirect(context, buffer, Format.Mono16, sine.AsSpan(), SampleRate);
+
+                AL.Direct.ListenerfDirect(context, ListenerPNameF.Gain, 0.1f);
+
+                AL.Direct.SourcefDirect(context, alSource, SourcePNameF.Gain, 1f);
+                AL.Direct.SourceiDirect(context, alSource, SourcePNameI.Buffer, buffer);
+
+                AL.Direct.SourcePlayDirect(context, alSource);
+
+                Console.WriteLine($"Start Playing...");
+                Stopwatch watch = Stopwatch.StartNew();
+                while ((SourceState)AL.Direct.GetSourceiDirect(context, alSource, SourceGetPNameI.SourceState) == SourceState.Playing)
+                {
+                    float x = MathF.Cos((float)watch.Elapsed.TotalSeconds * MathF.PI * 1f);
+                    float y = MathF.Sin((float)watch.Elapsed.TotalSeconds * MathF.PI * 1f);
+                    float z = 0;
+
+                    AL.Direct.Source3fDirect(context, alSource, SourcePName3F.Position, x, y, z);
+                    AL.Direct.Source3fDirect(context, alSource, SourcePName3F.Velocity, y, -x, z);
+                    Thread.Sleep(10);
+                }
+
+                AL.Direct.SourceStopDirect(context, alSource);
+                AL.Direct.Source3fDirect(context, alSource, SourcePName3F.Position, 0, 0, 0);
             }
 
             Console.WriteLine("Goodbye!");
 
+            ALC.MakeContextCurrent(ALCContext.Null);
+            ALC.DestroyContext(context);
             ALC.CloseDevice(device);
         }
 

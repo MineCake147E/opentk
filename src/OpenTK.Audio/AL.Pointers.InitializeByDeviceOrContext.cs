@@ -12,432 +12,427 @@ using OpenTK.Mathematics;
 
 namespace OpenTK.Audio.OpenAL
 {
-    public unsafe partial struct ALPointers
+    public readonly unsafe partial struct ALPointers
     {
-        /// <summary>Loads all function pointers via specified loader function.</summary>
-        internal static void InitializePointersByDeviceOrContext(delegate* unmanaged[Cdecl]<IntPtr, byte*, void*> loadFunction, IntPtr handle, ALPointers* pointers)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ALPointers"/> struct.
+        /// </summary>
+        internal ALPointers(delegate* unmanaged[Cdecl]<IntPtr, byte*, void*> loadFunction, IntPtr handle)
         {
             fixed (byte* names = AllFunctionNames)
             {
-                var initializePointersByDeviceOrContextInternal_fnptr = (delegate* unmanaged[Cdecl]<delegate* unmanaged[Cdecl]<IntPtr, byte*, void*>, IntPtr, byte*, ALPointers*, void>)&InitializePointersByDeviceOrContextInternal;
-                initializePointersByDeviceOrContextInternal_fnptr(loadFunction, handle, names, pointers);
-            }
-        }
-        [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
-        private static void InitializePointersByDeviceOrContextInternal(delegate* unmanaged[Cdecl]<IntPtr, byte*, void*> loadFunction, IntPtr handle, byte* names, ALPointers* pointers)
-        {
-            var loadFunctionSuppressed = (delegate* unmanaged[Cdecl, SuppressGCTransition]<IntPtr, byte*, void*>)loadFunction;
-            
-            var alBuffer3f_fnptr = (delegate* unmanaged[Cdecl]<int, int, float, float, float, void>)loadFunctionSuppressed(handle, names + alBuffer3f_offset);
-            pointers->_alBuffer3f_fnptr = alBuffer3f_fnptr;
-            if (alBuffer3f_fnptr is not null)
-            {
-                pointers->_alBuffer3i_fnptr = (delegate* unmanaged[Cdecl]<int, int, int, int, int, void>)loadFunctionSuppressed(handle, names + alBuffer3i_offset);
-                pointers->_alBufferData_fnptr = (delegate* unmanaged[Cdecl]<int, int, void*, int, int, void>)loadFunctionSuppressed(handle, names + alBufferData_offset);
-                pointers->_alBufferf_fnptr = (delegate* unmanaged[Cdecl]<int, int, float, void>)loadFunctionSuppressed(handle, names + alBufferf_offset);
-                pointers->_alBufferfv_fnptr = (delegate* unmanaged[Cdecl]<int, int, float*, void>)loadFunctionSuppressed(handle, names + alBufferfv_offset);
-                pointers->_alBufferi_fnptr = (delegate* unmanaged[Cdecl]<int, int, int, void>)loadFunctionSuppressed(handle, names + alBufferi_offset);
-                pointers->_alBufferiv_fnptr = (delegate* unmanaged[Cdecl]<int, int, int*, void>)loadFunctionSuppressed(handle, names + alBufferiv_offset);
-                pointers->_alDeleteBuffers_fnptr = (delegate* unmanaged[Cdecl]<int, int*, void>)loadFunctionSuppressed(handle, names + alDeleteBuffers_offset);
-                pointers->_alDeleteSources_fnptr = (delegate* unmanaged[Cdecl]<int, int*, void>)loadFunctionSuppressed(handle, names + alDeleteSources_offset);
-                pointers->_alDisable_fnptr = (delegate* unmanaged[Cdecl]<int, void>)loadFunctionSuppressed(handle, names + alDisable_offset);
-                pointers->_alDistanceModel_fnptr = (delegate* unmanaged[Cdecl]<int, void>)loadFunctionSuppressed(handle, names + alDistanceModel_offset);
-                pointers->_alDopperFactor_fnptr = (delegate* unmanaged[Cdecl]<float, void>)loadFunctionSuppressed(handle, names + alDopperFactor_offset);
-                pointers->_alEnable_fnptr = (delegate* unmanaged[Cdecl]<int, void>)loadFunctionSuppressed(handle, names + alEnable_offset);
-                pointers->_alGenBuffers_fnptr = (delegate* unmanaged[Cdecl]<int, int*, void>)loadFunctionSuppressed(handle, names + alGenBuffers_offset);
-                pointers->_alGenSources_fnptr = (delegate* unmanaged[Cdecl]<int, int*, void>)loadFunctionSuppressed(handle, names + alGenSources_offset);
-                pointers->_alGetBoolean_fnptr = (delegate* unmanaged[Cdecl]<int, byte>)loadFunctionSuppressed(handle, names + alGetBoolean_offset);
-                pointers->_alGetBooleanv_fnptr = (delegate* unmanaged[Cdecl]<int, byte*, void>)loadFunctionSuppressed(handle, names + alGetBooleanv_offset);
-                pointers->_alGetBuffer3f_fnptr = (delegate* unmanaged[Cdecl]<int, int, float*, float*, float*, void>)loadFunctionSuppressed(handle, names + alGetBuffer3f_offset);
-                pointers->_alGetBuffer3i_fnptr = (delegate* unmanaged[Cdecl]<int, int, int*, int*, int*, void>)loadFunctionSuppressed(handle, names + alGetBuffer3i_offset);
-                pointers->_alGetBufferf_fnptr = (delegate* unmanaged[Cdecl]<int, int, float*, void>)loadFunctionSuppressed(handle, names + alGetBufferf_offset);
-                pointers->_alGetBufferfv_fnptr = (delegate* unmanaged[Cdecl]<int, int, float*, void>)loadFunctionSuppressed(handle, names + alGetBufferfv_offset);
-                pointers->_alGetBufferi_fnptr = (delegate* unmanaged[Cdecl]<int, int, int*, void>)loadFunctionSuppressed(handle, names + alGetBufferi_offset);
-                pointers->_alGetBufferiv_fnptr = (delegate* unmanaged[Cdecl]<int, int, int*, void>)loadFunctionSuppressed(handle, names + alGetBufferiv_offset);
-                pointers->_alGetDouble_fnptr = (delegate* unmanaged[Cdecl]<int, double>)loadFunctionSuppressed(handle, names + alGetDouble_offset);
-                pointers->_alGetDoublev_fnptr = (delegate* unmanaged[Cdecl]<int, double*, void>)loadFunctionSuppressed(handle, names + alGetDoublev_offset);
-                pointers->_alGetEnumValue_fnptr = (delegate* unmanaged[Cdecl]<byte*, int>)loadFunctionSuppressed(handle, names + alGetEnumValue_offset);
-                pointers->_alGetError_fnptr = (delegate* unmanaged[Cdecl]<int>)loadFunctionSuppressed(handle, names + alGetError_offset);
-                pointers->_alGetFloat_fnptr = (delegate* unmanaged[Cdecl]<int, float>)loadFunctionSuppressed(handle, names + alGetFloat_offset);
-                pointers->_alGetFloatv_fnptr = (delegate* unmanaged[Cdecl]<int, float*, void>)loadFunctionSuppressed(handle, names + alGetFloatv_offset);
-                pointers->_alGetInteger_fnptr = (delegate* unmanaged[Cdecl]<int, int>)loadFunctionSuppressed(handle, names + alGetInteger_offset);
-                pointers->_alGetIntegerv_fnptr = (delegate* unmanaged[Cdecl]<int, int*, void>)loadFunctionSuppressed(handle, names + alGetIntegerv_offset);
-                pointers->_alGetListener3f_fnptr = (delegate* unmanaged[Cdecl]<int, float*, float*, float*, void>)loadFunctionSuppressed(handle, names + alGetListener3f_offset);
-                pointers->_alGetListener3i_fnptr = (delegate* unmanaged[Cdecl]<int, int*, int*, int*, void>)loadFunctionSuppressed(handle, names + alGetListener3i_offset);
-                pointers->_alGetListenerf_fnptr = (delegate* unmanaged[Cdecl]<int, float*, void>)loadFunctionSuppressed(handle, names + alGetListenerf_offset);
-                pointers->_alGetListenerfv_fnptr = (delegate* unmanaged[Cdecl]<int, float*, void>)loadFunctionSuppressed(handle, names + alGetListenerfv_offset);
-                pointers->_alGetListeneri_fnptr = (delegate* unmanaged[Cdecl]<int, int*, void>)loadFunctionSuppressed(handle, names + alGetListeneri_offset);
-                pointers->_alGetListeneriv_fnptr = (delegate* unmanaged[Cdecl]<int, int*, void>)loadFunctionSuppressed(handle, names + alGetListeneriv_offset);
-                pointers->_alGetProcAddress_fnptr = (delegate* unmanaged[Cdecl]<byte*, void*>)loadFunctionSuppressed(handle, names + alGetProcAddress_offset);
-                pointers->_alGetSource3f_fnptr = (delegate* unmanaged[Cdecl]<int, int, float*, float*, float*, void>)loadFunctionSuppressed(handle, names + alGetSource3f_offset);
-                pointers->_alGetSource3i_fnptr = (delegate* unmanaged[Cdecl]<int, int, int*, int*, int*, void>)loadFunctionSuppressed(handle, names + alGetSource3i_offset);
-                pointers->_alGetSourcef_fnptr = (delegate* unmanaged[Cdecl]<int, int, float*, void>)loadFunctionSuppressed(handle, names + alGetSourcef_offset);
-                pointers->_alGetSourcefv_fnptr = (delegate* unmanaged[Cdecl]<int, int, float*, void>)loadFunctionSuppressed(handle, names + alGetSourcefv_offset);
-                pointers->_alGetSourcei_fnptr = (delegate* unmanaged[Cdecl]<int, int, int*, void>)loadFunctionSuppressed(handle, names + alGetSourcei_offset);
-                pointers->_alGetSourceiv_fnptr = (delegate* unmanaged[Cdecl]<int, int, int*, void>)loadFunctionSuppressed(handle, names + alGetSourceiv_offset);
-                pointers->_alGetString_fnptr = (delegate* unmanaged[Cdecl]<int, byte*>)loadFunctionSuppressed(handle, names + alGetString_offset);
-                pointers->_alIsBuffer_fnptr = (delegate* unmanaged[Cdecl]<int, byte>)loadFunctionSuppressed(handle, names + alIsBuffer_offset);
-                pointers->_alIsEnabled_fnptr = (delegate* unmanaged[Cdecl]<int, byte>)loadFunctionSuppressed(handle, names + alIsEnabled_offset);
-                pointers->_alIsExtensionPresent_fnptr = (delegate* unmanaged[Cdecl]<byte*, byte>)loadFunctionSuppressed(handle, names + alIsExtensionPresent_offset);
-                pointers->_alIsSource_fnptr = (delegate* unmanaged[Cdecl]<int, byte>)loadFunctionSuppressed(handle, names + alIsSource_offset);
-                pointers->_alListener3f_fnptr = (delegate* unmanaged[Cdecl]<int, float, float, float, void>)loadFunctionSuppressed(handle, names + alListener3f_offset);
-                pointers->_alListener3i_fnptr = (delegate* unmanaged[Cdecl]<int, int, int, int, void>)loadFunctionSuppressed(handle, names + alListener3i_offset);
-                pointers->_alListenerf_fnptr = (delegate* unmanaged[Cdecl]<int, float, void>)loadFunctionSuppressed(handle, names + alListenerf_offset);
-                pointers->_alListenerfv_fnptr = (delegate* unmanaged[Cdecl]<int, float*, void>)loadFunctionSuppressed(handle, names + alListenerfv_offset);
-                pointers->_alListeneri_fnptr = (delegate* unmanaged[Cdecl]<int, int, void>)loadFunctionSuppressed(handle, names + alListeneri_offset);
-                pointers->_alListeneriv_fnptr = (delegate* unmanaged[Cdecl]<int, int*, void>)loadFunctionSuppressed(handle, names + alListeneriv_offset);
-                pointers->_alSource3f_fnptr = (delegate* unmanaged[Cdecl]<int, int, float, float, float, void>)loadFunctionSuppressed(handle, names + alSource3f_offset);
-                pointers->_alSource3i_fnptr = (delegate* unmanaged[Cdecl]<int, int, int, int, int, void>)loadFunctionSuppressed(handle, names + alSource3i_offset);
-                pointers->_alSourcef_fnptr = (delegate* unmanaged[Cdecl]<int, int, float, void>)loadFunctionSuppressed(handle, names + alSourcef_offset);
-                pointers->_alSourcefv_fnptr = (delegate* unmanaged[Cdecl]<int, int, float*, void>)loadFunctionSuppressed(handle, names + alSourcefv_offset);
-                pointers->_alSourcei_fnptr = (delegate* unmanaged[Cdecl]<int, int, int, void>)loadFunctionSuppressed(handle, names + alSourcei_offset);
-                pointers->_alSourceiv_fnptr = (delegate* unmanaged[Cdecl]<int, int, int*, void>)loadFunctionSuppressed(handle, names + alSourceiv_offset);
-                pointers->_alSourcePause_fnptr = (delegate* unmanaged[Cdecl]<int, void>)loadFunctionSuppressed(handle, names + alSourcePause_offset);
-                pointers->_alSourcePausev_fnptr = (delegate* unmanaged[Cdecl]<int, int*, void>)loadFunctionSuppressed(handle, names + alSourcePausev_offset);
-                pointers->_alSourcePlay_fnptr = (delegate* unmanaged[Cdecl]<int, void>)loadFunctionSuppressed(handle, names + alSourcePlay_offset);
-                pointers->_alSourcePlayv_fnptr = (delegate* unmanaged[Cdecl]<int, int*, void>)loadFunctionSuppressed(handle, names + alSourcePlayv_offset);
-                pointers->_alSourceQueueBuffers_fnptr = (delegate* unmanaged[Cdecl]<int, int, int*, void>)loadFunctionSuppressed(handle, names + alSourceQueueBuffers_offset);
-                pointers->_alSourceRewind_fnptr = (delegate* unmanaged[Cdecl]<int, void>)loadFunctionSuppressed(handle, names + alSourceRewind_offset);
-                pointers->_alSourceRewindv_fnptr = (delegate* unmanaged[Cdecl]<int, int*, void>)loadFunctionSuppressed(handle, names + alSourceRewindv_offset);
-                pointers->_alSourceStop_fnptr = (delegate* unmanaged[Cdecl]<int, void>)loadFunctionSuppressed(handle, names + alSourceStop_offset);
-                pointers->_alSourceStopv_fnptr = (delegate* unmanaged[Cdecl]<int, int*, void>)loadFunctionSuppressed(handle, names + alSourceStopv_offset);
-                pointers->_alSourceUnqueueBuffers_fnptr = (delegate* unmanaged[Cdecl]<int, int, int*, void>)loadFunctionSuppressed(handle, names + alSourceUnqueueBuffers_offset);
-                pointers->_alSpeedOfSound_fnptr = (delegate* unmanaged[Cdecl]<float, void>)loadFunctionSuppressed(handle, names + alSpeedOfSound_offset);
-            }
-            
-            pointers->_EAXGet_fnptr = (delegate* unmanaged[Cdecl]<Guid*, uint, uint, void*, uint, int>)loadFunctionSuppressed(handle, names + EAXGet_offset);
-            pointers->_EAXSet_fnptr = (delegate* unmanaged[Cdecl]<Guid*, uint, uint, void*, uint, int>)loadFunctionSuppressed(handle, names + EAXSet_offset);
-            
-            pointers->_EAXGetBufferMode_fnptr = (delegate* unmanaged[Cdecl]<int, int*, int>)loadFunctionSuppressed(handle, names + EAXGetBufferMode_offset);
-            pointers->_EAXSetBufferMode_fnptr = (delegate* unmanaged[Cdecl]<int, int*, int, byte>)loadFunctionSuppressed(handle, names + EAXSetBufferMode_offset);
-            
-            var alAuxiliaryEffectSlotf_fnptr = (delegate* unmanaged[Cdecl]<int, int, float, void>)loadFunctionSuppressed(handle, names + alAuxiliaryEffectSlotf_offset);
-            pointers->_alAuxiliaryEffectSlotf_fnptr = alAuxiliaryEffectSlotf_fnptr;
-            if (alAuxiliaryEffectSlotf_fnptr is not null)
-            {
-                pointers->_alAuxiliaryEffectSlotfv_fnptr = (delegate* unmanaged[Cdecl]<int, int, float*, void>)loadFunctionSuppressed(handle, names + alAuxiliaryEffectSlotfv_offset);
-                pointers->_alAuxiliaryEffectSloti_fnptr = (delegate* unmanaged[Cdecl]<int, int, int, void>)loadFunctionSuppressed(handle, names + alAuxiliaryEffectSloti_offset);
-                pointers->_alAuxiliaryEffectSlotiv_fnptr = (delegate* unmanaged[Cdecl]<int, int, int*, void>)loadFunctionSuppressed(handle, names + alAuxiliaryEffectSlotiv_offset);
-                pointers->_alDeleteAuxiliaryEffectSlots_fnptr = (delegate* unmanaged[Cdecl]<int, int*, void>)loadFunctionSuppressed(handle, names + alDeleteAuxiliaryEffectSlots_offset);
-                pointers->_alDeleteEffects_fnptr = (delegate* unmanaged[Cdecl]<int, int*, void>)loadFunctionSuppressed(handle, names + alDeleteEffects_offset);
-                pointers->_alDeleteFilters_fnptr = (delegate* unmanaged[Cdecl]<int, int*, void>)loadFunctionSuppressed(handle, names + alDeleteFilters_offset);
-                pointers->_alEffectf_fnptr = (delegate* unmanaged[Cdecl]<int, int, float, void>)loadFunctionSuppressed(handle, names + alEffectf_offset);
-                pointers->_alEffectfv_fnptr = (delegate* unmanaged[Cdecl]<int, int, float*, void>)loadFunctionSuppressed(handle, names + alEffectfv_offset);
-                pointers->_alEffecti_fnptr = (delegate* unmanaged[Cdecl]<int, int, int, void>)loadFunctionSuppressed(handle, names + alEffecti_offset);
-                pointers->_alEffectiv_fnptr = (delegate* unmanaged[Cdecl]<int, int, int*, void>)loadFunctionSuppressed(handle, names + alEffectiv_offset);
-                pointers->_alFilterf_fnptr = (delegate* unmanaged[Cdecl]<int, int, float, void>)loadFunctionSuppressed(handle, names + alFilterf_offset);
-                pointers->_alFilterfv_fnptr = (delegate* unmanaged[Cdecl]<int, int, float*, void>)loadFunctionSuppressed(handle, names + alFilterfv_offset);
-                pointers->_alFilteri_fnptr = (delegate* unmanaged[Cdecl]<int, int, int, void>)loadFunctionSuppressed(handle, names + alFilteri_offset);
-                pointers->_alFilteriv_fnptr = (delegate* unmanaged[Cdecl]<int, int, int*, void>)loadFunctionSuppressed(handle, names + alFilteriv_offset);
-                pointers->_alGenAuxiliaryEffectSlots_fnptr = (delegate* unmanaged[Cdecl]<int, int*, void>)loadFunctionSuppressed(handle, names + alGenAuxiliaryEffectSlots_offset);
-                pointers->_alGenEffects_fnptr = (delegate* unmanaged[Cdecl]<int, int*, void>)loadFunctionSuppressed(handle, names + alGenEffects_offset);
-                pointers->_alGenFilters_fnptr = (delegate* unmanaged[Cdecl]<int, int*, void>)loadFunctionSuppressed(handle, names + alGenFilters_offset);
-                pointers->_alGetAuxiliaryEffectSlotf_fnptr = (delegate* unmanaged[Cdecl]<int, int, float*, void>)loadFunctionSuppressed(handle, names + alGetAuxiliaryEffectSlotf_offset);
-                pointers->_alGetAuxiliaryEffectSlotfv_fnptr = (delegate* unmanaged[Cdecl]<int, int, float*, void>)loadFunctionSuppressed(handle, names + alGetAuxiliaryEffectSlotfv_offset);
-                pointers->_alGetAuxiliaryEffectSloti_fnptr = (delegate* unmanaged[Cdecl]<int, int, int*, void>)loadFunctionSuppressed(handle, names + alGetAuxiliaryEffectSloti_offset);
-                pointers->_alGetAuxiliaryEffectSlotiv_fnptr = (delegate* unmanaged[Cdecl]<int, int, int*, void>)loadFunctionSuppressed(handle, names + alGetAuxiliaryEffectSlotiv_offset);
-                pointers->_alGetEffectf_fnptr = (delegate* unmanaged[Cdecl]<int, int, float*, void>)loadFunctionSuppressed(handle, names + alGetEffectf_offset);
-                pointers->_alGetEffectfv_fnptr = (delegate* unmanaged[Cdecl]<int, int, float*, void>)loadFunctionSuppressed(handle, names + alGetEffectfv_offset);
-                pointers->_alGetEffecti_fnptr = (delegate* unmanaged[Cdecl]<int, int, int*, void>)loadFunctionSuppressed(handle, names + alGetEffecti_offset);
-                pointers->_alGetEffectiv_fnptr = (delegate* unmanaged[Cdecl]<int, int, int*, void>)loadFunctionSuppressed(handle, names + alGetEffectiv_offset);
-                pointers->_alGetFilterf_fnptr = (delegate* unmanaged[Cdecl]<int, int, float*, void>)loadFunctionSuppressed(handle, names + alGetFilterf_offset);
-                pointers->_alGetFilterfv_fnptr = (delegate* unmanaged[Cdecl]<int, int, float*, void>)loadFunctionSuppressed(handle, names + alGetFilterfv_offset);
-                pointers->_alGetFilteri_fnptr = (delegate* unmanaged[Cdecl]<int, int, int*, void>)loadFunctionSuppressed(handle, names + alGetFilteri_offset);
-                pointers->_alGetFilteriv_fnptr = (delegate* unmanaged[Cdecl]<int, int, int*, void>)loadFunctionSuppressed(handle, names + alGetFilteriv_offset);
-                pointers->_alIsAuxiliaryEffectSlot_fnptr = (delegate* unmanaged[Cdecl]<int, void>)loadFunctionSuppressed(handle, names + alIsAuxiliaryEffectSlot_offset);
-                pointers->_alIsEffect_fnptr = (delegate* unmanaged[Cdecl]<int, byte>)loadFunctionSuppressed(handle, names + alIsEffect_offset);
-                pointers->_alIsFilter_fnptr = (delegate* unmanaged[Cdecl]<int, void>)loadFunctionSuppressed(handle, names + alIsFilter_offset);
-            }
-            
-            var alDebugMessageCallbackEXT_fnptr = (delegate* unmanaged[Cdecl]<delegate* unmanaged[Cdecl]<All, All, uint, All, nuint, byte*, void*, int>, void*, void>)loadFunctionSuppressed(handle, names + alDebugMessageCallbackEXT_offset);
-            pointers->_alDebugMessageCallbackEXT_fnptr = alDebugMessageCallbackEXT_fnptr;
-            if (alDebugMessageCallbackEXT_fnptr is not null)
-            {
-                pointers->_alDebugMessageControlEXT_fnptr = (delegate* unmanaged[Cdecl]<int, int, uint, int, uint*, byte, void>)loadFunctionSuppressed(handle, names + alDebugMessageControlEXT_offset);
-                pointers->_alDebugMessageInsertEXT_fnptr = (delegate* unmanaged[Cdecl]<int, int, uint, int, byte*, void>)loadFunctionSuppressed(handle, names + alDebugMessageInsertEXT_offset);
-                pointers->_alGetDebugMessageLogEXT_fnptr = (delegate* unmanaged[Cdecl]<uint, int, int*, int*, uint*, int*, int*, byte*, uint>)loadFunctionSuppressed(handle, names + alGetDebugMessageLogEXT_offset);
-                pointers->_alGetObjectLabelEXT_fnptr = (delegate* unmanaged[Cdecl]<int, uint, int, int*, byte*, void>)loadFunctionSuppressed(handle, names + alGetObjectLabelEXT_offset);
-                pointers->_alGetPointerEXT_fnptr = (delegate* unmanaged[Cdecl]<int, void*>)loadFunctionSuppressed(handle, names + alGetPointerEXT_offset);
-                pointers->_alGetPointervEXT_fnptr = (delegate* unmanaged[Cdecl]<int, void**, void>)loadFunctionSuppressed(handle, names + alGetPointervEXT_offset);
-                pointers->_alObjectLabelEXT_fnptr = (delegate* unmanaged[Cdecl]<int, uint, int, byte*, void>)loadFunctionSuppressed(handle, names + alObjectLabelEXT_offset);
-                pointers->_alPopDebugGroupEXT_fnptr = (delegate* unmanaged[Cdecl]<void>)loadFunctionSuppressed(handle, names + alPopDebugGroupEXT_offset);
-                pointers->_alPushDebugGroupEXT_fnptr = (delegate* unmanaged[Cdecl]<int, uint, int, byte*, void>)loadFunctionSuppressed(handle, names + alPushDebugGroupEXT_offset);
-            }
-            
-            pointers->_alMacOSXGetRenderChannelCount_fnptr = (delegate* unmanaged[Cdecl]<int>)loadFunctionSuppressed(handle, names + alMacOSXGetRenderChannelCount_offset);
-            pointers->_alMacOSXRenderChannelCount_fnptr = (delegate* unmanaged[Cdecl]<int, void>)loadFunctionSuppressed(handle, names + alMacOSXRenderChannelCount_offset);
-            
-            pointers->_alRequestFoldbackStart_fnptr = (delegate* unmanaged[Cdecl]<int, int, int, float*, delegate* unmanaged[Cdecl]<All, nuint, void>, void>)loadFunctionSuppressed(handle, names + alRequestFoldbackStart_offset);
-            pointers->_alRequestFoldbackStop_fnptr = (delegate* unmanaged[Cdecl]<void>)loadFunctionSuppressed(handle, names + alRequestFoldbackStop_offset);
-            
-            pointers->_alSourceAddNotification_fnptr = (delegate* unmanaged[Cdecl]<int, uint, delegate* unmanaged[Cdecl]<uint, uint, void*, void>, void*, int>)loadFunctionSuppressed(handle, names + alSourceAddNotification_offset);
-            pointers->_alSourceRemoveNotification_fnptr = (delegate* unmanaged[Cdecl]<int, uint, delegate* unmanaged[Cdecl]<uint, uint, void*, void>, void*, void>)loadFunctionSuppressed(handle, names + alSourceRemoveNotification_offset);
-            
-            pointers->_alSourceGetRenderingQuality_fnptr = (delegate* unmanaged[Cdecl]<int, int>)loadFunctionSuppressed(handle, names + alSourceGetRenderingQuality_offset);
-            pointers->_alSourceRenderingQuality_fnptr = (delegate* unmanaged[Cdecl]<int, int, void>)loadFunctionSuppressed(handle, names + alSourceRenderingQuality_offset);
-            
-            pointers->_AttenuationScale_LOKI_fnptr = (delegate* unmanaged[Cdecl]<float, void>)loadFunctionSuppressed(handle, names + AttenuationScale_LOKI_offset);
-            
-            pointers->_BufferDataWithCallback_LOKI_fnptr = (delegate* unmanaged[Cdecl]<int, delegate* unmanaged[Cdecl]<uint, uint, void*, All, uint, int>, void>)loadFunctionSuppressed(handle, names + BufferDataWithCallback_LOKI_offset);
-            
-            var alBufferCallbackSOFT_fnptr = (delegate* unmanaged[Cdecl]<int, int, int, delegate* unmanaged[Cdecl]<void*, void*, nuint, nuint>, void*, void>)loadFunctionSuppressed(handle, names + alBufferCallbackSOFT_offset);
-            pointers->_alBufferCallbackSOFT_fnptr = alBufferCallbackSOFT_fnptr;
-            if (alBufferCallbackSOFT_fnptr is not null)
-            {
-                pointers->_alGetBuffer3PtrSOFT_fnptr = (delegate* unmanaged[Cdecl]<int, int, void**, void**, void**, void>)loadFunctionSuppressed(handle, names + alGetBuffer3PtrSOFT_offset);
-                pointers->_alGetBufferPtrSOFT_fnptr = (delegate* unmanaged[Cdecl]<int, int, void**, void>)loadFunctionSuppressed(handle, names + alGetBufferPtrSOFT_offset);
-                pointers->_alGetBufferPtrvSOFT_fnptr = (delegate* unmanaged[Cdecl]<int, int, void**, void>)loadFunctionSuppressed(handle, names + alGetBufferPtrvSOFT_offset);
-            }
-            
-            var alBufferSamplesSOFT_fnptr = (delegate* unmanaged[Cdecl]<int, uint, int, int, int, int, void*, void>)loadFunctionSuppressed(handle, names + alBufferSamplesSOFT_offset);
-            pointers->_alBufferSamplesSOFT_fnptr = alBufferSamplesSOFT_fnptr;
-            if (alBufferSamplesSOFT_fnptr is not null)
-            {
-                pointers->_alBufferSubSamplesSOFT_fnptr = (delegate* unmanaged[Cdecl]<int, int, int, int, int, void*, void>)loadFunctionSuppressed(handle, names + alBufferSubSamplesSOFT_offset);
-                pointers->_alGetBufferSamplesSOFT_fnptr = (delegate* unmanaged[Cdecl]<int, int, int, int, int, void*, void>)loadFunctionSuppressed(handle, names + alGetBufferSamplesSOFT_offset);
-                pointers->_alIsBufferFormatSupportedSOFT_fnptr = (delegate* unmanaged[Cdecl]<int, byte>)loadFunctionSuppressed(handle, names + alIsBufferFormatSupportedSOFT_offset);
-            }
-            
-            pointers->_alBufferSubDataSOFT_fnptr = (delegate* unmanaged[Cdecl]<int, int, void*, int, int, void>)loadFunctionSuppressed(handle, names + alBufferSubDataSOFT_offset);
-            
-            pointers->_alDeferUpdatesSOFT_fnptr = (delegate* unmanaged[Cdecl]<void>)loadFunctionSuppressed(handle, names + alDeferUpdatesSOFT_offset);
-            pointers->_alProcessUpdatesSOFT_fnptr = (delegate* unmanaged[Cdecl]<void>)loadFunctionSuppressed(handle, names + alProcessUpdatesSOFT_offset);
-            
-            var alEventCallbackSOFT_fnptr = (delegate* unmanaged[Cdecl]<delegate* unmanaged[Cdecl]<All, uint, uint, nuint, byte*, void*, void>, void*, void>)loadFunctionSuppressed(handle, names + alEventCallbackSOFT_offset);
-            pointers->_alEventCallbackSOFT_fnptr = alEventCallbackSOFT_fnptr;
-            if (alEventCallbackSOFT_fnptr is not null)
-            {
-                pointers->_alEventControlSOFT_fnptr = (delegate* unmanaged[Cdecl]<int, int*, byte, void>)loadFunctionSuppressed(handle, names + alEventControlSOFT_offset);
-                pointers->_alGetPointerSOFT_fnptr = (delegate* unmanaged[Cdecl]<int, void*>)loadFunctionSuppressed(handle, names + alGetPointerSOFT_offset);
-                pointers->_alGetPointervSOFT_fnptr = (delegate* unmanaged[Cdecl]<int, void**, void>)loadFunctionSuppressed(handle, names + alGetPointervSOFT_offset);
-            }
-            
-            var alGetSource3dSOFT_fnptr = (delegate* unmanaged[Cdecl]<int, int, double*, double*, double*, void>)loadFunctionSuppressed(handle, names + alGetSource3dSOFT_offset);
-            pointers->_alGetSource3dSOFT_fnptr = alGetSource3dSOFT_fnptr;
-            if (alGetSource3dSOFT_fnptr is not null)
-            {
-                pointers->_alGetSource3i64SOFT_fnptr = (delegate* unmanaged[Cdecl]<int, int, long*, long*, long*, void>)loadFunctionSuppressed(handle, names + alGetSource3i64SOFT_offset);
-                pointers->_alGetSourcedSOFT_fnptr = (delegate* unmanaged[Cdecl]<int, int, double*, void>)loadFunctionSuppressed(handle, names + alGetSourcedSOFT_offset);
-                pointers->_alGetSourcedvSOFT_fnptr = (delegate* unmanaged[Cdecl]<int, int, double*, void>)loadFunctionSuppressed(handle, names + alGetSourcedvSOFT_offset);
-                pointers->_alGetSourcei64SOFT_fnptr = (delegate* unmanaged[Cdecl]<int, int, long*, void>)loadFunctionSuppressed(handle, names + alGetSourcei64SOFT_offset);
-                pointers->_alGetSourcei64vSOFT_fnptr = (delegate* unmanaged[Cdecl]<int, int, long*, void>)loadFunctionSuppressed(handle, names + alGetSourcei64vSOFT_offset);
-                pointers->_alSource3dSOFT_fnptr = (delegate* unmanaged[Cdecl]<int, int, double, double, double, void>)loadFunctionSuppressed(handle, names + alSource3dSOFT_offset);
-                pointers->_alSource3i64SOFT_fnptr = (delegate* unmanaged[Cdecl]<int, int, long, long, long, void>)loadFunctionSuppressed(handle, names + alSource3i64SOFT_offset);
-                pointers->_alSourcedSOFT_fnptr = (delegate* unmanaged[Cdecl]<int, int, double, void>)loadFunctionSuppressed(handle, names + alSourcedSOFT_offset);
-                pointers->_alSourcedvSOFT_fnptr = (delegate* unmanaged[Cdecl]<int, int, double*, void>)loadFunctionSuppressed(handle, names + alSourcedvSOFT_offset);
-                pointers->_alSourcei64SOFT_fnptr = (delegate* unmanaged[Cdecl]<int, int, long, void>)loadFunctionSuppressed(handle, names + alSourcei64SOFT_offset);
-                pointers->_alSourcei64vSOFT_fnptr = (delegate* unmanaged[Cdecl]<int, int, long*, void>)loadFunctionSuppressed(handle, names + alSourcei64vSOFT_offset);
-            }
-            
-            pointers->_alGetStringiSOFT_fnptr = (delegate* unmanaged[Cdecl]<int, int, byte*>)loadFunctionSuppressed(handle, names + alGetStringiSOFT_offset);
-            
-            pointers->_alSourcePlayAtTimeSOFT_fnptr = (delegate* unmanaged[Cdecl]<int, long, void>)loadFunctionSuppressed(handle, names + alSourcePlayAtTimeSOFT_offset);
-            pointers->_alSourcePlayAtTimevSOFT_fnptr = (delegate* unmanaged[Cdecl]<int, int*, long, void>)loadFunctionSuppressed(handle, names + alSourcePlayAtTimevSOFT_offset);
-            
-            var alBuffer3fDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, float, float, float, void>)loadFunctionSuppressed(handle, names + alBuffer3fDirect_offset);
-            pointers->_alBuffer3fDirect_fnptr = alBuffer3fDirect_fnptr;
-            if (alBuffer3fDirect_fnptr is not null)
-            {
-                pointers->_alBuffer3iDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, int, int, int, void>)loadFunctionSuppressed(handle, names + alBuffer3iDirect_offset);
-                pointers->_alBufferDataDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, void*, int, int, void>)loadFunctionSuppressed(handle, names + alBufferDataDirect_offset);
-                pointers->_alBufferfDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, float, void>)loadFunctionSuppressed(handle, names + alBufferfDirect_offset);
-                pointers->_alBufferfvDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, float*, void>)loadFunctionSuppressed(handle, names + alBufferfvDirect_offset);
-                pointers->_alBufferiDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, int, void>)loadFunctionSuppressed(handle, names + alBufferiDirect_offset);
-                pointers->_alBufferivDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, int*, void>)loadFunctionSuppressed(handle, names + alBufferivDirect_offset);
-                pointers->_alDeleteBuffersDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int*, void>)loadFunctionSuppressed(handle, names + alDeleteBuffersDirect_offset);
-                pointers->_alDeleteSourcesDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int*, void>)loadFunctionSuppressed(handle, names + alDeleteSourcesDirect_offset);
-                pointers->_alDisableDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, void>)loadFunctionSuppressed(handle, names + alDisableDirect_offset);
-                pointers->_alDistanceModelDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, void>)loadFunctionSuppressed(handle, names + alDistanceModelDirect_offset);
-                pointers->_alDopperFactorDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, float, void>)loadFunctionSuppressed(handle, names + alDopperFactorDirect_offset);
-                pointers->_alEnableDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, void>)loadFunctionSuppressed(handle, names + alEnableDirect_offset);
-                pointers->_alGenBuffersDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int*, void>)loadFunctionSuppressed(handle, names + alGenBuffersDirect_offset);
-                pointers->_alGenSourcesDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int*, void>)loadFunctionSuppressed(handle, names + alGenSourcesDirect_offset);
-                pointers->_alGetBooleanDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, byte>)loadFunctionSuppressed(handle, names + alGetBooleanDirect_offset);
-                pointers->_alGetBooleanvDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, byte*, void>)loadFunctionSuppressed(handle, names + alGetBooleanvDirect_offset);
-                pointers->_alGetBuffer3fDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, float*, float*, float*, void>)loadFunctionSuppressed(handle, names + alGetBuffer3fDirect_offset);
-                pointers->_alGetBuffer3iDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, int*, int*, int*, void>)loadFunctionSuppressed(handle, names + alGetBuffer3iDirect_offset);
-                pointers->_alGetBufferfDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, float*, void>)loadFunctionSuppressed(handle, names + alGetBufferfDirect_offset);
-                pointers->_alGetBufferfvDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, float*, void>)loadFunctionSuppressed(handle, names + alGetBufferfvDirect_offset);
-                pointers->_alGetBufferiDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, int*, void>)loadFunctionSuppressed(handle, names + alGetBufferiDirect_offset);
-                pointers->_alGetBufferivDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, int*, void>)loadFunctionSuppressed(handle, names + alGetBufferivDirect_offset);
-                pointers->_alGetDoubleDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, double>)loadFunctionSuppressed(handle, names + alGetDoubleDirect_offset);
-                pointers->_alGetDoublevDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, double*, void>)loadFunctionSuppressed(handle, names + alGetDoublevDirect_offset);
-                pointers->_alGetEnumValueDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, byte*, int>)loadFunctionSuppressed(handle, names + alGetEnumValueDirect_offset);
-                pointers->_alGetErrorDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int>)loadFunctionSuppressed(handle, names + alGetErrorDirect_offset);
-                pointers->_alGetFloatDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, float>)loadFunctionSuppressed(handle, names + alGetFloatDirect_offset);
-                pointers->_alGetFloatvDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, float*, void>)loadFunctionSuppressed(handle, names + alGetFloatvDirect_offset);
-                pointers->_alGetIntegerDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int>)loadFunctionSuppressed(handle, names + alGetIntegerDirect_offset);
-                pointers->_alGetIntegervDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int*, void>)loadFunctionSuppressed(handle, names + alGetIntegervDirect_offset);
-                pointers->_alGetListener3fDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, float*, float*, float*, void>)loadFunctionSuppressed(handle, names + alGetListener3fDirect_offset);
-                pointers->_alGetListener3iDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int*, int*, int*, void>)loadFunctionSuppressed(handle, names + alGetListener3iDirect_offset);
-                pointers->_alGetListenerfDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, float*, void>)loadFunctionSuppressed(handle, names + alGetListenerfDirect_offset);
-                pointers->_alGetListenerfvDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, float*, void>)loadFunctionSuppressed(handle, names + alGetListenerfvDirect_offset);
-                pointers->_alGetListeneriDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int*, void>)loadFunctionSuppressed(handle, names + alGetListeneriDirect_offset);
-                pointers->_alGetListenerivDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int*, void>)loadFunctionSuppressed(handle, names + alGetListenerivDirect_offset);
-                pointers->_alGetProcAddressDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, byte*, void*>)loadFunctionSuppressed(handle, names + alGetProcAddressDirect_offset);
-                pointers->_alGetSource3fDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, float*, float*, float*, void>)loadFunctionSuppressed(handle, names + alGetSource3fDirect_offset);
-                pointers->_alGetSource3iDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, int*, int*, int*, void>)loadFunctionSuppressed(handle, names + alGetSource3iDirect_offset);
-                pointers->_alGetSourcefDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, float*, void>)loadFunctionSuppressed(handle, names + alGetSourcefDirect_offset);
-                pointers->_alGetSourcefvDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, float*, void>)loadFunctionSuppressed(handle, names + alGetSourcefvDirect_offset);
-                pointers->_alGetSourceiDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, int*, void>)loadFunctionSuppressed(handle, names + alGetSourceiDirect_offset);
-                pointers->_alGetSourceivDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, int*, void>)loadFunctionSuppressed(handle, names + alGetSourceivDirect_offset);
-                pointers->_alGetStringDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, byte*>)loadFunctionSuppressed(handle, names + alGetStringDirect_offset);
-                pointers->_alIsBufferDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, byte>)loadFunctionSuppressed(handle, names + alIsBufferDirect_offset);
-                pointers->_alIsEnabledDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, byte>)loadFunctionSuppressed(handle, names + alIsEnabledDirect_offset);
-                pointers->_alIsExtensionPresentDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, byte*, byte>)loadFunctionSuppressed(handle, names + alIsExtensionPresentDirect_offset);
-                pointers->_alIsSourceDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, byte>)loadFunctionSuppressed(handle, names + alIsSourceDirect_offset);
-                pointers->_alListener3fDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, float, float, float, void>)loadFunctionSuppressed(handle, names + alListener3fDirect_offset);
-                pointers->_alListener3iDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, int, int, void>)loadFunctionSuppressed(handle, names + alListener3iDirect_offset);
-                pointers->_alListenerfDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, float, void>)loadFunctionSuppressed(handle, names + alListenerfDirect_offset);
-                pointers->_alListenerfvDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, float*, void>)loadFunctionSuppressed(handle, names + alListenerfvDirect_offset);
-                pointers->_alListeneriDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, void>)loadFunctionSuppressed(handle, names + alListeneriDirect_offset);
-                pointers->_alListenerivDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int*, void>)loadFunctionSuppressed(handle, names + alListenerivDirect_offset);
-                pointers->_alSource3fDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, float, float, float, void>)loadFunctionSuppressed(handle, names + alSource3fDirect_offset);
-                pointers->_alSource3iDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, int, int, int, void>)loadFunctionSuppressed(handle, names + alSource3iDirect_offset);
-                pointers->_alSourcefDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, float, void>)loadFunctionSuppressed(handle, names + alSourcefDirect_offset);
-                pointers->_alSourcefvDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, float*, void>)loadFunctionSuppressed(handle, names + alSourcefvDirect_offset);
-                pointers->_alSourceiDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, int, void>)loadFunctionSuppressed(handle, names + alSourceiDirect_offset);
-                pointers->_alSourceivDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, int*, void>)loadFunctionSuppressed(handle, names + alSourceivDirect_offset);
-                pointers->_alSourcePauseDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, void>)loadFunctionSuppressed(handle, names + alSourcePauseDirect_offset);
-                pointers->_alSourcePausevDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int*, void>)loadFunctionSuppressed(handle, names + alSourcePausevDirect_offset);
-                pointers->_alSourcePlayDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, void>)loadFunctionSuppressed(handle, names + alSourcePlayDirect_offset);
-                pointers->_alSourcePlayvDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int*, void>)loadFunctionSuppressed(handle, names + alSourcePlayvDirect_offset);
-                pointers->_alSourceQueueBuffersDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, int*, void>)loadFunctionSuppressed(handle, names + alSourceQueueBuffersDirect_offset);
-                pointers->_alSourceRewindDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, void>)loadFunctionSuppressed(handle, names + alSourceRewindDirect_offset);
-                pointers->_alSourceRewindvDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int*, void>)loadFunctionSuppressed(handle, names + alSourceRewindvDirect_offset);
-                pointers->_alSourceStopDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, void>)loadFunctionSuppressed(handle, names + alSourceStopDirect_offset);
-                pointers->_alSourceStopvDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int*, void>)loadFunctionSuppressed(handle, names + alSourceStopvDirect_offset);
-                pointers->_alSourceUnqueueBuffersDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, int*, void>)loadFunctionSuppressed(handle, names + alSourceUnqueueBuffersDirect_offset);
-                pointers->_alSpeedOfSoundDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, float, void>)loadFunctionSuppressed(handle, names + alSpeedOfSoundDirect_offset);
                 
-                var alDebugMessageCallbackDirectEXT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, delegate* unmanaged[Cdecl]<All, All, uint, All, nuint, byte*, void*, int>, void*, void>)loadFunctionSuppressed(handle, names + alDebugMessageCallbackDirectEXT_offset);
-                pointers->_alDebugMessageCallbackDirectEXT_fnptr = alDebugMessageCallbackDirectEXT_fnptr;
-                if (alDebugMessageCallbackDirectEXT_fnptr is not null)
+                var alBuffer3f_fnptr = (delegate* unmanaged[Cdecl]<int, int, float, float, float, void>)loadFunction(handle, names + alBuffer3f_offset);
+                _alBuffer3f_fnptr = alBuffer3f_fnptr;
+                if (alBuffer3f_fnptr is not null)
                 {
-                    pointers->_alDebugMessageControlDirectEXT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, uint, int, uint*, byte, void>)loadFunctionSuppressed(handle, names + alDebugMessageControlDirectEXT_offset);
-                    pointers->_alDebugMessageInsertDirectEXT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, uint, int, byte*, void>)loadFunctionSuppressed(handle, names + alDebugMessageInsertDirectEXT_offset);
-                    pointers->_alGetDebugMessageLogDirectEXT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, uint, int, int*, int*, uint*, int*, int*, byte*, uint>)loadFunctionSuppressed(handle, names + alGetDebugMessageLogDirectEXT_offset);
-                    pointers->_alGetObjectLabelDirectEXT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, uint, int, int*, byte*, void>)loadFunctionSuppressed(handle, names + alGetObjectLabelDirectEXT_offset);
-                    pointers->_alGetPointerDirectEXT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, void*>)loadFunctionSuppressed(handle, names + alGetPointerDirectEXT_offset);
-                    pointers->_alGetPointervDirectEXT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, void**, void>)loadFunctionSuppressed(handle, names + alGetPointervDirectEXT_offset);
-                    pointers->_alObjectLabelDirectEXT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, uint, int, byte*, void>)loadFunctionSuppressed(handle, names + alObjectLabelDirectEXT_offset);
-                    pointers->_alPopDebugGroupDirectEXT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, void>)loadFunctionSuppressed(handle, names + alPopDebugGroupDirectEXT_offset);
-                    pointers->_alPushDebugGroupDirectEXT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, uint, int, byte*, void>)loadFunctionSuppressed(handle, names + alPushDebugGroupDirectEXT_offset);
+                    _alBuffer3i_fnptr = (delegate* unmanaged[Cdecl]<int, int, int, int, int, void>)loadFunction(handle, names + alBuffer3i_offset);
+                    _alBufferData_fnptr = (delegate* unmanaged[Cdecl]<int, int, void*, int, int, void>)loadFunction(handle, names + alBufferData_offset);
+                    _alBufferf_fnptr = (delegate* unmanaged[Cdecl]<int, int, float, void>)loadFunction(handle, names + alBufferf_offset);
+                    _alBufferfv_fnptr = (delegate* unmanaged[Cdecl]<int, int, float*, void>)loadFunction(handle, names + alBufferfv_offset);
+                    _alBufferi_fnptr = (delegate* unmanaged[Cdecl]<int, int, int, void>)loadFunction(handle, names + alBufferi_offset);
+                    _alBufferiv_fnptr = (delegate* unmanaged[Cdecl]<int, int, int*, void>)loadFunction(handle, names + alBufferiv_offset);
+                    _alDeleteBuffers_fnptr = (delegate* unmanaged[Cdecl]<int, int*, void>)loadFunction(handle, names + alDeleteBuffers_offset);
+                    _alDeleteSources_fnptr = (delegate* unmanaged[Cdecl]<int, int*, void>)loadFunction(handle, names + alDeleteSources_offset);
+                    _alDisable_fnptr = (delegate* unmanaged[Cdecl]<int, void>)loadFunction(handle, names + alDisable_offset);
+                    _alDistanceModel_fnptr = (delegate* unmanaged[Cdecl]<int, void>)loadFunction(handle, names + alDistanceModel_offset);
+                    _alDopperFactor_fnptr = (delegate* unmanaged[Cdecl]<float, void>)loadFunction(handle, names + alDopperFactor_offset);
+                    _alEnable_fnptr = (delegate* unmanaged[Cdecl]<int, void>)loadFunction(handle, names + alEnable_offset);
+                    _alGenBuffers_fnptr = (delegate* unmanaged[Cdecl]<int, int*, void>)loadFunction(handle, names + alGenBuffers_offset);
+                    _alGenSources_fnptr = (delegate* unmanaged[Cdecl]<int, int*, void>)loadFunction(handle, names + alGenSources_offset);
+                    _alGetBoolean_fnptr = (delegate* unmanaged[Cdecl]<int, byte>)loadFunction(handle, names + alGetBoolean_offset);
+                    _alGetBooleanv_fnptr = (delegate* unmanaged[Cdecl]<int, byte*, void>)loadFunction(handle, names + alGetBooleanv_offset);
+                    _alGetBuffer3f_fnptr = (delegate* unmanaged[Cdecl]<int, int, float*, float*, float*, void>)loadFunction(handle, names + alGetBuffer3f_offset);
+                    _alGetBuffer3i_fnptr = (delegate* unmanaged[Cdecl]<int, int, int*, int*, int*, void>)loadFunction(handle, names + alGetBuffer3i_offset);
+                    _alGetBufferf_fnptr = (delegate* unmanaged[Cdecl]<int, int, float*, void>)loadFunction(handle, names + alGetBufferf_offset);
+                    _alGetBufferfv_fnptr = (delegate* unmanaged[Cdecl]<int, int, float*, void>)loadFunction(handle, names + alGetBufferfv_offset);
+                    _alGetBufferi_fnptr = (delegate* unmanaged[Cdecl]<int, int, int*, void>)loadFunction(handle, names + alGetBufferi_offset);
+                    _alGetBufferiv_fnptr = (delegate* unmanaged[Cdecl]<int, int, int*, void>)loadFunction(handle, names + alGetBufferiv_offset);
+                    _alGetDouble_fnptr = (delegate* unmanaged[Cdecl]<int, double>)loadFunction(handle, names + alGetDouble_offset);
+                    _alGetDoublev_fnptr = (delegate* unmanaged[Cdecl]<int, double*, void>)loadFunction(handle, names + alGetDoublev_offset);
+                    _alGetEnumValue_fnptr = (delegate* unmanaged[Cdecl]<byte*, int>)loadFunction(handle, names + alGetEnumValue_offset);
+                    _alGetError_fnptr = (delegate* unmanaged[Cdecl]<int>)loadFunction(handle, names + alGetError_offset);
+                    _alGetFloat_fnptr = (delegate* unmanaged[Cdecl]<int, float>)loadFunction(handle, names + alGetFloat_offset);
+                    _alGetFloatv_fnptr = (delegate* unmanaged[Cdecl]<int, float*, void>)loadFunction(handle, names + alGetFloatv_offset);
+                    _alGetInteger_fnptr = (delegate* unmanaged[Cdecl]<int, int>)loadFunction(handle, names + alGetInteger_offset);
+                    _alGetIntegerv_fnptr = (delegate* unmanaged[Cdecl]<int, int*, void>)loadFunction(handle, names + alGetIntegerv_offset);
+                    _alGetListener3f_fnptr = (delegate* unmanaged[Cdecl]<int, float*, float*, float*, void>)loadFunction(handle, names + alGetListener3f_offset);
+                    _alGetListener3i_fnptr = (delegate* unmanaged[Cdecl]<int, int*, int*, int*, void>)loadFunction(handle, names + alGetListener3i_offset);
+                    _alGetListenerf_fnptr = (delegate* unmanaged[Cdecl]<int, float*, void>)loadFunction(handle, names + alGetListenerf_offset);
+                    _alGetListenerfv_fnptr = (delegate* unmanaged[Cdecl]<int, float*, void>)loadFunction(handle, names + alGetListenerfv_offset);
+                    _alGetListeneri_fnptr = (delegate* unmanaged[Cdecl]<int, int*, void>)loadFunction(handle, names + alGetListeneri_offset);
+                    _alGetListeneriv_fnptr = (delegate* unmanaged[Cdecl]<int, int*, void>)loadFunction(handle, names + alGetListeneriv_offset);
+                    _alGetProcAddress_fnptr = (delegate* unmanaged[Cdecl]<byte*, void*>)loadFunction(handle, names + alGetProcAddress_offset);
+                    _alGetSource3f_fnptr = (delegate* unmanaged[Cdecl]<int, int, float*, float*, float*, void>)loadFunction(handle, names + alGetSource3f_offset);
+                    _alGetSource3i_fnptr = (delegate* unmanaged[Cdecl]<int, int, int*, int*, int*, void>)loadFunction(handle, names + alGetSource3i_offset);
+                    _alGetSourcef_fnptr = (delegate* unmanaged[Cdecl]<int, int, float*, void>)loadFunction(handle, names + alGetSourcef_offset);
+                    _alGetSourcefv_fnptr = (delegate* unmanaged[Cdecl]<int, int, float*, void>)loadFunction(handle, names + alGetSourcefv_offset);
+                    _alGetSourcei_fnptr = (delegate* unmanaged[Cdecl]<int, int, int*, void>)loadFunction(handle, names + alGetSourcei_offset);
+                    _alGetSourceiv_fnptr = (delegate* unmanaged[Cdecl]<int, int, int*, void>)loadFunction(handle, names + alGetSourceiv_offset);
+                    _alGetString_fnptr = (delegate* unmanaged[Cdecl]<int, byte*>)loadFunction(handle, names + alGetString_offset);
+                    _alIsBuffer_fnptr = (delegate* unmanaged[Cdecl]<int, byte>)loadFunction(handle, names + alIsBuffer_offset);
+                    _alIsEnabled_fnptr = (delegate* unmanaged[Cdecl]<int, byte>)loadFunction(handle, names + alIsEnabled_offset);
+                    _alIsExtensionPresent_fnptr = (delegate* unmanaged[Cdecl]<byte*, byte>)loadFunction(handle, names + alIsExtensionPresent_offset);
+                    _alIsSource_fnptr = (delegate* unmanaged[Cdecl]<int, byte>)loadFunction(handle, names + alIsSource_offset);
+                    _alListener3f_fnptr = (delegate* unmanaged[Cdecl]<int, float, float, float, void>)loadFunction(handle, names + alListener3f_offset);
+                    _alListener3i_fnptr = (delegate* unmanaged[Cdecl]<int, int, int, int, void>)loadFunction(handle, names + alListener3i_offset);
+                    _alListenerf_fnptr = (delegate* unmanaged[Cdecl]<int, float, void>)loadFunction(handle, names + alListenerf_offset);
+                    _alListenerfv_fnptr = (delegate* unmanaged[Cdecl]<int, float*, void>)loadFunction(handle, names + alListenerfv_offset);
+                    _alListeneri_fnptr = (delegate* unmanaged[Cdecl]<int, int, void>)loadFunction(handle, names + alListeneri_offset);
+                    _alListeneriv_fnptr = (delegate* unmanaged[Cdecl]<int, int*, void>)loadFunction(handle, names + alListeneriv_offset);
+                    _alSource3f_fnptr = (delegate* unmanaged[Cdecl]<int, int, float, float, float, void>)loadFunction(handle, names + alSource3f_offset);
+                    _alSource3i_fnptr = (delegate* unmanaged[Cdecl]<int, int, int, int, int, void>)loadFunction(handle, names + alSource3i_offset);
+                    _alSourcef_fnptr = (delegate* unmanaged[Cdecl]<int, int, float, void>)loadFunction(handle, names + alSourcef_offset);
+                    _alSourcefv_fnptr = (delegate* unmanaged[Cdecl]<int, int, float*, void>)loadFunction(handle, names + alSourcefv_offset);
+                    _alSourcei_fnptr = (delegate* unmanaged[Cdecl]<int, int, int, void>)loadFunction(handle, names + alSourcei_offset);
+                    _alSourceiv_fnptr = (delegate* unmanaged[Cdecl]<int, int, int*, void>)loadFunction(handle, names + alSourceiv_offset);
+                    _alSourcePause_fnptr = (delegate* unmanaged[Cdecl]<int, void>)loadFunction(handle, names + alSourcePause_offset);
+                    _alSourcePausev_fnptr = (delegate* unmanaged[Cdecl]<int, int*, void>)loadFunction(handle, names + alSourcePausev_offset);
+                    _alSourcePlay_fnptr = (delegate* unmanaged[Cdecl]<int, void>)loadFunction(handle, names + alSourcePlay_offset);
+                    _alSourcePlayv_fnptr = (delegate* unmanaged[Cdecl]<int, int*, void>)loadFunction(handle, names + alSourcePlayv_offset);
+                    _alSourceQueueBuffers_fnptr = (delegate* unmanaged[Cdecl]<int, int, int*, void>)loadFunction(handle, names + alSourceQueueBuffers_offset);
+                    _alSourceRewind_fnptr = (delegate* unmanaged[Cdecl]<int, void>)loadFunction(handle, names + alSourceRewind_offset);
+                    _alSourceRewindv_fnptr = (delegate* unmanaged[Cdecl]<int, int*, void>)loadFunction(handle, names + alSourceRewindv_offset);
+                    _alSourceStop_fnptr = (delegate* unmanaged[Cdecl]<int, void>)loadFunction(handle, names + alSourceStop_offset);
+                    _alSourceStopv_fnptr = (delegate* unmanaged[Cdecl]<int, int*, void>)loadFunction(handle, names + alSourceStopv_offset);
+                    _alSourceUnqueueBuffers_fnptr = (delegate* unmanaged[Cdecl]<int, int, int*, void>)loadFunction(handle, names + alSourceUnqueueBuffers_offset);
+                    _alSpeedOfSound_fnptr = (delegate* unmanaged[Cdecl]<float, void>)loadFunction(handle, names + alSpeedOfSound_offset);
                 }
                 
-                pointers->_alRequestFoldbackStartDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, int, float*, delegate* unmanaged[Cdecl]<All, nuint, void>, void>)loadFunctionSuppressed(handle, names + alRequestFoldbackStartDirect_offset);
-                pointers->_alRequestFoldbackStopDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, void>)loadFunctionSuppressed(handle, names + alRequestFoldbackStopDirect_offset);
+                _EAXGet_fnptr = (delegate* unmanaged[Cdecl]<Guid*, uint, uint, void*, uint, int>)loadFunction(handle, names + EAXGet_offset);
+                _EAXSet_fnptr = (delegate* unmanaged[Cdecl]<Guid*, uint, uint, void*, uint, int>)loadFunction(handle, names + EAXSet_offset);
                 
-                pointers->_alSourceAddNotificationDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, uint, delegate* unmanaged[Cdecl]<uint, uint, void*, void>, void*, int>)loadFunctionSuppressed(handle, names + alSourceAddNotificationDirect_offset);
-                pointers->_alSourceRemoveNotificationDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, uint, delegate* unmanaged[Cdecl]<uint, uint, void*, void>, void*, void>)loadFunctionSuppressed(handle, names + alSourceRemoveNotificationDirect_offset);
+                _EAXGetBufferMode_fnptr = (delegate* unmanaged[Cdecl]<int, int*, int>)loadFunction(handle, names + EAXGetBufferMode_offset);
+                _EAXSetBufferMode_fnptr = (delegate* unmanaged[Cdecl]<int, int*, int, byte>)loadFunction(handle, names + EAXSetBufferMode_offset);
                 
-                pointers->_alSourceGetRenderingQualityDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int>)loadFunctionSuppressed(handle, names + alSourceGetRenderingQualityDirect_offset);
-                pointers->_alSourceRenderingQualityDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, void>)loadFunctionSuppressed(handle, names + alSourceRenderingQualityDirect_offset);
-                
-                pointers->_AttenuationScale_DirectLOKI_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, float, void>)loadFunctionSuppressed(handle, names + AttenuationScale_DirectLOKI_offset);
-                
-                pointers->_BufferDataWithCallback_DirectLOKI_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, delegate* unmanaged[Cdecl]<uint, uint, void*, All, uint, int>, void>)loadFunctionSuppressed(handle, names + BufferDataWithCallback_DirectLOKI_offset);
-                
-                var alBufferSamplesDirectSOFT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, uint, int, int, int, int, void*, void>)loadFunctionSuppressed(handle, names + alBufferSamplesDirectSOFT_offset);
-                pointers->_alBufferSamplesDirectSOFT_fnptr = alBufferSamplesDirectSOFT_fnptr;
-                if (alBufferSamplesDirectSOFT_fnptr is not null)
+                var alAuxiliaryEffectSlotf_fnptr = (delegate* unmanaged[Cdecl]<int, int, float, void>)loadFunction(handle, names + alAuxiliaryEffectSlotf_offset);
+                _alAuxiliaryEffectSlotf_fnptr = alAuxiliaryEffectSlotf_fnptr;
+                if (alAuxiliaryEffectSlotf_fnptr is not null)
                 {
-                    pointers->_alBufferSubSamplesDirectSOFT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, int, int, int, void*, void>)loadFunctionSuppressed(handle, names + alBufferSubSamplesDirectSOFT_offset);
-                    pointers->_alGetBufferSamplesDirectSOFT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, int, int, int, void*, void>)loadFunctionSuppressed(handle, names + alGetBufferSamplesDirectSOFT_offset);
-                    pointers->_alIsBufferFormatSupportedDirectSOFT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, byte>)loadFunctionSuppressed(handle, names + alIsBufferFormatSupportedDirectSOFT_offset);
+                    _alAuxiliaryEffectSlotfv_fnptr = (delegate* unmanaged[Cdecl]<int, int, float*, void>)loadFunction(handle, names + alAuxiliaryEffectSlotfv_offset);
+                    _alAuxiliaryEffectSloti_fnptr = (delegate* unmanaged[Cdecl]<int, int, int, void>)loadFunction(handle, names + alAuxiliaryEffectSloti_offset);
+                    _alAuxiliaryEffectSlotiv_fnptr = (delegate* unmanaged[Cdecl]<int, int, int*, void>)loadFunction(handle, names + alAuxiliaryEffectSlotiv_offset);
+                    _alDeleteAuxiliaryEffectSlots_fnptr = (delegate* unmanaged[Cdecl]<int, int*, void>)loadFunction(handle, names + alDeleteAuxiliaryEffectSlots_offset);
+                    _alDeleteEffects_fnptr = (delegate* unmanaged[Cdecl]<int, int*, void>)loadFunction(handle, names + alDeleteEffects_offset);
+                    _alDeleteFilters_fnptr = (delegate* unmanaged[Cdecl]<int, int*, void>)loadFunction(handle, names + alDeleteFilters_offset);
+                    _alEffectf_fnptr = (delegate* unmanaged[Cdecl]<int, int, float, void>)loadFunction(handle, names + alEffectf_offset);
+                    _alEffectfv_fnptr = (delegate* unmanaged[Cdecl]<int, int, float*, void>)loadFunction(handle, names + alEffectfv_offset);
+                    _alEffecti_fnptr = (delegate* unmanaged[Cdecl]<int, int, int, void>)loadFunction(handle, names + alEffecti_offset);
+                    _alEffectiv_fnptr = (delegate* unmanaged[Cdecl]<int, int, int*, void>)loadFunction(handle, names + alEffectiv_offset);
+                    _alFilterf_fnptr = (delegate* unmanaged[Cdecl]<int, int, float, void>)loadFunction(handle, names + alFilterf_offset);
+                    _alFilterfv_fnptr = (delegate* unmanaged[Cdecl]<int, int, float*, void>)loadFunction(handle, names + alFilterfv_offset);
+                    _alFilteri_fnptr = (delegate* unmanaged[Cdecl]<int, int, int, void>)loadFunction(handle, names + alFilteri_offset);
+                    _alFilteriv_fnptr = (delegate* unmanaged[Cdecl]<int, int, int*, void>)loadFunction(handle, names + alFilteriv_offset);
+                    _alGenAuxiliaryEffectSlots_fnptr = (delegate* unmanaged[Cdecl]<int, int*, void>)loadFunction(handle, names + alGenAuxiliaryEffectSlots_offset);
+                    _alGenEffects_fnptr = (delegate* unmanaged[Cdecl]<int, int*, void>)loadFunction(handle, names + alGenEffects_offset);
+                    _alGenFilters_fnptr = (delegate* unmanaged[Cdecl]<int, int*, void>)loadFunction(handle, names + alGenFilters_offset);
+                    _alGetAuxiliaryEffectSlotf_fnptr = (delegate* unmanaged[Cdecl]<int, int, float*, void>)loadFunction(handle, names + alGetAuxiliaryEffectSlotf_offset);
+                    _alGetAuxiliaryEffectSlotfv_fnptr = (delegate* unmanaged[Cdecl]<int, int, float*, void>)loadFunction(handle, names + alGetAuxiliaryEffectSlotfv_offset);
+                    _alGetAuxiliaryEffectSloti_fnptr = (delegate* unmanaged[Cdecl]<int, int, int*, void>)loadFunction(handle, names + alGetAuxiliaryEffectSloti_offset);
+                    _alGetAuxiliaryEffectSlotiv_fnptr = (delegate* unmanaged[Cdecl]<int, int, int*, void>)loadFunction(handle, names + alGetAuxiliaryEffectSlotiv_offset);
+                    _alGetEffectf_fnptr = (delegate* unmanaged[Cdecl]<int, int, float*, void>)loadFunction(handle, names + alGetEffectf_offset);
+                    _alGetEffectfv_fnptr = (delegate* unmanaged[Cdecl]<int, int, float*, void>)loadFunction(handle, names + alGetEffectfv_offset);
+                    _alGetEffecti_fnptr = (delegate* unmanaged[Cdecl]<int, int, int*, void>)loadFunction(handle, names + alGetEffecti_offset);
+                    _alGetEffectiv_fnptr = (delegate* unmanaged[Cdecl]<int, int, int*, void>)loadFunction(handle, names + alGetEffectiv_offset);
+                    _alGetFilterf_fnptr = (delegate* unmanaged[Cdecl]<int, int, float*, void>)loadFunction(handle, names + alGetFilterf_offset);
+                    _alGetFilterfv_fnptr = (delegate* unmanaged[Cdecl]<int, int, float*, void>)loadFunction(handle, names + alGetFilterfv_offset);
+                    _alGetFilteri_fnptr = (delegate* unmanaged[Cdecl]<int, int, int*, void>)loadFunction(handle, names + alGetFilteri_offset);
+                    _alGetFilteriv_fnptr = (delegate* unmanaged[Cdecl]<int, int, int*, void>)loadFunction(handle, names + alGetFilteriv_offset);
+                    _alIsAuxiliaryEffectSlot_fnptr = (delegate* unmanaged[Cdecl]<int, void>)loadFunction(handle, names + alIsAuxiliaryEffectSlot_offset);
+                    _alIsEffect_fnptr = (delegate* unmanaged[Cdecl]<int, byte>)loadFunction(handle, names + alIsEffect_offset);
+                    _alIsFilter_fnptr = (delegate* unmanaged[Cdecl]<int, void>)loadFunction(handle, names + alIsFilter_offset);
                 }
                 
-                pointers->_alBufferSubDataDirectSOFT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, void*, int, int, void>)loadFunctionSuppressed(handle, names + alBufferSubDataDirectSOFT_offset);
-                
-                var alBufferCallbackDirectSOFT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, int, delegate* unmanaged[Cdecl]<void*, void*, nuint, nuint>, void*, void>)loadFunctionSuppressed(handle, names + alBufferCallbackDirectSOFT_offset);
-                pointers->_alBufferCallbackDirectSOFT_fnptr = alBufferCallbackDirectSOFT_fnptr;
-                if (alBufferCallbackDirectSOFT_fnptr is not null)
+                var alDebugMessageCallbackEXT_fnptr = (delegate* unmanaged[Cdecl]<delegate* unmanaged[Cdecl]<All, All, uint, All, nuint, byte*, void*, int>, void*, void>)loadFunction(handle, names + alDebugMessageCallbackEXT_offset);
+                _alDebugMessageCallbackEXT_fnptr = alDebugMessageCallbackEXT_fnptr;
+                if (alDebugMessageCallbackEXT_fnptr is not null)
                 {
-                    pointers->_alGetBuffer3PtrDirectSOFT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, void**, void**, void**, void>)loadFunctionSuppressed(handle, names + alGetBuffer3PtrDirectSOFT_offset);
-                    pointers->_alGetBufferPtrDirectSOFT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, void**, void>)loadFunctionSuppressed(handle, names + alGetBufferPtrDirectSOFT_offset);
-                    pointers->_alGetBufferPtrvDirectSOFT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, void**, void>)loadFunctionSuppressed(handle, names + alGetBufferPtrvDirectSOFT_offset);
+                    _alDebugMessageControlEXT_fnptr = (delegate* unmanaged[Cdecl]<int, int, uint, int, uint*, byte, void>)loadFunction(handle, names + alDebugMessageControlEXT_offset);
+                    _alDebugMessageInsertEXT_fnptr = (delegate* unmanaged[Cdecl]<int, int, uint, int, byte*, void>)loadFunction(handle, names + alDebugMessageInsertEXT_offset);
+                    _alGetDebugMessageLogEXT_fnptr = (delegate* unmanaged[Cdecl]<uint, int, int*, int*, uint*, int*, int*, byte*, uint>)loadFunction(handle, names + alGetDebugMessageLogEXT_offset);
+                    _alGetObjectLabelEXT_fnptr = (delegate* unmanaged[Cdecl]<int, uint, int, int*, byte*, void>)loadFunction(handle, names + alGetObjectLabelEXT_offset);
+                    _alGetPointerEXT_fnptr = (delegate* unmanaged[Cdecl]<int, void*>)loadFunction(handle, names + alGetPointerEXT_offset);
+                    _alGetPointervEXT_fnptr = (delegate* unmanaged[Cdecl]<int, void**, void>)loadFunction(handle, names + alGetPointervEXT_offset);
+                    _alObjectLabelEXT_fnptr = (delegate* unmanaged[Cdecl]<int, uint, int, byte*, void>)loadFunction(handle, names + alObjectLabelEXT_offset);
+                    _alPopDebugGroupEXT_fnptr = (delegate* unmanaged[Cdecl]<void>)loadFunction(handle, names + alPopDebugGroupEXT_offset);
+                    _alPushDebugGroupEXT_fnptr = (delegate* unmanaged[Cdecl]<int, uint, int, byte*, void>)loadFunction(handle, names + alPushDebugGroupEXT_offset);
                 }
                 
-                pointers->_alDeferUpdatesDirectSOFT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, void>)loadFunctionSuppressed(handle, names + alDeferUpdatesDirectSOFT_offset);
-                pointers->_alProcessUpdatesDirectSOFT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, void>)loadFunctionSuppressed(handle, names + alProcessUpdatesDirectSOFT_offset);
+                _alMacOSXGetRenderChannelCount_fnptr = (delegate* unmanaged[Cdecl]<int>)loadFunction(handle, names + alMacOSXGetRenderChannelCount_offset);
+                _alMacOSXRenderChannelCount_fnptr = (delegate* unmanaged[Cdecl]<int, void>)loadFunction(handle, names + alMacOSXRenderChannelCount_offset);
                 
-                var alEventCallbackDirectSOFT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, delegate* unmanaged[Cdecl]<All, uint, uint, nuint, byte*, void*, void>, void*, void>)loadFunctionSuppressed(handle, names + alEventCallbackDirectSOFT_offset);
-                pointers->_alEventCallbackDirectSOFT_fnptr = alEventCallbackDirectSOFT_fnptr;
-                if (alEventCallbackDirectSOFT_fnptr is not null)
+                _alRequestFoldbackStart_fnptr = (delegate* unmanaged[Cdecl]<int, int, int, float*, delegate* unmanaged[Cdecl]<All, nuint, void>, void>)loadFunction(handle, names + alRequestFoldbackStart_offset);
+                _alRequestFoldbackStop_fnptr = (delegate* unmanaged[Cdecl]<void>)loadFunction(handle, names + alRequestFoldbackStop_offset);
+                
+                _alSourceAddNotification_fnptr = (delegate* unmanaged[Cdecl]<int, uint, delegate* unmanaged[Cdecl]<uint, uint, void*, void>, void*, int>)loadFunction(handle, names + alSourceAddNotification_offset);
+                _alSourceRemoveNotification_fnptr = (delegate* unmanaged[Cdecl]<int, uint, delegate* unmanaged[Cdecl]<uint, uint, void*, void>, void*, void>)loadFunction(handle, names + alSourceRemoveNotification_offset);
+                
+                _alSourceGetRenderingQuality_fnptr = (delegate* unmanaged[Cdecl]<int, int>)loadFunction(handle, names + alSourceGetRenderingQuality_offset);
+                _alSourceRenderingQuality_fnptr = (delegate* unmanaged[Cdecl]<int, int, void>)loadFunction(handle, names + alSourceRenderingQuality_offset);
+                
+                _AttenuationScale_LOKI_fnptr = (delegate* unmanaged[Cdecl]<float, void>)loadFunction(handle, names + AttenuationScale_LOKI_offset);
+                
+                _BufferDataWithCallback_LOKI_fnptr = (delegate* unmanaged[Cdecl]<int, delegate* unmanaged[Cdecl]<uint, uint, void*, All, uint, int>, void>)loadFunction(handle, names + BufferDataWithCallback_LOKI_offset);
+                
+                var alBufferCallbackSOFT_fnptr = (delegate* unmanaged[Cdecl]<int, int, int, delegate* unmanaged[Cdecl]<void*, void*, nuint, nuint>, void*, void>)loadFunction(handle, names + alBufferCallbackSOFT_offset);
+                _alBufferCallbackSOFT_fnptr = alBufferCallbackSOFT_fnptr;
+                if (alBufferCallbackSOFT_fnptr is not null)
                 {
-                    pointers->_alEventControlDirectSOFT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int*, byte, void>)loadFunctionSuppressed(handle, names + alEventControlDirectSOFT_offset);
-                    pointers->_alGetPointerDirectSOFT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, void*>)loadFunctionSuppressed(handle, names + alGetPointerDirectSOFT_offset);
-                    pointers->_alGetPointervDirectSOFT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, void**, void>)loadFunctionSuppressed(handle, names + alGetPointervDirectSOFT_offset);
+                    _alGetBuffer3PtrSOFT_fnptr = (delegate* unmanaged[Cdecl]<int, int, void**, void**, void**, void>)loadFunction(handle, names + alGetBuffer3PtrSOFT_offset);
+                    _alGetBufferPtrSOFT_fnptr = (delegate* unmanaged[Cdecl]<int, int, void**, void>)loadFunction(handle, names + alGetBufferPtrSOFT_offset);
+                    _alGetBufferPtrvSOFT_fnptr = (delegate* unmanaged[Cdecl]<int, int, void**, void>)loadFunction(handle, names + alGetBufferPtrvSOFT_offset);
                 }
                 
-                var alGetSource3dDirectSOFT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, double*, double*, double*, void>)loadFunctionSuppressed(handle, names + alGetSource3dDirectSOFT_offset);
-                pointers->_alGetSource3dDirectSOFT_fnptr = alGetSource3dDirectSOFT_fnptr;
-                if (alGetSource3dDirectSOFT_fnptr is not null)
+                var alBufferSamplesSOFT_fnptr = (delegate* unmanaged[Cdecl]<int, uint, int, int, int, int, void*, void>)loadFunction(handle, names + alBufferSamplesSOFT_offset);
+                _alBufferSamplesSOFT_fnptr = alBufferSamplesSOFT_fnptr;
+                if (alBufferSamplesSOFT_fnptr is not null)
                 {
-                    pointers->_alGetSource3i64DirectSOFT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, long*, long*, long*, void>)loadFunctionSuppressed(handle, names + alGetSource3i64DirectSOFT_offset);
-                    pointers->_alGetSourcedDirectSOFT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, double*, void>)loadFunctionSuppressed(handle, names + alGetSourcedDirectSOFT_offset);
-                    pointers->_alGetSourcedvDirectSOFT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, double*, void>)loadFunctionSuppressed(handle, names + alGetSourcedvDirectSOFT_offset);
-                    pointers->_alGetSourcei64DirectSOFT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, long*, void>)loadFunctionSuppressed(handle, names + alGetSourcei64DirectSOFT_offset);
-                    pointers->_alGetSourcei64vDirectSOFT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, long*, void>)loadFunctionSuppressed(handle, names + alGetSourcei64vDirectSOFT_offset);
-                    pointers->_alSource3dDirectSOFT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, double, double, double, void>)loadFunctionSuppressed(handle, names + alSource3dDirectSOFT_offset);
-                    pointers->_alSource3i64DirectSOFT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, long, long, long, void>)loadFunctionSuppressed(handle, names + alSource3i64DirectSOFT_offset);
-                    pointers->_alSourcedDirectSOFT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, double, void>)loadFunctionSuppressed(handle, names + alSourcedDirectSOFT_offset);
-                    pointers->_alSourcedvDirectSOFT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, double*, void>)loadFunctionSuppressed(handle, names + alSourcedvDirectSOFT_offset);
-                    pointers->_alSourcei64DirectSOFT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, long, void>)loadFunctionSuppressed(handle, names + alSourcei64DirectSOFT_offset);
-                    pointers->_alSourcei64vDirectSOFT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, long*, void>)loadFunctionSuppressed(handle, names + alSourcei64vDirectSOFT_offset);
+                    _alBufferSubSamplesSOFT_fnptr = (delegate* unmanaged[Cdecl]<int, int, int, int, int, void*, void>)loadFunction(handle, names + alBufferSubSamplesSOFT_offset);
+                    _alGetBufferSamplesSOFT_fnptr = (delegate* unmanaged[Cdecl]<int, int, int, int, int, void*, void>)loadFunction(handle, names + alGetBufferSamplesSOFT_offset);
+                    _alIsBufferFormatSupportedSOFT_fnptr = (delegate* unmanaged[Cdecl]<int, byte>)loadFunction(handle, names + alIsBufferFormatSupportedSOFT_offset);
                 }
                 
-                pointers->_alGetStringiDirectSOFT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, byte*>)loadFunctionSuppressed(handle, names + alGetStringiDirectSOFT_offset);
+                _alBufferSubDataSOFT_fnptr = (delegate* unmanaged[Cdecl]<int, int, void*, int, int, void>)loadFunction(handle, names + alBufferSubDataSOFT_offset);
                 
-                pointers->_alSourcePlayAtTimeDirectSOFT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, long, void>)loadFunctionSuppressed(handle, names + alSourcePlayAtTimeDirectSOFT_offset);
-                pointers->_alSourcePlayAtTimevDirectSOFT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int*, long, void>)loadFunctionSuppressed(handle, names + alSourcePlayAtTimevDirectSOFT_offset);
+                _alDeferUpdatesSOFT_fnptr = (delegate* unmanaged[Cdecl]<void>)loadFunction(handle, names + alDeferUpdatesSOFT_offset);
+                _alProcessUpdatesSOFT_fnptr = (delegate* unmanaged[Cdecl]<void>)loadFunction(handle, names + alProcessUpdatesSOFT_offset);
                 
-                var alAuxiliaryEffectSlotfDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, float, void>)loadFunctionSuppressed(handle, names + alAuxiliaryEffectSlotfDirect_offset);
-                pointers->_alAuxiliaryEffectSlotfDirect_fnptr = alAuxiliaryEffectSlotfDirect_fnptr;
-                if (alAuxiliaryEffectSlotfDirect_fnptr is not null)
+                var alEventCallbackSOFT_fnptr = (delegate* unmanaged[Cdecl]<delegate* unmanaged[Cdecl]<All, uint, uint, nuint, byte*, void*, void>, void*, void>)loadFunction(handle, names + alEventCallbackSOFT_offset);
+                _alEventCallbackSOFT_fnptr = alEventCallbackSOFT_fnptr;
+                if (alEventCallbackSOFT_fnptr is not null)
                 {
-                    pointers->_alAuxiliaryEffectSlotfvDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, float*, void>)loadFunctionSuppressed(handle, names + alAuxiliaryEffectSlotfvDirect_offset);
-                    pointers->_alAuxiliaryEffectSlotiDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, int, void>)loadFunctionSuppressed(handle, names + alAuxiliaryEffectSlotiDirect_offset);
-                    pointers->_alAuxiliaryEffectSlotivDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, int*, void>)loadFunctionSuppressed(handle, names + alAuxiliaryEffectSlotivDirect_offset);
-                    pointers->_alDeleteAuxiliaryEffectSlotsDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int*, void>)loadFunctionSuppressed(handle, names + alDeleteAuxiliaryEffectSlotsDirect_offset);
-                    pointers->_alDeleteEffectsDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int*, void>)loadFunctionSuppressed(handle, names + alDeleteEffectsDirect_offset);
-                    pointers->_alDeleteFiltersDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int*, void>)loadFunctionSuppressed(handle, names + alDeleteFiltersDirect_offset);
-                    pointers->_alEffectfDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, float, void>)loadFunctionSuppressed(handle, names + alEffectfDirect_offset);
-                    pointers->_alEffectfvDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, float*, void>)loadFunctionSuppressed(handle, names + alEffectfvDirect_offset);
-                    pointers->_alEffectiDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, int, void>)loadFunctionSuppressed(handle, names + alEffectiDirect_offset);
-                    pointers->_alEffectivDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, int*, void>)loadFunctionSuppressed(handle, names + alEffectivDirect_offset);
-                    pointers->_alFilterfDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, float, void>)loadFunctionSuppressed(handle, names + alFilterfDirect_offset);
-                    pointers->_alFilterfvDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, float*, void>)loadFunctionSuppressed(handle, names + alFilterfvDirect_offset);
-                    pointers->_alFilteriDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, int, void>)loadFunctionSuppressed(handle, names + alFilteriDirect_offset);
-                    pointers->_alFilterivDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, int*, void>)loadFunctionSuppressed(handle, names + alFilterivDirect_offset);
-                    pointers->_alGenAuxiliaryEffectSlotsDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int*, void>)loadFunctionSuppressed(handle, names + alGenAuxiliaryEffectSlotsDirect_offset);
-                    pointers->_alGenEffectsDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int*, void>)loadFunctionSuppressed(handle, names + alGenEffectsDirect_offset);
-                    pointers->_alGenFiltersDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int*, void>)loadFunctionSuppressed(handle, names + alGenFiltersDirect_offset);
-                    pointers->_alGetAuxiliaryEffectSlotfDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, float*, void>)loadFunctionSuppressed(handle, names + alGetAuxiliaryEffectSlotfDirect_offset);
-                    pointers->_alGetAuxiliaryEffectSlotfvDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, float*, void>)loadFunctionSuppressed(handle, names + alGetAuxiliaryEffectSlotfvDirect_offset);
-                    pointers->_alGetAuxiliaryEffectSlotiDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, int*, void>)loadFunctionSuppressed(handle, names + alGetAuxiliaryEffectSlotiDirect_offset);
-                    pointers->_alGetAuxiliaryEffectSlotivDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, int*, void>)loadFunctionSuppressed(handle, names + alGetAuxiliaryEffectSlotivDirect_offset);
-                    pointers->_alGetEffectfDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, float*, void>)loadFunctionSuppressed(handle, names + alGetEffectfDirect_offset);
-                    pointers->_alGetEffectfvDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, float*, void>)loadFunctionSuppressed(handle, names + alGetEffectfvDirect_offset);
-                    pointers->_alGetEffectiDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, int*, void>)loadFunctionSuppressed(handle, names + alGetEffectiDirect_offset);
-                    pointers->_alGetEffectivDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, int*, void>)loadFunctionSuppressed(handle, names + alGetEffectivDirect_offset);
-                    pointers->_alGetFilterfDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, float*, void>)loadFunctionSuppressed(handle, names + alGetFilterfDirect_offset);
-                    pointers->_alGetFilterfvDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, float*, void>)loadFunctionSuppressed(handle, names + alGetFilterfvDirect_offset);
-                    pointers->_alGetFilteriDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, int*, void>)loadFunctionSuppressed(handle, names + alGetFilteriDirect_offset);
-                    pointers->_alGetFilterivDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, int*, void>)loadFunctionSuppressed(handle, names + alGetFilterivDirect_offset);
-                    pointers->_alIsAuxiliaryEffectSlotDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, void>)loadFunctionSuppressed(handle, names + alIsAuxiliaryEffectSlotDirect_offset);
-                    pointers->_alIsEffectDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, byte>)loadFunctionSuppressed(handle, names + alIsEffectDirect_offset);
-                    pointers->_alIsFilterDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, void>)loadFunctionSuppressed(handle, names + alIsFilterDirect_offset);
+                    _alEventControlSOFT_fnptr = (delegate* unmanaged[Cdecl]<int, int*, byte, void>)loadFunction(handle, names + alEventControlSOFT_offset);
+                    _alGetPointerSOFT_fnptr = (delegate* unmanaged[Cdecl]<int, void*>)loadFunction(handle, names + alGetPointerSOFT_offset);
+                    _alGetPointervSOFT_fnptr = (delegate* unmanaged[Cdecl]<int, void**, void>)loadFunction(handle, names + alGetPointervSOFT_offset);
                 }
                 
-                pointers->_alMacOSXGetRenderChannelCountDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int>)loadFunctionSuppressed(handle, names + alMacOSXGetRenderChannelCountDirect_offset);
-                pointers->_alMacOSXRenderChannelCountDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, void>)loadFunctionSuppressed(handle, names + alMacOSXRenderChannelCountDirect_offset);
+                var alGetSource3dSOFT_fnptr = (delegate* unmanaged[Cdecl]<int, int, double*, double*, double*, void>)loadFunction(handle, names + alGetSource3dSOFT_offset);
+                _alGetSource3dSOFT_fnptr = alGetSource3dSOFT_fnptr;
+                if (alGetSource3dSOFT_fnptr is not null)
+                {
+                    _alGetSource3i64SOFT_fnptr = (delegate* unmanaged[Cdecl]<int, int, long*, long*, long*, void>)loadFunction(handle, names + alGetSource3i64SOFT_offset);
+                    _alGetSourcedSOFT_fnptr = (delegate* unmanaged[Cdecl]<int, int, double*, void>)loadFunction(handle, names + alGetSourcedSOFT_offset);
+                    _alGetSourcedvSOFT_fnptr = (delegate* unmanaged[Cdecl]<int, int, double*, void>)loadFunction(handle, names + alGetSourcedvSOFT_offset);
+                    _alGetSourcei64SOFT_fnptr = (delegate* unmanaged[Cdecl]<int, int, long*, void>)loadFunction(handle, names + alGetSourcei64SOFT_offset);
+                    _alGetSourcei64vSOFT_fnptr = (delegate* unmanaged[Cdecl]<int, int, long*, void>)loadFunction(handle, names + alGetSourcei64vSOFT_offset);
+                    _alSource3dSOFT_fnptr = (delegate* unmanaged[Cdecl]<int, int, double, double, double, void>)loadFunction(handle, names + alSource3dSOFT_offset);
+                    _alSource3i64SOFT_fnptr = (delegate* unmanaged[Cdecl]<int, int, long, long, long, void>)loadFunction(handle, names + alSource3i64SOFT_offset);
+                    _alSourcedSOFT_fnptr = (delegate* unmanaged[Cdecl]<int, int, double, void>)loadFunction(handle, names + alSourcedSOFT_offset);
+                    _alSourcedvSOFT_fnptr = (delegate* unmanaged[Cdecl]<int, int, double*, void>)loadFunction(handle, names + alSourcedvSOFT_offset);
+                    _alSourcei64SOFT_fnptr = (delegate* unmanaged[Cdecl]<int, int, long, void>)loadFunction(handle, names + alSourcei64SOFT_offset);
+                    _alSourcei64vSOFT_fnptr = (delegate* unmanaged[Cdecl]<int, int, long*, void>)loadFunction(handle, names + alSourcei64vSOFT_offset);
+                }
                 
-                pointers->_EAXGetDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, Guid*, uint, uint, void*, uint, int>)loadFunctionSuppressed(handle, names + EAXGetDirect_offset);
-                pointers->_EAXSetDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, Guid*, uint, uint, void*, uint, int>)loadFunctionSuppressed(handle, names + EAXSetDirect_offset);
+                _alGetStringiSOFT_fnptr = (delegate* unmanaged[Cdecl]<int, int, byte*>)loadFunction(handle, names + alGetStringiSOFT_offset);
                 
-                pointers->_EAXGetBufferModeDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int*, int>)loadFunctionSuppressed(handle, names + EAXGetBufferModeDirect_offset);
-                pointers->_EAXSetBufferModeDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int*, int, byte>)loadFunctionSuppressed(handle, names + EAXSetBufferModeDirect_offset);
+                _alSourcePlayAtTimeSOFT_fnptr = (delegate* unmanaged[Cdecl]<int, long, void>)loadFunction(handle, names + alSourcePlayAtTimeSOFT_offset);
+                _alSourcePlayAtTimevSOFT_fnptr = (delegate* unmanaged[Cdecl]<int, int*, long, void>)loadFunction(handle, names + alSourcePlayAtTimevSOFT_offset);
+                
+                var alBuffer3fDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, float, float, float, void>)loadFunction(handle, names + alBuffer3fDirect_offset);
+                _alBuffer3fDirect_fnptr = alBuffer3fDirect_fnptr;
+                if (alBuffer3fDirect_fnptr is not null)
+                {
+                    _alBuffer3iDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, int, int, int, void>)loadFunction(handle, names + alBuffer3iDirect_offset);
+                    _alBufferDataDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, void*, int, int, void>)loadFunction(handle, names + alBufferDataDirect_offset);
+                    _alBufferfDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, float, void>)loadFunction(handle, names + alBufferfDirect_offset);
+                    _alBufferfvDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, float*, void>)loadFunction(handle, names + alBufferfvDirect_offset);
+                    _alBufferiDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, int, void>)loadFunction(handle, names + alBufferiDirect_offset);
+                    _alBufferivDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, int*, void>)loadFunction(handle, names + alBufferivDirect_offset);
+                    _alDeleteBuffersDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int*, void>)loadFunction(handle, names + alDeleteBuffersDirect_offset);
+                    _alDeleteSourcesDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int*, void>)loadFunction(handle, names + alDeleteSourcesDirect_offset);
+                    _alDisableDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, void>)loadFunction(handle, names + alDisableDirect_offset);
+                    _alDistanceModelDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, void>)loadFunction(handle, names + alDistanceModelDirect_offset);
+                    _alDopperFactorDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, float, void>)loadFunction(handle, names + alDopperFactorDirect_offset);
+                    _alEnableDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, void>)loadFunction(handle, names + alEnableDirect_offset);
+                    _alGenBuffersDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int*, void>)loadFunction(handle, names + alGenBuffersDirect_offset);
+                    _alGenSourcesDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int*, void>)loadFunction(handle, names + alGenSourcesDirect_offset);
+                    _alGetBooleanDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, byte>)loadFunction(handle, names + alGetBooleanDirect_offset);
+                    _alGetBooleanvDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, byte*, void>)loadFunction(handle, names + alGetBooleanvDirect_offset);
+                    _alGetBuffer3fDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, float*, float*, float*, void>)loadFunction(handle, names + alGetBuffer3fDirect_offset);
+                    _alGetBuffer3iDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, int*, int*, int*, void>)loadFunction(handle, names + alGetBuffer3iDirect_offset);
+                    _alGetBufferfDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, float*, void>)loadFunction(handle, names + alGetBufferfDirect_offset);
+                    _alGetBufferfvDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, float*, void>)loadFunction(handle, names + alGetBufferfvDirect_offset);
+                    _alGetBufferiDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, int*, void>)loadFunction(handle, names + alGetBufferiDirect_offset);
+                    _alGetBufferivDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, int*, void>)loadFunction(handle, names + alGetBufferivDirect_offset);
+                    _alGetDoubleDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, double>)loadFunction(handle, names + alGetDoubleDirect_offset);
+                    _alGetDoublevDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, double*, void>)loadFunction(handle, names + alGetDoublevDirect_offset);
+                    _alGetEnumValueDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, byte*, int>)loadFunction(handle, names + alGetEnumValueDirect_offset);
+                    _alGetErrorDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int>)loadFunction(handle, names + alGetErrorDirect_offset);
+                    _alGetFloatDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, float>)loadFunction(handle, names + alGetFloatDirect_offset);
+                    _alGetFloatvDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, float*, void>)loadFunction(handle, names + alGetFloatvDirect_offset);
+                    _alGetIntegerDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int>)loadFunction(handle, names + alGetIntegerDirect_offset);
+                    _alGetIntegervDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int*, void>)loadFunction(handle, names + alGetIntegervDirect_offset);
+                    _alGetListener3fDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, float*, float*, float*, void>)loadFunction(handle, names + alGetListener3fDirect_offset);
+                    _alGetListener3iDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int*, int*, int*, void>)loadFunction(handle, names + alGetListener3iDirect_offset);
+                    _alGetListenerfDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, float*, void>)loadFunction(handle, names + alGetListenerfDirect_offset);
+                    _alGetListenerfvDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, float*, void>)loadFunction(handle, names + alGetListenerfvDirect_offset);
+                    _alGetListeneriDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int*, void>)loadFunction(handle, names + alGetListeneriDirect_offset);
+                    _alGetListenerivDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int*, void>)loadFunction(handle, names + alGetListenerivDirect_offset);
+                    _alGetProcAddressDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, byte*, void*>)loadFunction(handle, names + alGetProcAddressDirect_offset);
+                    _alGetSource3fDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, float*, float*, float*, void>)loadFunction(handle, names + alGetSource3fDirect_offset);
+                    _alGetSource3iDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, int*, int*, int*, void>)loadFunction(handle, names + alGetSource3iDirect_offset);
+                    _alGetSourcefDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, float*, void>)loadFunction(handle, names + alGetSourcefDirect_offset);
+                    _alGetSourcefvDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, float*, void>)loadFunction(handle, names + alGetSourcefvDirect_offset);
+                    _alGetSourceiDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, int*, void>)loadFunction(handle, names + alGetSourceiDirect_offset);
+                    _alGetSourceivDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, int*, void>)loadFunction(handle, names + alGetSourceivDirect_offset);
+                    _alGetStringDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, byte*>)loadFunction(handle, names + alGetStringDirect_offset);
+                    _alIsBufferDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, byte>)loadFunction(handle, names + alIsBufferDirect_offset);
+                    _alIsEnabledDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, byte>)loadFunction(handle, names + alIsEnabledDirect_offset);
+                    _alIsExtensionPresentDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, byte*, byte>)loadFunction(handle, names + alIsExtensionPresentDirect_offset);
+                    _alIsSourceDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, byte>)loadFunction(handle, names + alIsSourceDirect_offset);
+                    _alListener3fDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, float, float, float, void>)loadFunction(handle, names + alListener3fDirect_offset);
+                    _alListener3iDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, int, int, void>)loadFunction(handle, names + alListener3iDirect_offset);
+                    _alListenerfDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, float, void>)loadFunction(handle, names + alListenerfDirect_offset);
+                    _alListenerfvDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, float*, void>)loadFunction(handle, names + alListenerfvDirect_offset);
+                    _alListeneriDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, void>)loadFunction(handle, names + alListeneriDirect_offset);
+                    _alListenerivDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int*, void>)loadFunction(handle, names + alListenerivDirect_offset);
+                    _alSource3fDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, float, float, float, void>)loadFunction(handle, names + alSource3fDirect_offset);
+                    _alSource3iDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, int, int, int, void>)loadFunction(handle, names + alSource3iDirect_offset);
+                    _alSourcefDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, float, void>)loadFunction(handle, names + alSourcefDirect_offset);
+                    _alSourcefvDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, float*, void>)loadFunction(handle, names + alSourcefvDirect_offset);
+                    _alSourceiDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, int, void>)loadFunction(handle, names + alSourceiDirect_offset);
+                    _alSourceivDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, int*, void>)loadFunction(handle, names + alSourceivDirect_offset);
+                    _alSourcePauseDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, void>)loadFunction(handle, names + alSourcePauseDirect_offset);
+                    _alSourcePausevDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int*, void>)loadFunction(handle, names + alSourcePausevDirect_offset);
+                    _alSourcePlayDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, void>)loadFunction(handle, names + alSourcePlayDirect_offset);
+                    _alSourcePlayvDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int*, void>)loadFunction(handle, names + alSourcePlayvDirect_offset);
+                    _alSourceQueueBuffersDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, int*, void>)loadFunction(handle, names + alSourceQueueBuffersDirect_offset);
+                    _alSourceRewindDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, void>)loadFunction(handle, names + alSourceRewindDirect_offset);
+                    _alSourceRewindvDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int*, void>)loadFunction(handle, names + alSourceRewindvDirect_offset);
+                    _alSourceStopDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, void>)loadFunction(handle, names + alSourceStopDirect_offset);
+                    _alSourceStopvDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int*, void>)loadFunction(handle, names + alSourceStopvDirect_offset);
+                    _alSourceUnqueueBuffersDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, int*, void>)loadFunction(handle, names + alSourceUnqueueBuffersDirect_offset);
+                    _alSpeedOfSoundDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, float, void>)loadFunction(handle, names + alSpeedOfSoundDirect_offset);
+                    
+                    var alDebugMessageCallbackDirectEXT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, delegate* unmanaged[Cdecl]<All, All, uint, All, nuint, byte*, void*, int>, void*, void>)loadFunction(handle, names + alDebugMessageCallbackDirectEXT_offset);
+                    _alDebugMessageCallbackDirectEXT_fnptr = alDebugMessageCallbackDirectEXT_fnptr;
+                    if (alDebugMessageCallbackDirectEXT_fnptr is not null)
+                    {
+                        _alDebugMessageControlDirectEXT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, uint, int, uint*, byte, void>)loadFunction(handle, names + alDebugMessageControlDirectEXT_offset);
+                        _alDebugMessageInsertDirectEXT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, uint, int, byte*, void>)loadFunction(handle, names + alDebugMessageInsertDirectEXT_offset);
+                        _alGetDebugMessageLogDirectEXT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, uint, int, int*, int*, uint*, int*, int*, byte*, uint>)loadFunction(handle, names + alGetDebugMessageLogDirectEXT_offset);
+                        _alGetObjectLabelDirectEXT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, uint, int, int*, byte*, void>)loadFunction(handle, names + alGetObjectLabelDirectEXT_offset);
+                        _alGetPointerDirectEXT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, void*>)loadFunction(handle, names + alGetPointerDirectEXT_offset);
+                        _alGetPointervDirectEXT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, void**, void>)loadFunction(handle, names + alGetPointervDirectEXT_offset);
+                        _alObjectLabelDirectEXT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, uint, int, byte*, void>)loadFunction(handle, names + alObjectLabelDirectEXT_offset);
+                        _alPopDebugGroupDirectEXT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, void>)loadFunction(handle, names + alPopDebugGroupDirectEXT_offset);
+                        _alPushDebugGroupDirectEXT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, uint, int, byte*, void>)loadFunction(handle, names + alPushDebugGroupDirectEXT_offset);
+                    }
+                    
+                    _alRequestFoldbackStartDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, int, float*, delegate* unmanaged[Cdecl]<All, nuint, void>, void>)loadFunction(handle, names + alRequestFoldbackStartDirect_offset);
+                    _alRequestFoldbackStopDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, void>)loadFunction(handle, names + alRequestFoldbackStopDirect_offset);
+                    
+                    _alSourceAddNotificationDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, uint, delegate* unmanaged[Cdecl]<uint, uint, void*, void>, void*, int>)loadFunction(handle, names + alSourceAddNotificationDirect_offset);
+                    _alSourceRemoveNotificationDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, uint, delegate* unmanaged[Cdecl]<uint, uint, void*, void>, void*, void>)loadFunction(handle, names + alSourceRemoveNotificationDirect_offset);
+                    
+                    _alSourceGetRenderingQualityDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int>)loadFunction(handle, names + alSourceGetRenderingQualityDirect_offset);
+                    _alSourceRenderingQualityDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, void>)loadFunction(handle, names + alSourceRenderingQualityDirect_offset);
+                    
+                    _AttenuationScale_DirectLOKI_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, float, void>)loadFunction(handle, names + AttenuationScale_DirectLOKI_offset);
+                    
+                    _BufferDataWithCallback_DirectLOKI_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, delegate* unmanaged[Cdecl]<uint, uint, void*, All, uint, int>, void>)loadFunction(handle, names + BufferDataWithCallback_DirectLOKI_offset);
+                    
+                    var alBufferSamplesDirectSOFT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, uint, int, int, int, int, void*, void>)loadFunction(handle, names + alBufferSamplesDirectSOFT_offset);
+                    _alBufferSamplesDirectSOFT_fnptr = alBufferSamplesDirectSOFT_fnptr;
+                    if (alBufferSamplesDirectSOFT_fnptr is not null)
+                    {
+                        _alBufferSubSamplesDirectSOFT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, int, int, int, void*, void>)loadFunction(handle, names + alBufferSubSamplesDirectSOFT_offset);
+                        _alGetBufferSamplesDirectSOFT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, int, int, int, void*, void>)loadFunction(handle, names + alGetBufferSamplesDirectSOFT_offset);
+                        _alIsBufferFormatSupportedDirectSOFT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, byte>)loadFunction(handle, names + alIsBufferFormatSupportedDirectSOFT_offset);
+                    }
+                    
+                    _alBufferSubDataDirectSOFT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, void*, int, int, void>)loadFunction(handle, names + alBufferSubDataDirectSOFT_offset);
+                    
+                    var alBufferCallbackDirectSOFT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, int, delegate* unmanaged[Cdecl]<void*, void*, nuint, nuint>, void*, void>)loadFunction(handle, names + alBufferCallbackDirectSOFT_offset);
+                    _alBufferCallbackDirectSOFT_fnptr = alBufferCallbackDirectSOFT_fnptr;
+                    if (alBufferCallbackDirectSOFT_fnptr is not null)
+                    {
+                        _alGetBuffer3PtrDirectSOFT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, void**, void**, void**, void>)loadFunction(handle, names + alGetBuffer3PtrDirectSOFT_offset);
+                        _alGetBufferPtrDirectSOFT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, void**, void>)loadFunction(handle, names + alGetBufferPtrDirectSOFT_offset);
+                        _alGetBufferPtrvDirectSOFT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, void**, void>)loadFunction(handle, names + alGetBufferPtrvDirectSOFT_offset);
+                    }
+                    
+                    _alDeferUpdatesDirectSOFT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, void>)loadFunction(handle, names + alDeferUpdatesDirectSOFT_offset);
+                    _alProcessUpdatesDirectSOFT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, void>)loadFunction(handle, names + alProcessUpdatesDirectSOFT_offset);
+                    
+                    var alEventCallbackDirectSOFT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, delegate* unmanaged[Cdecl]<All, uint, uint, nuint, byte*, void*, void>, void*, void>)loadFunction(handle, names + alEventCallbackDirectSOFT_offset);
+                    _alEventCallbackDirectSOFT_fnptr = alEventCallbackDirectSOFT_fnptr;
+                    if (alEventCallbackDirectSOFT_fnptr is not null)
+                    {
+                        _alEventControlDirectSOFT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int*, byte, void>)loadFunction(handle, names + alEventControlDirectSOFT_offset);
+                        _alGetPointerDirectSOFT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, void*>)loadFunction(handle, names + alGetPointerDirectSOFT_offset);
+                        _alGetPointervDirectSOFT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, void**, void>)loadFunction(handle, names + alGetPointervDirectSOFT_offset);
+                    }
+                    
+                    var alGetSource3dDirectSOFT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, double*, double*, double*, void>)loadFunction(handle, names + alGetSource3dDirectSOFT_offset);
+                    _alGetSource3dDirectSOFT_fnptr = alGetSource3dDirectSOFT_fnptr;
+                    if (alGetSource3dDirectSOFT_fnptr is not null)
+                    {
+                        _alGetSource3i64DirectSOFT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, long*, long*, long*, void>)loadFunction(handle, names + alGetSource3i64DirectSOFT_offset);
+                        _alGetSourcedDirectSOFT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, double*, void>)loadFunction(handle, names + alGetSourcedDirectSOFT_offset);
+                        _alGetSourcedvDirectSOFT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, double*, void>)loadFunction(handle, names + alGetSourcedvDirectSOFT_offset);
+                        _alGetSourcei64DirectSOFT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, long*, void>)loadFunction(handle, names + alGetSourcei64DirectSOFT_offset);
+                        _alGetSourcei64vDirectSOFT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, long*, void>)loadFunction(handle, names + alGetSourcei64vDirectSOFT_offset);
+                        _alSource3dDirectSOFT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, double, double, double, void>)loadFunction(handle, names + alSource3dDirectSOFT_offset);
+                        _alSource3i64DirectSOFT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, long, long, long, void>)loadFunction(handle, names + alSource3i64DirectSOFT_offset);
+                        _alSourcedDirectSOFT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, double, void>)loadFunction(handle, names + alSourcedDirectSOFT_offset);
+                        _alSourcedvDirectSOFT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, double*, void>)loadFunction(handle, names + alSourcedvDirectSOFT_offset);
+                        _alSourcei64DirectSOFT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, long, void>)loadFunction(handle, names + alSourcei64DirectSOFT_offset);
+                        _alSourcei64vDirectSOFT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, long*, void>)loadFunction(handle, names + alSourcei64vDirectSOFT_offset);
+                    }
+                    
+                    _alGetStringiDirectSOFT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, byte*>)loadFunction(handle, names + alGetStringiDirectSOFT_offset);
+                    
+                    _alSourcePlayAtTimeDirectSOFT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, long, void>)loadFunction(handle, names + alSourcePlayAtTimeDirectSOFT_offset);
+                    _alSourcePlayAtTimevDirectSOFT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int*, long, void>)loadFunction(handle, names + alSourcePlayAtTimevDirectSOFT_offset);
+                    
+                    var alAuxiliaryEffectSlotfDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, float, void>)loadFunction(handle, names + alAuxiliaryEffectSlotfDirect_offset);
+                    _alAuxiliaryEffectSlotfDirect_fnptr = alAuxiliaryEffectSlotfDirect_fnptr;
+                    if (alAuxiliaryEffectSlotfDirect_fnptr is not null)
+                    {
+                        _alAuxiliaryEffectSlotfvDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, float*, void>)loadFunction(handle, names + alAuxiliaryEffectSlotfvDirect_offset);
+                        _alAuxiliaryEffectSlotiDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, int, void>)loadFunction(handle, names + alAuxiliaryEffectSlotiDirect_offset);
+                        _alAuxiliaryEffectSlotivDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, int*, void>)loadFunction(handle, names + alAuxiliaryEffectSlotivDirect_offset);
+                        _alDeleteAuxiliaryEffectSlotsDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int*, void>)loadFunction(handle, names + alDeleteAuxiliaryEffectSlotsDirect_offset);
+                        _alDeleteEffectsDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int*, void>)loadFunction(handle, names + alDeleteEffectsDirect_offset);
+                        _alDeleteFiltersDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int*, void>)loadFunction(handle, names + alDeleteFiltersDirect_offset);
+                        _alEffectfDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, float, void>)loadFunction(handle, names + alEffectfDirect_offset);
+                        _alEffectfvDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, float*, void>)loadFunction(handle, names + alEffectfvDirect_offset);
+                        _alEffectiDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, int, void>)loadFunction(handle, names + alEffectiDirect_offset);
+                        _alEffectivDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, int*, void>)loadFunction(handle, names + alEffectivDirect_offset);
+                        _alFilterfDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, float, void>)loadFunction(handle, names + alFilterfDirect_offset);
+                        _alFilterfvDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, float*, void>)loadFunction(handle, names + alFilterfvDirect_offset);
+                        _alFilteriDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, int, void>)loadFunction(handle, names + alFilteriDirect_offset);
+                        _alFilterivDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, int*, void>)loadFunction(handle, names + alFilterivDirect_offset);
+                        _alGenAuxiliaryEffectSlotsDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int*, void>)loadFunction(handle, names + alGenAuxiliaryEffectSlotsDirect_offset);
+                        _alGenEffectsDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int*, void>)loadFunction(handle, names + alGenEffectsDirect_offset);
+                        _alGenFiltersDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int*, void>)loadFunction(handle, names + alGenFiltersDirect_offset);
+                        _alGetAuxiliaryEffectSlotfDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, float*, void>)loadFunction(handle, names + alGetAuxiliaryEffectSlotfDirect_offset);
+                        _alGetAuxiliaryEffectSlotfvDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, float*, void>)loadFunction(handle, names + alGetAuxiliaryEffectSlotfvDirect_offset);
+                        _alGetAuxiliaryEffectSlotiDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, int*, void>)loadFunction(handle, names + alGetAuxiliaryEffectSlotiDirect_offset);
+                        _alGetAuxiliaryEffectSlotivDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, int*, void>)loadFunction(handle, names + alGetAuxiliaryEffectSlotivDirect_offset);
+                        _alGetEffectfDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, float*, void>)loadFunction(handle, names + alGetEffectfDirect_offset);
+                        _alGetEffectfvDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, float*, void>)loadFunction(handle, names + alGetEffectfvDirect_offset);
+                        _alGetEffectiDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, int*, void>)loadFunction(handle, names + alGetEffectiDirect_offset);
+                        _alGetEffectivDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, int*, void>)loadFunction(handle, names + alGetEffectivDirect_offset);
+                        _alGetFilterfDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, float*, void>)loadFunction(handle, names + alGetFilterfDirect_offset);
+                        _alGetFilterfvDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, float*, void>)loadFunction(handle, names + alGetFilterfvDirect_offset);
+                        _alGetFilteriDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, int*, void>)loadFunction(handle, names + alGetFilteriDirect_offset);
+                        _alGetFilterivDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, int*, void>)loadFunction(handle, names + alGetFilterivDirect_offset);
+                        _alIsAuxiliaryEffectSlotDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, void>)loadFunction(handle, names + alIsAuxiliaryEffectSlotDirect_offset);
+                        _alIsEffectDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, byte>)loadFunction(handle, names + alIsEffectDirect_offset);
+                        _alIsFilterDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, void>)loadFunction(handle, names + alIsFilterDirect_offset);
+                    }
+                    
+                    _alMacOSXGetRenderChannelCountDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int>)loadFunction(handle, names + alMacOSXGetRenderChannelCountDirect_offset);
+                    _alMacOSXRenderChannelCountDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, void>)loadFunction(handle, names + alMacOSXRenderChannelCountDirect_offset);
+                    
+                    _EAXGetDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, Guid*, uint, uint, void*, uint, int>)loadFunction(handle, names + EAXGetDirect_offset);
+                    _EAXSetDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, Guid*, uint, uint, void*, uint, int>)loadFunction(handle, names + EAXSetDirect_offset);
+                    
+                    _EAXGetBufferModeDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int*, int>)loadFunction(handle, names + EAXGetBufferModeDirect_offset);
+                    _EAXSetBufferModeDirect_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int*, int, byte>)loadFunction(handle, names + EAXSetBufferModeDirect_offset);
+                }
             }
         }
     }

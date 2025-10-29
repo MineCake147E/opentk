@@ -130,19 +130,6 @@ namespace ALGenerator
                 Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? throw new NullReferenceException(),
                 "..", "..", "..", "..", "..", AudioNamespace);
 
-            foreach (Pointers pointers in data.Pointers)
-            {
-                FileStrings strings = pointers.File switch
-                {
-                    APIFile.AL => new FileStrings("AL", "AL", "OpenAL", "ALLoader", "ALLoader", "DefaultALGetProcAddress"),
-                    APIFile.ALC => new FileStrings("ALC", "ALC", "OpenAL.ALC", "ALCLoader", "ALLoader", "DefaultALCGetProcAddress"),
-                    _ => throw new Exception(),
-                };
-
-                // FIXME: Merge the writing of these function pointers for the relevant namespaces!
-                WriteLazyFunctions(outputProjectPath, strings, pointers.NativeFunctions);
-            }
-
             foreach (Namespace @namespace in data.Namespaces)
             {
                 WriteNamespace(outputProjectPath, @namespace);
@@ -168,19 +155,18 @@ namespace ALGenerator
             WriteNativeFunctions(directoryPath, strings, @namespace.VendorFunctions, @namespace.Documentation);
             WriteOverloads(directoryPath, strings, @namespace.VendorFunctions, @namespace.Documentation);
             WriteFunctionNameList(outputProjectPath, strings, sortedNativeFunctions);
-            WriteDefaultFunctionPointerInitializers(outputProjectPath, strings, sortedNativeFunctions);
             const string LoadFunctionName = "loadFunction";
             switch (@namespace.Name)
             {
                 case OutputApi.AL:
                     WriteFunctionPointerInitializers(outputProjectPath, strings, @namespace, sortedNativeFunctions, "ByDeviceOrContext",
-                        ("delegate* unmanaged[Cdecl]<IntPtr, byte*, void*>", "delegate* unmanaged[Cdecl, SuppressGCTransition]<IntPtr, byte*, void*>", LoadFunctionName), [("IntPtr", "handle")]);
+                        ("delegate* unmanaged[Cdecl]<IntPtr, byte*, void*>", LoadFunctionName), [("IntPtr", "handle")]);
                     WriteFunctionPointerInitializers(outputProjectPath, strings, @namespace, sortedNativeFunctions, "",
-                        ("delegate* unmanaged[Cdecl]<byte*, void*>", "delegate* unmanaged[Cdecl, SuppressGCTransition]<byte*, void*>", LoadFunctionName), []);
+                        ("delegate* unmanaged[Cdecl]<byte*, void*>", LoadFunctionName), []);
                     break;
                 case OutputApi.ALC:
                     WriteFunctionPointerInitializers(outputProjectPath, strings, @namespace, sortedNativeFunctions, "",
-                        ("delegate* unmanaged[Cdecl]<IntPtr, byte*, void*>", "delegate* unmanaged[Cdecl, SuppressGCTransition]<IntPtr, byte*, void*>", LoadFunctionName), [("IntPtr", "device")]);
+                        ("delegate* unmanaged[Cdecl]<IntPtr, byte*, void*>", LoadFunctionName), [("IntPtr", "device")]);
                     break;
                 default:
                     break;
@@ -218,39 +204,46 @@ namespace ALGenerator
 
             using (writer.CsScope())
             {
-                writer.WriteLine($"/// <summary>A collection of all function pointers to all OpenAL <c>{strings.ApiName.ToLowerInvariant()}</c> entry points.</summary>");
+                var groupsFunctions = sortedNativeFunctions.Groups.SelectMany(a => a.SelectMany(b => b.functions));
+                var directGroupsFunctions = sortedNativeFunctions.DirectGroups.SelectMany(a => a.SelectMany(b => b.functions));
+                var allFunctions = groupsFunctions.Concat(directGroupsFunctions).Distinct().ToList();
+                writer.WriteLine($"/// <summary>An immutable collection of all function pointers to all OpenAL <c>{strings.ApiName.ToLowerInvariant()}</c> entry points.</summary>");
                 // FIXME: Better class name?
-                writer.WriteLine($"public unsafe partial struct {strings.ClassName}Pointers");
+                writer.WriteLine($"public readonly unsafe partial struct {strings.ClassName}Pointers");
                 using (writer.CsScope())
                 {
-                    var groupsFunctions = sortedNativeFunctions.Groups.SelectMany(a => a.SelectMany(b => b.functions));
-                    var directGroupsFunctions = sortedNativeFunctions.DirectGroups.SelectMany(a => a.SelectMany(b => b.functions));
-
-                    foreach (var function in groupsFunctions.Concat(directGroupsFunctions).Distinct())
+                    foreach (var function in allFunctions)
                     {
-                        WriteFunctionPointer(writer, function, strings);
+                        WriteFunctionPointer(writer, function, strings, true);
+                    }
+                }
+
+                writer.WriteLine($"/// <summary>A mutable collection of all function pointers to all OpenAL <c>{strings.ApiName.ToLowerInvariant()}</c> entry points.</summary>");
+                writer.WriteLine($"public unsafe partial struct Mutable{strings.ClassName}Pointers");
+                using (writer.CsScope())
+                {
+                    foreach (var function in allFunctions)
+                    {
+                        WriteFunctionPointer(writer, function, strings, false);
                     }
                 }
             }
         }
 
-        private static void WriteFunctionPointer(IndentedTextWriter writer, Function function, FileStrings strings)
+        private static void WriteFunctionPointer(IndentedTextWriter writer, Function function, FileStrings strings, bool isReadOnly)
         {
             // Write delegate field initialized to the lazy loader.
             // Write public function definition that calls delegate.
             // Write lazy loader function.
-            GetNativeFunctionSignature(function, postfixName: false, swapTypesForUnderlyingType: true,
-                out string _,
-                out StringBuilder paramNames,
-                out StringBuilder delegateTypes,
-                out StringBuilder signature,
-                out bool _,
-                out string returnType);
+            GetNativeFunctionSignature(function, false, true, out _, out StringBuilder paramNames, out StringBuilder delegateTypes, out StringBuilder signature, out _, out string returnType);
 
             string entryPoint = function.EntryPoint;
 
             writer.WriteLine($"/// <summary><b>[entry point: <c>{entryPoint}</c>]</b></summary>");
-            writer.WriteLine($"public delegate* unmanaged[Cdecl]<{delegateTypes}> _{entryPoint}_fnptr;");
+            writer.Write("public");
+            if (isReadOnly)
+                writer.Write(" readonly");
+            writer.WriteLine($" delegate* unmanaged[Cdecl]<{delegateTypes}> _{entryPoint}_fnptr;");
             writer.WriteLine();
         }
 
@@ -267,7 +260,7 @@ namespace ALGenerator
             using (writer.CsScope())
             {
                 // FIXME: Better class name?
-                writer.WriteLine($"public unsafe partial struct {strings.ClassName}Pointers");
+                writer.WriteLine($"public readonly unsafe partial struct {strings.ClassName}Pointers");
                 using (writer.CsScope())
                 {
                     foreach (Function function in nativeFunctions)
@@ -299,7 +292,7 @@ namespace ALGenerator
             {
                 // Dotnet gurantees you can't get torn values when assigning functionpointers, assuming proper allignment which is default.
                 writer.WriteLine($"var fnptr = (delegate* unmanaged[Cdecl]<{delegateTypes}>){strings.LoaderBindingsContext}.{strings.LoadFunction}(AllFunctionNames.Slice({function.EntryPoint}_offset));");
-                writer.WriteLine($"{strings.LoaderBindingsContext}.Default.{strings.ClassName}._pointers->_{entryPoint}_fnptr = fnptr;");
+                writer.WriteLine($"{strings.LoaderBindingsContext}.Default.{strings.ClassName}Pointers._{entryPoint}_fnptr = fnptr;");
                 if (function.StrongReturnType is not CSVoid)
                 {
                     writer.Write($"return ");
@@ -354,7 +347,7 @@ namespace ALGenerator
 
             using (writer.CsScope())
             {
-                writer.WriteLine($"public unsafe partial struct {strings.ClassName}Pointers");
+                writer.WriteLine($"public readonly unsafe partial struct {strings.ClassName}Pointers");
                 using (writer.CsScope())
                 {
                     writer.Write($"internal static ReadOnlySpan<byte> AllFunctionNames => \"");
@@ -397,7 +390,7 @@ namespace ALGenerator
 
             using (writer.CsScope())
             {
-                writer.WriteLine($"public unsafe partial struct {strings.ClassName}Pointers");
+                writer.WriteLine($"public readonly unsafe partial struct {strings.ClassName}Pointers");
                 using (writer.CsScope())
                 {
                     writer.WriteLine($"/// <summary>Initializes all function pointers to their lazy loader functions.</summary>");
@@ -423,7 +416,7 @@ namespace ALGenerator
             }
         }
 
-        private static void WriteFunctionPointerInitializers(string directoryPath, FileStrings strings, Namespace @namespace, SortedNativeFunctions sortedNativeFunctions, string overloadName, (string type, string suppressedType, string name) loadFunction, IReadOnlyList<(string type, string name)> additionalParameters)
+        private static void WriteFunctionPointerInitializers(string directoryPath, FileStrings strings, Namespace @namespace, SortedNativeFunctions sortedNativeFunctions, string overloadName, (string type, string name) loadFunction, IReadOnlyList<(string type, string name)> additionalParameters)
         {
             using StreamWriter stream = File.CreateText(Path.Combine(directoryPath, $"{strings.FileNamePrefix}.Pointers.Initialize{overloadName}.cs"));
             using IndentedTextWriter writer = new IndentedTextWriter(stream);
@@ -435,74 +428,66 @@ namespace ALGenerator
 
             using (writer.CsScope())
             {
-                writer.WriteLine($"public unsafe partial struct {strings.ClassName}Pointers");
+                writer.WriteLine($"public readonly unsafe partial struct {strings.ClassName}Pointers");
                 using (writer.CsScope())
                 {
-                    writer.WriteLine($"/// <summary>Loads all function pointers via specified loader function.</summary>");
                     var parameters = string.Join(", ", additionalParameters.Prepend((loadFunction.type, loadFunction.name)).Select(a => $"{a.type} {a.name}"));
-                    writer.WriteLine($"internal static void InitializePointers{overloadName}({parameters}, {strings.ClassName}Pointers* pointers)");
-                    IReadOnlyList<(string type, string name)> parametersToJoin = [(loadFunction.type, loadFunction.name), .. additionalParameters, ("byte*", "names"), ($"{strings.ClassName}Pointers*", "pointers")];
+                    writer.WriteLine($"/// <summary>");
+                    writer.WriteLine($"/// Initializes a new instance of the <see cref=\"{strings.ClassName}Pointers\"/> struct.");
+                    writer.WriteLine($"/// </summary>");
+                    writer.WriteLine($"internal {strings.ClassName}Pointers({parameters})");
                     using (writer.CsScope())
                     {
                         writer.WriteLine($"fixed (byte* names = AllFunctionNames)");
                         using (writer.CsScope())
                         {
-                            writer.WriteLine($"var initializePointers{overloadName}Internal_fnptr = (delegate* unmanaged[Cdecl]<{string.Join(", ", parametersToJoin.Select(a => a.type))}, void>)&InitializePointers{overloadName}Internal;");
-                            writer.WriteLine($"initializePointers{overloadName}Internal_fnptr({string.Join(", ", parametersToJoin.Select(a => a.name))});");
-                        }
-                    }
-                    var innerFunctionParameters = string.Join(", ", parametersToJoin.Select(a => $"{a.type} {a.name}"));
-                    writer.WriteLine($"[UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]");
-                    writer.WriteLine($"private static void InitializePointers{overloadName}Internal({innerFunctionParameters})");
-                    using (writer.CsScope())
-                    {
-                        var suppressedFunctionName = $"{loadFunction.name}Suppressed";
-                        writer.WriteLine($"var {suppressedFunctionName} = ({loadFunction.suppressedType}){loadFunction.name};");
-                        var joinedAdditionalParameters = string.Join(", ", additionalParameters.Select(a => a.name));
-                        HashSet<string> exportedEndpoints = [];
-                        foreach (var vendor in sortedNativeFunctions.Groups)
-                        {
-                            foreach (var (_, functions) in vendor)
+                            var functionName = loadFunction.name;
+                            var joinedAdditionalParameters = string.Join(", ", additionalParameters.Select(a => a.name));
+                            HashSet<string> exportedEndpoints = [];
+                            foreach (var vendor in sortedNativeFunctions.Groups)
                             {
-                                writer.WriteLine();
-                                var extensionFunctions = functions.ExceptBy(exportedEndpoints, a => a.EntryPoint).OrderBy(a => a.EntryPoint).ToList();
-                                exportedEndpoints.UnionWith(extensionFunctions.Select(a => a.EntryPoint));
-                                WriteExtensionBlock(suppressedFunctionName, writer, joinedAdditionalParameters, extensionFunctions);
-                            }
-                        }
-                        if (@namespace.Name != OutputApi.AL) return;
-                        writer.WriteLine();
-                        foreach (var item in sortedNativeFunctions.DirectGroups)
-                        {
-                            var vendorDirectFunctions = item.ToList();
-                            CsScope? scope = null;
-                            if (vendorDirectFunctions.Count > 0)
-                            {
-                                var firstDependency = vendorDirectFunctions[0].functions;
-                                var extensionFunctions = firstDependency.ToList();
-                                var functions = extensionFunctions.GetEnumerator();
-                                if (functions.MoveNext())
+                                foreach (var (_, functions) in vendor)
                                 {
-                                    var function = functions.Current;
-                                    GetNativeFunctionSignature(function, postfixName: false, swapTypesForUnderlyingType: true, out _, out _, out StringBuilder delegateTypes, out _, out _, out _);
-                                    string entryPoint = function.EntryPoint;
-                                    writer.WriteLine($"var {entryPoint}_fnptr = (delegate* unmanaged[Cdecl]<{delegateTypes}>){suppressedFunctionName}({joinedAdditionalParameters}{(string.IsNullOrEmpty(joinedAdditionalParameters) ? "" : ", ")}names + {entryPoint}_offset);");
-                                    writer.WriteLine($"pointers->_{entryPoint}_fnptr = {entryPoint}_fnptr;");
-                                    writer.WriteLine($"if ({entryPoint}_fnptr is not null)");
-                                    scope = writer.CsScope();
-                                    while (functions.MoveNext())
-                                    {
-                                        function = functions.Current;
-                                        WriteFunctionPointerInitializer(writer, function, suppressedFunctionName, joinedAdditionalParameters);
-                                    }
+                                    writer.WriteLine();
+                                    var extensionFunctions = functions.ExceptBy(exportedEndpoints, a => a.EntryPoint).OrderBy(a => a.EntryPoint).ToList();
+                                    exportedEndpoints.UnionWith(extensionFunctions.Select(a => a.EntryPoint));
+                                    WriteExtensionBlock(functionName, writer, joinedAdditionalParameters, extensionFunctions);
                                 }
                             }
-                            foreach (var (_, functions) in vendorDirectFunctions.Skip(1))
+                            if (@namespace.Name != OutputApi.AL) return;
+                            writer.WriteLine();
+                            foreach (var item in sortedNativeFunctions.DirectGroups)
                             {
-                                writer.WriteLine();
-                                WriteExtensionBlock(suppressedFunctionName, writer, joinedAdditionalParameters, [.. functions]);
+                                var vendorDirectFunctions = item.ToList();
+                                CsScope? scope = null;
+                                if (vendorDirectFunctions.Count > 0)
+                                {
+                                    var firstDependency = vendorDirectFunctions[0].functions;
+                                    var extensionFunctions = firstDependency.ToList();
+                                    var functions = extensionFunctions.GetEnumerator();
+                                    if (functions.MoveNext())
+                                    {
+                                        var function = functions.Current;
+                                        GetNativeFunctionSignature(function, postfixName: false, swapTypesForUnderlyingType: true, out _, out _, out StringBuilder delegateTypes, out _, out _, out _);
+                                        string entryPoint = function.EntryPoint;
+                                        writer.WriteLine($"var {entryPoint}_fnptr = (delegate* unmanaged[Cdecl]<{delegateTypes}>){functionName}({joinedAdditionalParameters}{(string.IsNullOrEmpty(joinedAdditionalParameters) ? "" : ", ")}names + {entryPoint}_offset);");
+                                        writer.WriteLine($"_{entryPoint}_fnptr = {entryPoint}_fnptr;");
+                                        writer.WriteLine($"if ({entryPoint}_fnptr is not null)");
+                                        scope = writer.CsScope();
+                                        while (functions.MoveNext())
+                                        {
+                                            function = functions.Current;
+                                            WriteFunctionPointerInitializer(writer, function, functionName, joinedAdditionalParameters);
+                                        }
+                                    }
+                                }
+                                foreach (var (_, functions) in vendorDirectFunctions.Skip(1))
+                                {
+                                    writer.WriteLine();
+                                    WriteExtensionBlock(functionName, writer, joinedAdditionalParameters, [.. functions]);
+                                }
+                                scope?.Dispose();
                             }
-                            scope?.Dispose();
                         }
                     }
                 }
@@ -518,7 +503,7 @@ namespace ALGenerator
                     GetNativeFunctionSignature(function, postfixName: false, swapTypesForUnderlyingType: true, out _, out _, out StringBuilder delegateTypes, out _, out _, out _);
                     string entryPoint = function.EntryPoint;
                     writer.WriteLine($"var {entryPoint}_fnptr = (delegate* unmanaged[Cdecl]<{delegateTypes}>){loadFunction}({joinedAdditionalParameters}{(string.IsNullOrEmpty(joinedAdditionalParameters) ? "" : ", ")}names + {entryPoint}_offset);");
-                    writer.WriteLine($"pointers->_{entryPoint}_fnptr = {entryPoint}_fnptr;");
+                    writer.WriteLine($"_{entryPoint}_fnptr = {entryPoint}_fnptr;");
                     writer.WriteLine($"if ({entryPoint}_fnptr is not null)");
                     scope = writer.CsScope();
                 }
@@ -536,7 +521,7 @@ namespace ALGenerator
             GetNativeFunctionSignature(function, postfixName: false, swapTypesForUnderlyingType: true, out _, out _, out StringBuilder delegateTypes, out _, out _, out _);
             string entryPoint = function.EntryPoint;
             // Dotnet gurantees you can't get torn values when assigning functionpointers, assuming proper allignment which is default.
-            writer.WriteLine($"pointers->_{entryPoint}_fnptr = (delegate* unmanaged[Cdecl]<{delegateTypes}>){loadFunction}({additionalParameters}{(string.IsNullOrEmpty(additionalParameters) ? "" : ", ")}names + {entryPoint}_offset);");
+            writer.WriteLine($"_{entryPoint}_fnptr = (delegate* unmanaged[Cdecl]<{delegateTypes}>){loadFunction}({additionalParameters}{(string.IsNullOrEmpty(additionalParameters) ? "" : ", ")}names + {entryPoint}_offset);");
         }
 
         private static void WriteContainers(string directoryPath, FileStrings strings, Namespace @namespace)
@@ -552,24 +537,21 @@ namespace ALGenerator
             using (writer.CsScope())
             {
                 writer.WriteLine($"/// <summary>Exposes all the {strings.ApiName} functions loaded by {strings.LoaderClass}.</summary>");
-                writer.WriteLine($"public readonly unsafe partial struct {strings.ApiName}");
+                writer.WriteLine($"public readonly unsafe ref partial struct {strings.ApiName}");
                 using (writer.CsScope())
                 {
-                    writer.WriteLine($"internal readonly {strings.ApiName}Pointers* _pointers;");
-                    writer.WriteLine($"internal readonly {strings.ApiName}Pointers[] _pointersPinnedArray;");
+                    writer.WriteLine($"internal readonly ref readonly {strings.ApiName}Pointers _pointers;");
                     writer.WriteLine($"/// <summary>The reference to the container of function pointers loaded by {strings.LoaderClass}.</summary>");
-                    writer.WriteLine($"public ref readonly {strings.ApiName}Pointers Pointers => ref Unsafe.AsRef<{strings.ApiName}Pointers>(_pointers);");
+                    writer.WriteLine($"public ref readonly {strings.ApiName}Pointers Pointers => ref _pointers;");
                     writer.WriteLine();
                     writer.WriteLine($"/// <summary>");
                     writer.WriteLine($"/// Initializes a new instance of the <see cref=\"{strings.ApiName}\"/> struct.");
                     writer.WriteLine($"/// </summary>");
                     writer.WriteLine($"/// <param name=\"pointers\">The <see cref=\"{strings.ApiName}Pointers\"/> to initialize with.</param>");
-                    writer.WriteLine($"/// <param name=\"pointersPinnedArray\">The place <see cref=\"{strings.ApiName}Pointers\"/> resides.</param>");
-                    writer.WriteLine($"public {strings.ApiName}({strings.ApiName}Pointers* pointers, {strings.ApiName}Pointers[] pointersPinnedArray)");
+                    writer.WriteLine($"public {strings.ApiName}(ref readonly {strings.ApiName}Pointers pointers)");
                     using (writer.CsScope())
                     {
-                        writer.WriteLine($"_pointers = pointers;");
-                        writer.WriteLine($"_pointersPinnedArray = pointersPinnedArray;");
+                        writer.WriteLine($"_pointers = ref pointers;");
                     }
                     foreach (var vendor in groups.Select(a => a.Vendor).Where(a => !string.IsNullOrEmpty(a)))
                     {
@@ -594,11 +576,11 @@ namespace ALGenerator
                     if (@namespace.Name == OutputApi.AL)
                     {
                         writer.WriteLine($"/// <summary>The {strings.ApiName}Pointers container for AL_EXT_direct_context extensions.</summary>");
-                        writer.WriteLine($"public readonly record struct Direct<TDependentAPIVendor>(TDependentAPIVendor vendor) : I{strings.ApiName}Container where TDependentAPIVendor : struct, I{strings.ApiName}Container");
+                        writer.WriteLine($"public readonly unsafe ref partial struct Direct<TDependentAPIVendor>(TDependentAPIVendor vendor) : I{strings.ApiName}Container where TDependentAPIVendor : struct, I{strings.ApiName}Container, allows ref struct");
                         using (writer.CsScope())
                         {
                             writer.WriteLine($"/// <inheritdoc/>");
-                            writer.WriteLine($"public {strings.ApiName} {strings.ApiName} => vendor.{strings.ApiName};");
+                            writer.WriteLine($"public {strings.ApiName} {strings.ApiName} {{ get; }} = vendor.{strings.ApiName};");
                         }
                     }
 
@@ -606,9 +588,11 @@ namespace ALGenerator
                     {
                         writer.WriteLine();
                         writer.WriteLine($"/// <summary>{vendor} extensions.</summary>");
-                        writer.WriteLine($"public readonly record struct {vendor}({strings.ApiName} {strings.ApiName}) : I{strings.ApiName}Container");
+                        writer.WriteLine($"public readonly unsafe ref partial struct {vendor}({strings.ApiName} {strings.ApiName.ToLowerInvariant()}) : I{strings.ApiName}Container");
                         using (writer.CsScope())
                         {
+                            writer.WriteLine($"/// <inheritdoc/>");
+                            writer.WriteLine($"public {strings.ApiName} {strings.ApiName} {{ get; }} = {strings.ApiName.ToLowerInvariant()};");
                             if (@namespace.Name == OutputApi.AL && vendor != "Direct")
                             {
                                 writer.WriteLine($"/// <summary>AL_EXT_direct_context extensions for {vendor} extensions.</summary>");
@@ -696,7 +680,7 @@ namespace ALGenerator
                     writer.Write($"({returnType}) ");
                 }
             }
-            writer.WriteLine($"{apiVariableName}._pointers->_{entryPoint}_fnptr({paramNames});");
+            writer.WriteLine($"{apiVariableName}._pointers._{entryPoint}_fnptr({paramNames});");
             writer.WriteLine();
         }
 

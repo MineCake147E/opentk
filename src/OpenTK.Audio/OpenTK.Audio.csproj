@@ -6,6 +6,7 @@
     <Description>OpenAL bindings.</Description>
     <PackageIcon>icon.png</PackageIcon>
     <LangVersion>13</LangVersion>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>

@@ -12,109 +12,104 @@ using OpenTK.Mathematics;
 
 namespace OpenTK.Audio.OpenAL.ALC
 {
-    public unsafe partial struct ALCPointers
+    public readonly unsafe partial struct ALCPointers
     {
-        /// <summary>Loads all function pointers via specified loader function.</summary>
-        internal static void InitializePointers(delegate* unmanaged[Cdecl]<IntPtr, byte*, void*> loadFunction, IntPtr device, ALCPointers* pointers)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ALCPointers"/> struct.
+        /// </summary>
+        internal ALCPointers(delegate* unmanaged[Cdecl]<IntPtr, byte*, void*> loadFunction, IntPtr device)
         {
             fixed (byte* names = AllFunctionNames)
             {
-                var initializePointersInternal_fnptr = (delegate* unmanaged[Cdecl]<delegate* unmanaged[Cdecl]<IntPtr, byte*, void*>, IntPtr, byte*, ALCPointers*, void>)&InitializePointersInternal;
-                initializePointersInternal_fnptr(loadFunction, device, names, pointers);
+                
+                var alcCaptureCloseDevice_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, byte>)loadFunction(device, names + alcCaptureCloseDevice_offset);
+                _alcCaptureCloseDevice_fnptr = alcCaptureCloseDevice_fnptr;
+                if (alcCaptureCloseDevice_fnptr is not null)
+                {
+                    _alcCaptureOpenDevice_fnptr = (delegate* unmanaged[Cdecl]<byte*, uint, int, int, IntPtr>)loadFunction(device, names + alcCaptureOpenDevice_offset);
+                    _alcCaptureSamples_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, void*, int, void>)loadFunction(device, names + alcCaptureSamples_offset);
+                    _alcCaptureStart_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, void>)loadFunction(device, names + alcCaptureStart_offset);
+                    _alcCaptureStop_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, void>)loadFunction(device, names + alcCaptureStop_offset);
+                }
+                
+                var alcCloseDevice_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, byte>)loadFunction(device, names + alcCloseDevice_offset);
+                _alcCloseDevice_fnptr = alcCloseDevice_fnptr;
+                if (alcCloseDevice_fnptr is not null)
+                {
+                    _alcCreateContext_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int*, IntPtr>)loadFunction(device, names + alcCreateContext_offset);
+                    _alcDestroyContext_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, void>)loadFunction(device, names + alcDestroyContext_offset);
+                    _alcGetContextsDevice_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, IntPtr>)loadFunction(device, names + alcGetContextsDevice_offset);
+                    _alcGetCurrentContext_fnptr = (delegate* unmanaged[Cdecl]<IntPtr>)loadFunction(device, names + alcGetCurrentContext_offset);
+                    _alcGetEnumValue_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, byte*, int>)loadFunction(device, names + alcGetEnumValue_offset);
+                    _alcGetError_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int>)loadFunction(device, names + alcGetError_offset);
+                    _alcGetIntegerv_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, int*, void>)loadFunction(device, names + alcGetIntegerv_offset);
+                    _alcGetProcAddress_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, byte*, void*>)loadFunction(device, names + alcGetProcAddress_offset);
+                    _alcGetString_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, byte*>)loadFunction(device, names + alcGetString_offset);
+                    _alcIsExtensionPresent_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, byte*, byte>)loadFunction(device, names + alcIsExtensionPresent_offset);
+                    _alcMakeContextCurrent_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, byte>)loadFunction(device, names + alcMakeContextCurrent_offset);
+                    _alcOpenDevice_fnptr = (delegate* unmanaged[Cdecl]<byte*, IntPtr>)loadFunction(device, names + alcOpenDevice_offset);
+                    _alcProcessContext_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, void>)loadFunction(device, names + alcProcessContext_offset);
+                    _alcSuspendContext_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, void>)loadFunction(device, names + alcSuspendContext_offset);
+                }
+                
+                _alcGetProcAddress2_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, byte*, void*>)loadFunction(device, names + alcGetProcAddress2_offset);
+                
+                var alcASAGetListener_fnptr = (delegate* unmanaged[Cdecl]<uint, void*, uint*, int>)loadFunction(device, names + alcASAGetListener_offset);
+                _alcASAGetListener_fnptr = alcASAGetListener_fnptr;
+                if (alcASAGetListener_fnptr is not null)
+                {
+                    _alcASAGetSource_fnptr = (delegate* unmanaged[Cdecl]<uint, uint, void*, uint*, int>)loadFunction(device, names + alcASAGetSource_offset);
+                    _alcASASetListener_fnptr = (delegate* unmanaged[Cdecl]<uint, void*, uint, int>)loadFunction(device, names + alcASASetListener_offset);
+                    _alcASASetSource_fnptr = (delegate* unmanaged[Cdecl]<uint, uint, void*, uint, int>)loadFunction(device, names + alcASASetSource_offset);
+                }
+                
+                
+                _alcGetThreadContext_fnptr = (delegate* unmanaged[Cdecl]<IntPtr>)loadFunction(device, names + alcGetThreadContext_offset);
+                _alcSetThreadContext_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, byte>)loadFunction(device, names + alcSetThreadContext_offset);
+                
+                var alcMacOSXGetMixerMaxiumumBusses_fnptr = (delegate* unmanaged[Cdecl]<int>)loadFunction(device, names + alcMacOSXGetMixerMaxiumumBusses_offset);
+                _alcMacOSXGetMixerMaxiumumBusses_fnptr = alcMacOSXGetMixerMaxiumumBusses_fnptr;
+                if (alcMacOSXGetMixerMaxiumumBusses_fnptr is not null)
+                {
+                    _alcMacOSXGetMixerOutputRate_fnptr = (delegate* unmanaged[Cdecl]<double>)loadFunction(device, names + alcMacOSXGetMixerOutputRate_offset);
+                    _alcMacOSXGetRenderingQuality_fnptr = (delegate* unmanaged[Cdecl]<int>)loadFunction(device, names + alcMacOSXGetRenderingQuality_offset);
+                    _alcMacOSXMixerMaxiumumBusses_fnptr = (delegate* unmanaged[Cdecl]<int, void>)loadFunction(device, names + alcMacOSXMixerMaxiumumBusses_offset);
+                    _alcMacOSXMixerOutputRate_fnptr = (delegate* unmanaged[Cdecl]<double, void>)loadFunction(device, names + alcMacOSXMixerOutputRate_offset);
+                    _alcMacOSXRenderingQuality_fnptr = (delegate* unmanaged[Cdecl]<int, void>)loadFunction(device, names + alcMacOSXRenderingQuality_offset);
+                }
+                
+                var alcOutputCapturerAvailableSamples_fnptr = (delegate* unmanaged[Cdecl]<void>)loadFunction(device, names + alcOutputCapturerAvailableSamples_offset);
+                _alcOutputCapturerAvailableSamples_fnptr = alcOutputCapturerAvailableSamples_fnptr;
+                if (alcOutputCapturerAvailableSamples_fnptr is not null)
+                {
+                    _alcOutputCapturerPrepare_fnptr = (delegate* unmanaged[Cdecl]<uint, int, int, void>)loadFunction(device, names + alcOutputCapturerPrepare_offset);
+                    _alcOutputCapturerSamples_fnptr = (delegate* unmanaged[Cdecl]<void*, int, void>)loadFunction(device, names + alcOutputCapturerSamples_offset);
+                    _alcOutputCapturerStart_fnptr = (delegate* unmanaged[Cdecl]<void>)loadFunction(device, names + alcOutputCapturerStart_offset);
+                    _alcOutputCapturerStop_fnptr = (delegate* unmanaged[Cdecl]<void>)loadFunction(device, names + alcOutputCapturerStop_offset);
+                }
+                
+                _GetAudioChannel_LOKI_fnptr = (delegate* unmanaged[Cdecl]<uint, float>)loadFunction(device, names + GetAudioChannel_LOKI_offset);
+                _SetAudioChannel_LOKI_fnptr = (delegate* unmanaged[Cdecl]<uint, float, void>)loadFunction(device, names + SetAudioChannel_LOKI_offset);
+                
+                _alcDevicePauseSOFT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, void>)loadFunction(device, names + alcDevicePauseSOFT_offset);
+                _alcDeviceResumeSOFT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, void>)loadFunction(device, names + alcDeviceResumeSOFT_offset);
+                
+                _alcEventCallbackSOFT_fnptr = (delegate* unmanaged[Cdecl]<delegate* unmanaged[Cdecl]<All, All, ALCDevice, nuint, byte*, void*, void>, void*, void>)loadFunction(device, names + alcEventCallbackSOFT_offset);
+                _alcEventControlSOFT_fnptr = (delegate* unmanaged[Cdecl]<int, int*, byte, byte>)loadFunction(device, names + alcEventControlSOFT_offset);
+                _alcEventIsSupportedSOFT_fnptr = (delegate* unmanaged[Cdecl]<int, int, int>)loadFunction(device, names + alcEventIsSupportedSOFT_offset);
+                
+                _alcGetInteger64vSOFT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, long*, void>)loadFunction(device, names + alcGetInteger64vSOFT_offset);
+                
+                _alcGetStringiSOFT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, byte*>)loadFunction(device, names + alcGetStringiSOFT_offset);
+                
+                _alcIsRenderFormatSupportedSOFT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, int, byte>)loadFunction(device, names + alcIsRenderFormatSupportedSOFT_offset);
+                _alcLoopbackOpenDeviceSOFT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, IntPtr>)loadFunction(device, names + alcLoopbackOpenDeviceSOFT_offset);
+                _alcRenderSamplesSOFT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, void*, int, void>)loadFunction(device, names + alcRenderSamplesSOFT_offset);
+                
+                _alcReopenDeviceSOFT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, byte*, int*, byte>)loadFunction(device, names + alcReopenDeviceSOFT_offset);
+                
+                _alcResetDeviceSOFT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int*, byte>)loadFunction(device, names + alcResetDeviceSOFT_offset);
             }
-        }
-        [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
-        private static void InitializePointersInternal(delegate* unmanaged[Cdecl]<IntPtr, byte*, void*> loadFunction, IntPtr device, byte* names, ALCPointers* pointers)
-        {
-            var loadFunctionSuppressed = (delegate* unmanaged[Cdecl, SuppressGCTransition]<IntPtr, byte*, void*>)loadFunction;
-            
-            var alcCaptureCloseDevice_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, byte>)loadFunctionSuppressed(device, names + alcCaptureCloseDevice_offset);
-            pointers->_alcCaptureCloseDevice_fnptr = alcCaptureCloseDevice_fnptr;
-            if (alcCaptureCloseDevice_fnptr is not null)
-            {
-                pointers->_alcCaptureOpenDevice_fnptr = (delegate* unmanaged[Cdecl]<byte*, uint, int, int, IntPtr>)loadFunctionSuppressed(device, names + alcCaptureOpenDevice_offset);
-                pointers->_alcCaptureSamples_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, void*, int, void>)loadFunctionSuppressed(device, names + alcCaptureSamples_offset);
-                pointers->_alcCaptureStart_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, void>)loadFunctionSuppressed(device, names + alcCaptureStart_offset);
-                pointers->_alcCaptureStop_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, void>)loadFunctionSuppressed(device, names + alcCaptureStop_offset);
-            }
-            
-            var alcCloseDevice_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, byte>)loadFunctionSuppressed(device, names + alcCloseDevice_offset);
-            pointers->_alcCloseDevice_fnptr = alcCloseDevice_fnptr;
-            if (alcCloseDevice_fnptr is not null)
-            {
-                pointers->_alcCreateContext_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int*, IntPtr>)loadFunctionSuppressed(device, names + alcCreateContext_offset);
-                pointers->_alcDestroyContext_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, void>)loadFunctionSuppressed(device, names + alcDestroyContext_offset);
-                pointers->_alcGetContextsDevice_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, IntPtr>)loadFunctionSuppressed(device, names + alcGetContextsDevice_offset);
-                pointers->_alcGetCurrentContext_fnptr = (delegate* unmanaged[Cdecl]<IntPtr>)loadFunctionSuppressed(device, names + alcGetCurrentContext_offset);
-                pointers->_alcGetEnumValue_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, byte*, int>)loadFunctionSuppressed(device, names + alcGetEnumValue_offset);
-                pointers->_alcGetError_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int>)loadFunctionSuppressed(device, names + alcGetError_offset);
-                pointers->_alcGetIntegerv_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, int*, void>)loadFunctionSuppressed(device, names + alcGetIntegerv_offset);
-                pointers->_alcGetProcAddress_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, byte*, void*>)loadFunctionSuppressed(device, names + alcGetProcAddress_offset);
-                pointers->_alcGetString_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, byte*>)loadFunctionSuppressed(device, names + alcGetString_offset);
-                pointers->_alcIsExtensionPresent_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, byte*, byte>)loadFunctionSuppressed(device, names + alcIsExtensionPresent_offset);
-                pointers->_alcMakeContextCurrent_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, byte>)loadFunctionSuppressed(device, names + alcMakeContextCurrent_offset);
-                pointers->_alcOpenDevice_fnptr = (delegate* unmanaged[Cdecl]<byte*, IntPtr>)loadFunctionSuppressed(device, names + alcOpenDevice_offset);
-                pointers->_alcProcessContext_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, void>)loadFunctionSuppressed(device, names + alcProcessContext_offset);
-                pointers->_alcSuspendContext_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, void>)loadFunctionSuppressed(device, names + alcSuspendContext_offset);
-            }
-            
-            pointers->_alcGetProcAddress2_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, byte*, void*>)loadFunctionSuppressed(device, names + alcGetProcAddress2_offset);
-            
-            var alcASAGetListener_fnptr = (delegate* unmanaged[Cdecl]<uint, void*, uint*, int>)loadFunctionSuppressed(device, names + alcASAGetListener_offset);
-            pointers->_alcASAGetListener_fnptr = alcASAGetListener_fnptr;
-            if (alcASAGetListener_fnptr is not null)
-            {
-                pointers->_alcASAGetSource_fnptr = (delegate* unmanaged[Cdecl]<uint, uint, void*, uint*, int>)loadFunctionSuppressed(device, names + alcASAGetSource_offset);
-                pointers->_alcASASetListener_fnptr = (delegate* unmanaged[Cdecl]<uint, void*, uint, int>)loadFunctionSuppressed(device, names + alcASASetListener_offset);
-                pointers->_alcASASetSource_fnptr = (delegate* unmanaged[Cdecl]<uint, uint, void*, uint, int>)loadFunctionSuppressed(device, names + alcASASetSource_offset);
-            }
-            
-            
-            pointers->_alcGetThreadContext_fnptr = (delegate* unmanaged[Cdecl]<IntPtr>)loadFunctionSuppressed(device, names + alcGetThreadContext_offset);
-            pointers->_alcSetThreadContext_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, byte>)loadFunctionSuppressed(device, names + alcSetThreadContext_offset);
-            
-            var alcMacOSXGetMixerMaxiumumBusses_fnptr = (delegate* unmanaged[Cdecl]<int>)loadFunctionSuppressed(device, names + alcMacOSXGetMixerMaxiumumBusses_offset);
-            pointers->_alcMacOSXGetMixerMaxiumumBusses_fnptr = alcMacOSXGetMixerMaxiumumBusses_fnptr;
-            if (alcMacOSXGetMixerMaxiumumBusses_fnptr is not null)
-            {
-                pointers->_alcMacOSXGetMixerOutputRate_fnptr = (delegate* unmanaged[Cdecl]<double>)loadFunctionSuppressed(device, names + alcMacOSXGetMixerOutputRate_offset);
-                pointers->_alcMacOSXGetRenderingQuality_fnptr = (delegate* unmanaged[Cdecl]<int>)loadFunctionSuppressed(device, names + alcMacOSXGetRenderingQuality_offset);
-                pointers->_alcMacOSXMixerMaxiumumBusses_fnptr = (delegate* unmanaged[Cdecl]<int, void>)loadFunctionSuppressed(device, names + alcMacOSXMixerMaxiumumBusses_offset);
-                pointers->_alcMacOSXMixerOutputRate_fnptr = (delegate* unmanaged[Cdecl]<double, void>)loadFunctionSuppressed(device, names + alcMacOSXMixerOutputRate_offset);
-                pointers->_alcMacOSXRenderingQuality_fnptr = (delegate* unmanaged[Cdecl]<int, void>)loadFunctionSuppressed(device, names + alcMacOSXRenderingQuality_offset);
-            }
-            
-            var alcOutputCapturerAvailableSamples_fnptr = (delegate* unmanaged[Cdecl]<void>)loadFunctionSuppressed(device, names + alcOutputCapturerAvailableSamples_offset);
-            pointers->_alcOutputCapturerAvailableSamples_fnptr = alcOutputCapturerAvailableSamples_fnptr;
-            if (alcOutputCapturerAvailableSamples_fnptr is not null)
-            {
-                pointers->_alcOutputCapturerPrepare_fnptr = (delegate* unmanaged[Cdecl]<uint, int, int, void>)loadFunctionSuppressed(device, names + alcOutputCapturerPrepare_offset);
-                pointers->_alcOutputCapturerSamples_fnptr = (delegate* unmanaged[Cdecl]<void*, int, void>)loadFunctionSuppressed(device, names + alcOutputCapturerSamples_offset);
-                pointers->_alcOutputCapturerStart_fnptr = (delegate* unmanaged[Cdecl]<void>)loadFunctionSuppressed(device, names + alcOutputCapturerStart_offset);
-                pointers->_alcOutputCapturerStop_fnptr = (delegate* unmanaged[Cdecl]<void>)loadFunctionSuppressed(device, names + alcOutputCapturerStop_offset);
-            }
-            
-            pointers->_GetAudioChannel_LOKI_fnptr = (delegate* unmanaged[Cdecl]<uint, float>)loadFunctionSuppressed(device, names + GetAudioChannel_LOKI_offset);
-            pointers->_SetAudioChannel_LOKI_fnptr = (delegate* unmanaged[Cdecl]<uint, float, void>)loadFunctionSuppressed(device, names + SetAudioChannel_LOKI_offset);
-            
-            pointers->_alcDevicePauseSOFT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, void>)loadFunctionSuppressed(device, names + alcDevicePauseSOFT_offset);
-            pointers->_alcDeviceResumeSOFT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, void>)loadFunctionSuppressed(device, names + alcDeviceResumeSOFT_offset);
-            
-            pointers->_alcEventCallbackSOFT_fnptr = (delegate* unmanaged[Cdecl]<delegate* unmanaged[Cdecl]<All, All, ALCDevice, nuint, byte*, void*, void>, void*, void>)loadFunctionSuppressed(device, names + alcEventCallbackSOFT_offset);
-            pointers->_alcEventControlSOFT_fnptr = (delegate* unmanaged[Cdecl]<int, int*, byte, byte>)loadFunctionSuppressed(device, names + alcEventControlSOFT_offset);
-            pointers->_alcEventIsSupportedSOFT_fnptr = (delegate* unmanaged[Cdecl]<int, int, int>)loadFunctionSuppressed(device, names + alcEventIsSupportedSOFT_offset);
-            
-            pointers->_alcGetInteger64vSOFT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, long*, void>)loadFunctionSuppressed(device, names + alcGetInteger64vSOFT_offset);
-            
-            pointers->_alcGetStringiSOFT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, byte*>)loadFunctionSuppressed(device, names + alcGetStringiSOFT_offset);
-            
-            pointers->_alcIsRenderFormatSupportedSOFT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int, int, int, byte>)loadFunctionSuppressed(device, names + alcIsRenderFormatSupportedSOFT_offset);
-            pointers->_alcLoopbackOpenDeviceSOFT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, IntPtr>)loadFunctionSuppressed(device, names + alcLoopbackOpenDeviceSOFT_offset);
-            pointers->_alcRenderSamplesSOFT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, void*, int, void>)loadFunctionSuppressed(device, names + alcRenderSamplesSOFT_offset);
-            
-            pointers->_alcReopenDeviceSOFT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, byte*, int*, byte>)loadFunctionSuppressed(device, names + alcReopenDeviceSOFT_offset);
-            
-            pointers->_alcResetDeviceSOFT_fnptr = (delegate* unmanaged[Cdecl]<IntPtr, int*, byte>)loadFunctionSuppressed(device, names + alcResetDeviceSOFT_offset);
         }
     }
 }

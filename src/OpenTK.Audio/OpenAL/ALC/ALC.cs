@@ -13,22 +13,19 @@ using OpenTK.Mathematics;
 namespace OpenTK.Audio.OpenAL.ALC
 {
     /// <summary>Exposes all the ALC functions loaded by ALCLoader.</summary>
-    public readonly unsafe partial struct ALC
+    public readonly unsafe ref partial struct ALC
     {
-        internal readonly ALCPointers* _pointers;
-        internal readonly ALCPointers[] _pointersPinnedArray;
+        internal readonly ref readonly ALCPointers _pointers;
         /// <summary>The reference to the container of function pointers loaded by ALCLoader.</summary>
-        public ref readonly ALCPointers Pointers => ref Unsafe.AsRef<ALCPointers>(_pointers);
+        public ref readonly ALCPointers Pointers => ref _pointers;
         
         /// <summary>
         /// Initializes a new instance of the <see cref="ALC"/> struct.
         /// </summary>
         /// <param name="pointers">The <see cref="ALCPointers"/> to initialize with.</param>
-        /// <param name="pointersPinnedArray">The place <see cref="ALCPointers"/> resides.</param>
-        public ALC(ALCPointers* pointers, ALCPointers[] pointersPinnedArray)
+        public ALC(ref readonly ALCPointers pointers)
         {
-            _pointers = pointers;
-            _pointersPinnedArray = pointersPinnedArray;
+            _pointers = ref pointers;
         }
         /// <summary>Direct extensions.</summary>
         public ALCExtensions.Direct Direct => new(this);
@@ -52,23 +49,31 @@ namespace OpenTK.Audio.OpenAL.ALC
         
         
         /// <summary>Direct extensions.</summary>
-        public readonly record struct Direct(ALC ALC) : IALCContainer
+        public readonly unsafe ref partial struct Direct(ALC alc) : IALCContainer
         {
+            /// <inheritdoc/>
+            public ALC ALC { get; } = alc;
         }
         
         /// <summary>EXT extensions.</summary>
-        public readonly record struct EXT(ALC ALC) : IALCContainer
+        public readonly unsafe ref partial struct EXT(ALC alc) : IALCContainer
         {
+            /// <inheritdoc/>
+            public ALC ALC { get; } = alc;
         }
         
         /// <summary>LOKI extensions.</summary>
-        public readonly record struct LOKI(ALC ALC) : IALCContainer
+        public readonly unsafe ref partial struct LOKI(ALC alc) : IALCContainer
         {
+            /// <inheritdoc/>
+            public ALC ALC { get; } = alc;
         }
         
         /// <summary>SOFT extensions.</summary>
-        public readonly record struct SOFT(ALC ALC) : IALCContainer
+        public readonly unsafe ref partial struct SOFT(ALC alc) : IALCContainer
         {
+            /// <inheritdoc/>
+            public ALC ALC { get; } = alc;
         }
     }
 }

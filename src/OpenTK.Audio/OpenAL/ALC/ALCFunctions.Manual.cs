@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Buffers;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -26,6 +27,15 @@ namespace OpenTK.Audio.OpenAL.ALC
 
         /// <inheritdoc cref="CreateContext(ALC, ALCDevice, int*)"/>
         public static ALCContext CreateContext(this ALC alc, ALCDevice device) => alc.CreateContext(device, (int*)null);
+
+        /// <inheritdoc cref="OpenDevice(ALC, byte*)"/>
+        public static ALCDevice OpenDevice(this ALC alc) => alc.OpenDevice((byte*)null);
+
+        /// <inheritdoc cref="CaptureOpenDevice(ALC, byte*, uint, Format, int)"/>
+        public static ALCDevice CaptureOpenDevice(this ALC alc, uint frequency, Format format, int buffersize) => alc.CaptureOpenDevice((byte*)null, frequency, format, buffersize);
+
+        /// <inheritdoc cref="CaptureOpenDevice(ALCExtensions.EXT, byte*, uint, Format, int)"/>
+        public static ALCDevice CaptureOpenDevice(this ALCExtensions.EXT ext, uint frequency, Format format, int buffersize) => ext.CaptureOpenDevice((byte*)null, frequency, format, buffersize);
 
         /// <inheritdoc cref="GetIntegerv(ALC, ALCDevice, GetPNameIV, int, int*)"/>
         public static unsafe int GetInteger(this ALC alc, ALCDevice device, GetPNameIV name)
@@ -80,12 +90,14 @@ namespace OpenTK.Audio.OpenAL.ALC
 
         /// <inheritdoc cref="GetStringiSOFT_(ALCExtensions.SOFT, ALCDevice, IndexedStringName, int)"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe IEnumerable<string> GetAllIndexedStringSOFT(this ALCExtensions.SOFT soft, ALCDevice device, IndexedStringName paramName, int count)
+        public static unsafe List<string> GetAllIndexedStringSOFT(this ALCExtensions.SOFT soft, ALCDevice device, IndexedStringName paramName, int count)
         {
+            List<string> result = [];
             for (var i = 0; i < count; i++)
             {
-                yield return soft.GetStringiSOFT(device, paramName, i);
+                result.Add(soft.GetStringiSOFT(device, paramName, i));
             }
+            return result;
         }
     }
 }

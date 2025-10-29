@@ -13,22 +13,19 @@ using OpenTK.Mathematics;
 namespace OpenTK.Audio.OpenAL
 {
     /// <summary>Exposes all the AL functions loaded by ALLoader.</summary>
-    public readonly unsafe partial struct AL
+    public readonly unsafe ref partial struct AL
     {
-        internal readonly ALPointers* _pointers;
-        internal readonly ALPointers[] _pointersPinnedArray;
+        internal readonly ref readonly ALPointers _pointers;
         /// <summary>The reference to the container of function pointers loaded by ALLoader.</summary>
-        public ref readonly ALPointers Pointers => ref Unsafe.AsRef<ALPointers>(_pointers);
+        public ref readonly ALPointers Pointers => ref _pointers;
         
         /// <summary>
         /// Initializes a new instance of the <see cref="AL"/> struct.
         /// </summary>
         /// <param name="pointers">The <see cref="ALPointers"/> to initialize with.</param>
-        /// <param name="pointersPinnedArray">The place <see cref="ALPointers"/> resides.</param>
-        public AL(ALPointers* pointers, ALPointers[] pointersPinnedArray)
+        public AL(ref readonly ALPointers pointers)
         {
-            _pointers = pointers;
-            _pointersPinnedArray = pointersPinnedArray;
+            _pointers = ref pointers;
         }
         /// <summary>Creative extensions.</summary>
         public ALExtensions.Creative Creative => new(this);
@@ -53,41 +50,51 @@ namespace OpenTK.Audio.OpenAL
         }
         
         /// <summary>The ALPointers container for AL_EXT_direct_context extensions.</summary>
-        public readonly record struct Direct<TDependentAPIVendor>(TDependentAPIVendor vendor) : IALContainer where TDependentAPIVendor : struct, IALContainer
+        public readonly unsafe ref partial struct Direct<TDependentAPIVendor>(TDependentAPIVendor vendor) : IALContainer where TDependentAPIVendor : struct, IALContainer, allows ref struct
         {
             /// <inheritdoc/>
-            public AL AL => vendor.AL;
+            public AL AL { get; } = vendor.AL;
         }
         
         /// <summary>Creative extensions.</summary>
-        public readonly record struct Creative(AL AL) : IALContainer
+        public readonly unsafe ref partial struct Creative(AL al) : IALContainer
         {
+            /// <inheritdoc/>
+            public AL AL { get; } = al;
             /// <summary>AL_EXT_direct_context extensions for Creative extensions.</summary>
             public Direct<Creative> Direct => new(this);
         }
         
         /// <summary>Direct extensions.</summary>
-        public readonly record struct Direct(AL AL) : IALContainer
+        public readonly unsafe ref partial struct Direct(AL al) : IALContainer
         {
+            /// <inheritdoc/>
+            public AL AL { get; } = al;
         }
         
         /// <summary>EXT extensions.</summary>
-        public readonly record struct EXT(AL AL) : IALContainer
+        public readonly unsafe ref partial struct EXT(AL al) : IALContainer
         {
+            /// <inheritdoc/>
+            public AL AL { get; } = al;
             /// <summary>AL_EXT_direct_context extensions for EXT extensions.</summary>
             public Direct<EXT> Direct => new(this);
         }
         
         /// <summary>LOKI extensions.</summary>
-        public readonly record struct LOKI(AL AL) : IALContainer
+        public readonly unsafe ref partial struct LOKI(AL al) : IALContainer
         {
+            /// <inheritdoc/>
+            public AL AL { get; } = al;
             /// <summary>AL_EXT_direct_context extensions for LOKI extensions.</summary>
             public Direct<LOKI> Direct => new(this);
         }
         
         /// <summary>SOFT extensions.</summary>
-        public readonly record struct SOFT(AL AL) : IALContainer
+        public readonly unsafe ref partial struct SOFT(AL al) : IALContainer
         {
+            /// <inheritdoc/>
+            public AL AL { get; } = al;
             /// <summary>AL_EXT_direct_context extensions for SOFT extensions.</summary>
             public Direct<SOFT> Direct => new(this);
         }

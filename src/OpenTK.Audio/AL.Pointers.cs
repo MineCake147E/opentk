@@ -12,8 +12,966 @@ using OpenTK.Mathematics;
 
 namespace OpenTK.Audio.OpenAL
 {
-    /// <summary>A collection of all function pointers to all OpenAL <c>al</c> entry points.</summary>
-    public unsafe partial struct ALPointers
+    /// <summary>An immutable collection of all function pointers to all OpenAL <c>al</c> entry points.</summary>
+    public readonly unsafe partial struct ALPointers
+    {
+        /// <summary><b>[entry point: <c>alBuffer3f</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int, float, float, float, void> _alBuffer3f_fnptr;
+        
+        /// <summary><b>[entry point: <c>alBuffer3i</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int, int, int, int, void> _alBuffer3i_fnptr;
+        
+        /// <summary><b>[entry point: <c>alBufferData</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int, void*, int, int, void> _alBufferData_fnptr;
+        
+        /// <summary><b>[entry point: <c>alBufferf</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int, float, void> _alBufferf_fnptr;
+        
+        /// <summary><b>[entry point: <c>alBufferfv</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int, float*, void> _alBufferfv_fnptr;
+        
+        /// <summary><b>[entry point: <c>alBufferi</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int, int, void> _alBufferi_fnptr;
+        
+        /// <summary><b>[entry point: <c>alBufferiv</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int, int*, void> _alBufferiv_fnptr;
+        
+        /// <summary><b>[entry point: <c>alDeleteBuffers</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int*, void> _alDeleteBuffers_fnptr;
+        
+        /// <summary><b>[entry point: <c>alDeleteSources</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int*, void> _alDeleteSources_fnptr;
+        
+        /// <summary><b>[entry point: <c>alDisable</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, void> _alDisable_fnptr;
+        
+        /// <summary><b>[entry point: <c>alDistanceModel</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, void> _alDistanceModel_fnptr;
+        
+        /// <summary><b>[entry point: <c>alDopperFactor</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<float, void> _alDopperFactor_fnptr;
+        
+        /// <summary><b>[entry point: <c>alEnable</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, void> _alEnable_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGenBuffers</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int*, void> _alGenBuffers_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGenSources</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int*, void> _alGenSources_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetBoolean</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, byte> _alGetBoolean_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetBooleanv</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, byte*, void> _alGetBooleanv_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetBuffer3f</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int, float*, float*, float*, void> _alGetBuffer3f_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetBuffer3i</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int, int*, int*, int*, void> _alGetBuffer3i_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetBufferf</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int, float*, void> _alGetBufferf_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetBufferfv</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int, float*, void> _alGetBufferfv_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetBufferi</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int, int*, void> _alGetBufferi_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetBufferiv</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int, int*, void> _alGetBufferiv_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetDouble</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, double> _alGetDouble_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetDoublev</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, double*, void> _alGetDoublev_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetEnumValue</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<byte*, int> _alGetEnumValue_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetError</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int> _alGetError_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetFloat</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, float> _alGetFloat_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetFloatv</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, float*, void> _alGetFloatv_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetInteger</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int> _alGetInteger_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetIntegerv</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int*, void> _alGetIntegerv_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetListener3f</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, float*, float*, float*, void> _alGetListener3f_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetListener3i</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int*, int*, int*, void> _alGetListener3i_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetListenerf</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, float*, void> _alGetListenerf_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetListenerfv</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, float*, void> _alGetListenerfv_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetListeneri</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int*, void> _alGetListeneri_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetListeneriv</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int*, void> _alGetListeneriv_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetProcAddress</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<byte*, void*> _alGetProcAddress_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetSource3f</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int, float*, float*, float*, void> _alGetSource3f_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetSource3i</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int, int*, int*, int*, void> _alGetSource3i_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetSourcef</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int, float*, void> _alGetSourcef_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetSourcefv</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int, float*, void> _alGetSourcefv_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetSourcei</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int, int*, void> _alGetSourcei_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetSourceiv</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int, int*, void> _alGetSourceiv_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetString</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, byte*> _alGetString_fnptr;
+        
+        /// <summary><b>[entry point: <c>alIsBuffer</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, byte> _alIsBuffer_fnptr;
+        
+        /// <summary><b>[entry point: <c>alIsEnabled</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, byte> _alIsEnabled_fnptr;
+        
+        /// <summary><b>[entry point: <c>alIsExtensionPresent</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<byte*, byte> _alIsExtensionPresent_fnptr;
+        
+        /// <summary><b>[entry point: <c>alIsSource</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, byte> _alIsSource_fnptr;
+        
+        /// <summary><b>[entry point: <c>alListener3f</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, float, float, float, void> _alListener3f_fnptr;
+        
+        /// <summary><b>[entry point: <c>alListener3i</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int, int, int, void> _alListener3i_fnptr;
+        
+        /// <summary><b>[entry point: <c>alListenerf</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, float, void> _alListenerf_fnptr;
+        
+        /// <summary><b>[entry point: <c>alListenerfv</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, float*, void> _alListenerfv_fnptr;
+        
+        /// <summary><b>[entry point: <c>alListeneri</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int, void> _alListeneri_fnptr;
+        
+        /// <summary><b>[entry point: <c>alListeneriv</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int*, void> _alListeneriv_fnptr;
+        
+        /// <summary><b>[entry point: <c>alSource3f</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int, float, float, float, void> _alSource3f_fnptr;
+        
+        /// <summary><b>[entry point: <c>alSource3i</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int, int, int, int, void> _alSource3i_fnptr;
+        
+        /// <summary><b>[entry point: <c>alSourcef</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int, float, void> _alSourcef_fnptr;
+        
+        /// <summary><b>[entry point: <c>alSourcefv</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int, float*, void> _alSourcefv_fnptr;
+        
+        /// <summary><b>[entry point: <c>alSourcei</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int, int, void> _alSourcei_fnptr;
+        
+        /// <summary><b>[entry point: <c>alSourceiv</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int, int*, void> _alSourceiv_fnptr;
+        
+        /// <summary><b>[entry point: <c>alSourcePause</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, void> _alSourcePause_fnptr;
+        
+        /// <summary><b>[entry point: <c>alSourcePausev</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int*, void> _alSourcePausev_fnptr;
+        
+        /// <summary><b>[entry point: <c>alSourcePlay</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, void> _alSourcePlay_fnptr;
+        
+        /// <summary><b>[entry point: <c>alSourcePlayv</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int*, void> _alSourcePlayv_fnptr;
+        
+        /// <summary><b>[entry point: <c>alSourceQueueBuffers</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int, int*, void> _alSourceQueueBuffers_fnptr;
+        
+        /// <summary><b>[entry point: <c>alSourceRewind</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, void> _alSourceRewind_fnptr;
+        
+        /// <summary><b>[entry point: <c>alSourceRewindv</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int*, void> _alSourceRewindv_fnptr;
+        
+        /// <summary><b>[entry point: <c>alSourceStop</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, void> _alSourceStop_fnptr;
+        
+        /// <summary><b>[entry point: <c>alSourceStopv</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int*, void> _alSourceStopv_fnptr;
+        
+        /// <summary><b>[entry point: <c>alSourceUnqueueBuffers</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int, int*, void> _alSourceUnqueueBuffers_fnptr;
+        
+        /// <summary><b>[entry point: <c>alSpeedOfSound</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<float, void> _alSpeedOfSound_fnptr;
+        
+        /// <summary><b>[entry point: <c>EAXGet</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<Guid*, uint, uint, void*, uint, int> _EAXGet_fnptr;
+        
+        /// <summary><b>[entry point: <c>EAXSet</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<Guid*, uint, uint, void*, uint, int> _EAXSet_fnptr;
+        
+        /// <summary><b>[entry point: <c>EAXGetBufferMode</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int*, int> _EAXGetBufferMode_fnptr;
+        
+        /// <summary><b>[entry point: <c>EAXSetBufferMode</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int*, int, byte> _EAXSetBufferMode_fnptr;
+        
+        /// <summary><b>[entry point: <c>alAuxiliaryEffectSlotf</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int, float, void> _alAuxiliaryEffectSlotf_fnptr;
+        
+        /// <summary><b>[entry point: <c>alAuxiliaryEffectSlotfv</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int, float*, void> _alAuxiliaryEffectSlotfv_fnptr;
+        
+        /// <summary><b>[entry point: <c>alAuxiliaryEffectSloti</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int, int, void> _alAuxiliaryEffectSloti_fnptr;
+        
+        /// <summary><b>[entry point: <c>alAuxiliaryEffectSlotiv</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int, int*, void> _alAuxiliaryEffectSlotiv_fnptr;
+        
+        /// <summary><b>[entry point: <c>alDeleteAuxiliaryEffectSlots</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int*, void> _alDeleteAuxiliaryEffectSlots_fnptr;
+        
+        /// <summary><b>[entry point: <c>alDeleteEffects</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int*, void> _alDeleteEffects_fnptr;
+        
+        /// <summary><b>[entry point: <c>alDeleteFilters</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int*, void> _alDeleteFilters_fnptr;
+        
+        /// <summary><b>[entry point: <c>alEffectf</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int, float, void> _alEffectf_fnptr;
+        
+        /// <summary><b>[entry point: <c>alEffectfv</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int, float*, void> _alEffectfv_fnptr;
+        
+        /// <summary><b>[entry point: <c>alEffecti</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int, int, void> _alEffecti_fnptr;
+        
+        /// <summary><b>[entry point: <c>alEffectiv</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int, int*, void> _alEffectiv_fnptr;
+        
+        /// <summary><b>[entry point: <c>alFilterf</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int, float, void> _alFilterf_fnptr;
+        
+        /// <summary><b>[entry point: <c>alFilterfv</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int, float*, void> _alFilterfv_fnptr;
+        
+        /// <summary><b>[entry point: <c>alFilteri</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int, int, void> _alFilteri_fnptr;
+        
+        /// <summary><b>[entry point: <c>alFilteriv</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int, int*, void> _alFilteriv_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGenAuxiliaryEffectSlots</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int*, void> _alGenAuxiliaryEffectSlots_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGenEffects</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int*, void> _alGenEffects_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGenFilters</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int*, void> _alGenFilters_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetAuxiliaryEffectSlotf</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int, float*, void> _alGetAuxiliaryEffectSlotf_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetAuxiliaryEffectSlotfv</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int, float*, void> _alGetAuxiliaryEffectSlotfv_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetAuxiliaryEffectSloti</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int, int*, void> _alGetAuxiliaryEffectSloti_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetAuxiliaryEffectSlotiv</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int, int*, void> _alGetAuxiliaryEffectSlotiv_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetEffectf</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int, float*, void> _alGetEffectf_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetEffectfv</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int, float*, void> _alGetEffectfv_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetEffecti</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int, int*, void> _alGetEffecti_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetEffectiv</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int, int*, void> _alGetEffectiv_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetFilterf</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int, float*, void> _alGetFilterf_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetFilterfv</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int, float*, void> _alGetFilterfv_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetFilteri</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int, int*, void> _alGetFilteri_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetFilteriv</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int, int*, void> _alGetFilteriv_fnptr;
+        
+        /// <summary><b>[entry point: <c>alIsAuxiliaryEffectSlot</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, void> _alIsAuxiliaryEffectSlot_fnptr;
+        
+        /// <summary><b>[entry point: <c>alIsEffect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, byte> _alIsEffect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alIsFilter</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, void> _alIsFilter_fnptr;
+        
+        /// <summary><b>[entry point: <c>alDebugMessageCallbackEXT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<delegate* unmanaged[Cdecl]<All, All, uint, All, nuint, byte*, void*, int>, void*, void> _alDebugMessageCallbackEXT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alDebugMessageControlEXT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int, uint, int, uint*, byte, void> _alDebugMessageControlEXT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alDebugMessageInsertEXT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int, uint, int, byte*, void> _alDebugMessageInsertEXT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetDebugMessageLogEXT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<uint, int, int*, int*, uint*, int*, int*, byte*, uint> _alGetDebugMessageLogEXT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetObjectLabelEXT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, uint, int, int*, byte*, void> _alGetObjectLabelEXT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetPointerEXT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, void*> _alGetPointerEXT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetPointervEXT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, void**, void> _alGetPointervEXT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alObjectLabelEXT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, uint, int, byte*, void> _alObjectLabelEXT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alPopDebugGroupEXT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<void> _alPopDebugGroupEXT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alPushDebugGroupEXT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, uint, int, byte*, void> _alPushDebugGroupEXT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alMacOSXGetRenderChannelCount</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int> _alMacOSXGetRenderChannelCount_fnptr;
+        
+        /// <summary><b>[entry point: <c>alMacOSXRenderChannelCount</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, void> _alMacOSXRenderChannelCount_fnptr;
+        
+        /// <summary><b>[entry point: <c>alRequestFoldbackStart</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int, int, float*, delegate* unmanaged[Cdecl]<All, nuint, void>, void> _alRequestFoldbackStart_fnptr;
+        
+        /// <summary><b>[entry point: <c>alRequestFoldbackStop</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<void> _alRequestFoldbackStop_fnptr;
+        
+        /// <summary><b>[entry point: <c>alSourceAddNotification</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, uint, delegate* unmanaged[Cdecl]<uint, uint, void*, void>, void*, int> _alSourceAddNotification_fnptr;
+        
+        /// <summary><b>[entry point: <c>alSourceRemoveNotification</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, uint, delegate* unmanaged[Cdecl]<uint, uint, void*, void>, void*, void> _alSourceRemoveNotification_fnptr;
+        
+        /// <summary><b>[entry point: <c>alSourceGetRenderingQuality</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int> _alSourceGetRenderingQuality_fnptr;
+        
+        /// <summary><b>[entry point: <c>alSourceRenderingQuality</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int, void> _alSourceRenderingQuality_fnptr;
+        
+        /// <summary><b>[entry point: <c>AttenuationScale_LOKI</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<float, void> _AttenuationScale_LOKI_fnptr;
+        
+        /// <summary><b>[entry point: <c>BufferDataWithCallback_LOKI</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, delegate* unmanaged[Cdecl]<uint, uint, void*, All, uint, int>, void> _BufferDataWithCallback_LOKI_fnptr;
+        
+        /// <summary><b>[entry point: <c>alBufferCallbackSOFT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int, int, delegate* unmanaged[Cdecl]<void*, void*, nuint, nuint>, void*, void> _alBufferCallbackSOFT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetBuffer3PtrSOFT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int, void**, void**, void**, void> _alGetBuffer3PtrSOFT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetBufferPtrSOFT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int, void**, void> _alGetBufferPtrSOFT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetBufferPtrvSOFT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int, void**, void> _alGetBufferPtrvSOFT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alBufferSamplesSOFT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, uint, int, int, int, int, void*, void> _alBufferSamplesSOFT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alBufferSubSamplesSOFT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int, int, int, int, void*, void> _alBufferSubSamplesSOFT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetBufferSamplesSOFT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int, int, int, int, void*, void> _alGetBufferSamplesSOFT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alIsBufferFormatSupportedSOFT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, byte> _alIsBufferFormatSupportedSOFT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alBufferSubDataSOFT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int, void*, int, int, void> _alBufferSubDataSOFT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alDeferUpdatesSOFT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<void> _alDeferUpdatesSOFT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alProcessUpdatesSOFT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<void> _alProcessUpdatesSOFT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alEventCallbackSOFT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<delegate* unmanaged[Cdecl]<All, uint, uint, nuint, byte*, void*, void>, void*, void> _alEventCallbackSOFT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alEventControlSOFT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int*, byte, void> _alEventControlSOFT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetPointerSOFT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, void*> _alGetPointerSOFT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetPointervSOFT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, void**, void> _alGetPointervSOFT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetSource3dSOFT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int, double*, double*, double*, void> _alGetSource3dSOFT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetSource3i64SOFT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int, long*, long*, long*, void> _alGetSource3i64SOFT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetSourcedSOFT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int, double*, void> _alGetSourcedSOFT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetSourcedvSOFT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int, double*, void> _alGetSourcedvSOFT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetSourcei64SOFT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int, long*, void> _alGetSourcei64SOFT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetSourcei64vSOFT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int, long*, void> _alGetSourcei64vSOFT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alSource3dSOFT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int, double, double, double, void> _alSource3dSOFT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alSource3i64SOFT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int, long, long, long, void> _alSource3i64SOFT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alSourcedSOFT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int, double, void> _alSourcedSOFT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alSourcedvSOFT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int, double*, void> _alSourcedvSOFT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alSourcei64SOFT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int, long, void> _alSourcei64SOFT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alSourcei64vSOFT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int, long*, void> _alSourcei64vSOFT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetStringiSOFT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int, byte*> _alGetStringiSOFT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alSourcePlayAtTimeSOFT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, long, void> _alSourcePlayAtTimeSOFT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alSourcePlayAtTimevSOFT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<int, int*, long, void> _alSourcePlayAtTimevSOFT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alBuffer3fDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int, float, float, float, void> _alBuffer3fDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alBuffer3iDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int, int, int, int, void> _alBuffer3iDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alBufferDataDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int, void*, int, int, void> _alBufferDataDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alBufferfDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int, float, void> _alBufferfDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alBufferfvDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int, float*, void> _alBufferfvDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alBufferiDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int, int, void> _alBufferiDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alBufferivDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int, int*, void> _alBufferivDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alDeleteBuffersDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int*, void> _alDeleteBuffersDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alDeleteSourcesDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int*, void> _alDeleteSourcesDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alDisableDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, void> _alDisableDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alDistanceModelDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, void> _alDistanceModelDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alDopperFactorDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, float, void> _alDopperFactorDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alEnableDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, void> _alEnableDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGenBuffersDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int*, void> _alGenBuffersDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGenSourcesDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int*, void> _alGenSourcesDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetBooleanDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, byte> _alGetBooleanDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetBooleanvDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, byte*, void> _alGetBooleanvDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetBuffer3fDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int, float*, float*, float*, void> _alGetBuffer3fDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetBuffer3iDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int, int*, int*, int*, void> _alGetBuffer3iDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetBufferfDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int, float*, void> _alGetBufferfDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetBufferfvDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int, float*, void> _alGetBufferfvDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetBufferiDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int, int*, void> _alGetBufferiDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetBufferivDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int, int*, void> _alGetBufferivDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetDoubleDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, double> _alGetDoubleDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetDoublevDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, double*, void> _alGetDoublevDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetEnumValueDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, byte*, int> _alGetEnumValueDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetErrorDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int> _alGetErrorDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetFloatDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, float> _alGetFloatDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetFloatvDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, float*, void> _alGetFloatvDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetIntegerDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int> _alGetIntegerDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetIntegervDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int*, void> _alGetIntegervDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetListener3fDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, float*, float*, float*, void> _alGetListener3fDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetListener3iDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int*, int*, int*, void> _alGetListener3iDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetListenerfDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, float*, void> _alGetListenerfDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetListenerfvDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, float*, void> _alGetListenerfvDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetListeneriDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int*, void> _alGetListeneriDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetListenerivDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int*, void> _alGetListenerivDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetProcAddressDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, byte*, void*> _alGetProcAddressDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetSource3fDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int, float*, float*, float*, void> _alGetSource3fDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetSource3iDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int, int*, int*, int*, void> _alGetSource3iDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetSourcefDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int, float*, void> _alGetSourcefDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetSourcefvDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int, float*, void> _alGetSourcefvDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetSourceiDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int, int*, void> _alGetSourceiDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetSourceivDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int, int*, void> _alGetSourceivDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetStringDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, byte*> _alGetStringDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alIsBufferDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, byte> _alIsBufferDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alIsEnabledDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, byte> _alIsEnabledDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alIsExtensionPresentDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, byte*, byte> _alIsExtensionPresentDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alIsSourceDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, byte> _alIsSourceDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alListener3fDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, float, float, float, void> _alListener3fDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alListener3iDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int, int, int, void> _alListener3iDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alListenerfDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, float, void> _alListenerfDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alListenerfvDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, float*, void> _alListenerfvDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alListeneriDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int, void> _alListeneriDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alListenerivDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int*, void> _alListenerivDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alSource3fDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int, float, float, float, void> _alSource3fDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alSource3iDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int, int, int, int, void> _alSource3iDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alSourcefDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int, float, void> _alSourcefDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alSourcefvDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int, float*, void> _alSourcefvDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alSourceiDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int, int, void> _alSourceiDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alSourceivDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int, int*, void> _alSourceivDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alSourcePauseDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, void> _alSourcePauseDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alSourcePausevDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int*, void> _alSourcePausevDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alSourcePlayDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, void> _alSourcePlayDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alSourcePlayvDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int*, void> _alSourcePlayvDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alSourceQueueBuffersDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int, int*, void> _alSourceQueueBuffersDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alSourceRewindDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, void> _alSourceRewindDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alSourceRewindvDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int*, void> _alSourceRewindvDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alSourceStopDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, void> _alSourceStopDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alSourceStopvDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int*, void> _alSourceStopvDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alSourceUnqueueBuffersDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int, int*, void> _alSourceUnqueueBuffersDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alSpeedOfSoundDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, float, void> _alSpeedOfSoundDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alDebugMessageCallbackDirectEXT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, delegate* unmanaged[Cdecl]<All, All, uint, All, nuint, byte*, void*, int>, void*, void> _alDebugMessageCallbackDirectEXT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alDebugMessageControlDirectEXT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int, uint, int, uint*, byte, void> _alDebugMessageControlDirectEXT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alDebugMessageInsertDirectEXT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int, uint, int, byte*, void> _alDebugMessageInsertDirectEXT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetDebugMessageLogDirectEXT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, uint, int, int*, int*, uint*, int*, int*, byte*, uint> _alGetDebugMessageLogDirectEXT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetObjectLabelDirectEXT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, uint, int, int*, byte*, void> _alGetObjectLabelDirectEXT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetPointerDirectEXT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, void*> _alGetPointerDirectEXT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetPointervDirectEXT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, void**, void> _alGetPointervDirectEXT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alObjectLabelDirectEXT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, uint, int, byte*, void> _alObjectLabelDirectEXT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alPopDebugGroupDirectEXT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, void> _alPopDebugGroupDirectEXT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alPushDebugGroupDirectEXT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, uint, int, byte*, void> _alPushDebugGroupDirectEXT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alRequestFoldbackStartDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int, int, float*, delegate* unmanaged[Cdecl]<All, nuint, void>, void> _alRequestFoldbackStartDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alRequestFoldbackStopDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, void> _alRequestFoldbackStopDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alSourceAddNotificationDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, uint, delegate* unmanaged[Cdecl]<uint, uint, void*, void>, void*, int> _alSourceAddNotificationDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alSourceRemoveNotificationDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, uint, delegate* unmanaged[Cdecl]<uint, uint, void*, void>, void*, void> _alSourceRemoveNotificationDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alSourceGetRenderingQualityDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int> _alSourceGetRenderingQualityDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alSourceRenderingQualityDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int, void> _alSourceRenderingQualityDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>AttenuationScale_DirectLOKI</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, float, void> _AttenuationScale_DirectLOKI_fnptr;
+        
+        /// <summary><b>[entry point: <c>BufferDataWithCallback_DirectLOKI</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, delegate* unmanaged[Cdecl]<uint, uint, void*, All, uint, int>, void> _BufferDataWithCallback_DirectLOKI_fnptr;
+        
+        /// <summary><b>[entry point: <c>alBufferSamplesDirectSOFT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, uint, int, int, int, int, void*, void> _alBufferSamplesDirectSOFT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alBufferSubSamplesDirectSOFT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int, int, int, int, void*, void> _alBufferSubSamplesDirectSOFT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetBufferSamplesDirectSOFT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int, int, int, int, void*, void> _alGetBufferSamplesDirectSOFT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alIsBufferFormatSupportedDirectSOFT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, byte> _alIsBufferFormatSupportedDirectSOFT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alBufferSubDataDirectSOFT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int, void*, int, int, void> _alBufferSubDataDirectSOFT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alBufferCallbackDirectSOFT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int, int, delegate* unmanaged[Cdecl]<void*, void*, nuint, nuint>, void*, void> _alBufferCallbackDirectSOFT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetBuffer3PtrDirectSOFT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int, void**, void**, void**, void> _alGetBuffer3PtrDirectSOFT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetBufferPtrDirectSOFT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int, void**, void> _alGetBufferPtrDirectSOFT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetBufferPtrvDirectSOFT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int, void**, void> _alGetBufferPtrvDirectSOFT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alDeferUpdatesDirectSOFT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, void> _alDeferUpdatesDirectSOFT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alProcessUpdatesDirectSOFT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, void> _alProcessUpdatesDirectSOFT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alEventCallbackDirectSOFT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, delegate* unmanaged[Cdecl]<All, uint, uint, nuint, byte*, void*, void>, void*, void> _alEventCallbackDirectSOFT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alEventControlDirectSOFT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int*, byte, void> _alEventControlDirectSOFT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetPointerDirectSOFT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, void*> _alGetPointerDirectSOFT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetPointervDirectSOFT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, void**, void> _alGetPointervDirectSOFT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetSource3dDirectSOFT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int, double*, double*, double*, void> _alGetSource3dDirectSOFT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetSource3i64DirectSOFT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int, long*, long*, long*, void> _alGetSource3i64DirectSOFT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetSourcedDirectSOFT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int, double*, void> _alGetSourcedDirectSOFT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetSourcedvDirectSOFT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int, double*, void> _alGetSourcedvDirectSOFT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetSourcei64DirectSOFT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int, long*, void> _alGetSourcei64DirectSOFT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetSourcei64vDirectSOFT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int, long*, void> _alGetSourcei64vDirectSOFT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alSource3dDirectSOFT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int, double, double, double, void> _alSource3dDirectSOFT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alSource3i64DirectSOFT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int, long, long, long, void> _alSource3i64DirectSOFT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alSourcedDirectSOFT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int, double, void> _alSourcedDirectSOFT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alSourcedvDirectSOFT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int, double*, void> _alSourcedvDirectSOFT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alSourcei64DirectSOFT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int, long, void> _alSourcei64DirectSOFT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alSourcei64vDirectSOFT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int, long*, void> _alSourcei64vDirectSOFT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetStringiDirectSOFT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int, byte*> _alGetStringiDirectSOFT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alSourcePlayAtTimeDirectSOFT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, long, void> _alSourcePlayAtTimeDirectSOFT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alSourcePlayAtTimevDirectSOFT</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int*, long, void> _alSourcePlayAtTimevDirectSOFT_fnptr;
+        
+        /// <summary><b>[entry point: <c>alAuxiliaryEffectSlotfDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int, float, void> _alAuxiliaryEffectSlotfDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alAuxiliaryEffectSlotfvDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int, float*, void> _alAuxiliaryEffectSlotfvDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alAuxiliaryEffectSlotiDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int, int, void> _alAuxiliaryEffectSlotiDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alAuxiliaryEffectSlotivDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int, int*, void> _alAuxiliaryEffectSlotivDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alDeleteAuxiliaryEffectSlotsDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int*, void> _alDeleteAuxiliaryEffectSlotsDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alDeleteEffectsDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int*, void> _alDeleteEffectsDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alDeleteFiltersDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int*, void> _alDeleteFiltersDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alEffectfDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int, float, void> _alEffectfDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alEffectfvDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int, float*, void> _alEffectfvDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alEffectiDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int, int, void> _alEffectiDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alEffectivDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int, int*, void> _alEffectivDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alFilterfDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int, float, void> _alFilterfDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alFilterfvDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int, float*, void> _alFilterfvDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alFilteriDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int, int, void> _alFilteriDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alFilterivDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int, int*, void> _alFilterivDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGenAuxiliaryEffectSlotsDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int*, void> _alGenAuxiliaryEffectSlotsDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGenEffectsDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int*, void> _alGenEffectsDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGenFiltersDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int*, void> _alGenFiltersDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetAuxiliaryEffectSlotfDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int, float*, void> _alGetAuxiliaryEffectSlotfDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetAuxiliaryEffectSlotfvDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int, float*, void> _alGetAuxiliaryEffectSlotfvDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetAuxiliaryEffectSlotiDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int, int*, void> _alGetAuxiliaryEffectSlotiDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetAuxiliaryEffectSlotivDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int, int*, void> _alGetAuxiliaryEffectSlotivDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetEffectfDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int, float*, void> _alGetEffectfDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetEffectfvDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int, float*, void> _alGetEffectfvDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetEffectiDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int, int*, void> _alGetEffectiDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetEffectivDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int, int*, void> _alGetEffectivDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetFilterfDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int, float*, void> _alGetFilterfDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetFilterfvDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int, float*, void> _alGetFilterfvDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetFilteriDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int, int*, void> _alGetFilteriDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alGetFilterivDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int, int*, void> _alGetFilterivDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alIsAuxiliaryEffectSlotDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, void> _alIsAuxiliaryEffectSlotDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alIsEffectDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, byte> _alIsEffectDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alIsFilterDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, void> _alIsFilterDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alMacOSXGetRenderChannelCountDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int> _alMacOSXGetRenderChannelCountDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>alMacOSXRenderChannelCountDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, void> _alMacOSXRenderChannelCountDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>EAXGetDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, Guid*, uint, uint, void*, uint, int> _EAXGetDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>EAXSetDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, Guid*, uint, uint, void*, uint, int> _EAXSetDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>EAXGetBufferModeDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int*, int> _EAXGetBufferModeDirect_fnptr;
+        
+        /// <summary><b>[entry point: <c>EAXSetBufferModeDirect</c>]</b></summary>
+        public readonly delegate* unmanaged[Cdecl]<IntPtr, int, int*, int, byte> _EAXSetBufferModeDirect_fnptr;
+        
+    }
+    /// <summary>A mutable collection of all function pointers to all OpenAL <c>al</c> entry points.</summary>
+    public unsafe partial struct MutableALPointers
     {
         /// <summary><b>[entry point: <c>alBuffer3f</c>]</b></summary>
         public delegate* unmanaged[Cdecl]<int, int, float, float, float, void> _alBuffer3f_fnptr;

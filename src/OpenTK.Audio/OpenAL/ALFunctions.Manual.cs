@@ -26,7 +26,7 @@ namespace OpenTK.Audio.OpenAL
             delegate* unmanaged[Cdecl]<int, ReverbProperties*, ALPointers*, void> ptr = &EffectEaxReverbInternal;
             var pointers = ext.AL._pointers;
             // Perform GC Transition once for all calls.
-            ptr(effect, &properties, pointers);
+            ptr(effect, &properties, &pointers);
         }
 
         [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
@@ -74,7 +74,7 @@ namespace OpenTK.Audio.OpenAL
             delegate* unmanaged[Cdecl]<ALCContext, int, ReverbProperties*, ALPointers*, void> ptr = &EffectEaxReverbDirectInternal;
             var pointers = direct.AL._pointers;
             // Perform GC Transition once for all calls.
-            ptr(context, effect, &properties, pointers);
+            ptr(context, effect, &properties, &pointers);
         }
 
         [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
@@ -121,7 +121,7 @@ namespace OpenTK.Audio.OpenAL
             delegate* unmanaged[Cdecl]<int, ReverbProperties*, ALPointers*, void> ptr = &EffectReverbInternal;
             var pointers = ext.AL._pointers;
             // Perform GC Transition once for all calls.
-            ptr(effect, &properties, pointers);
+            ptr(effect, &properties, &pointers);
         }
 
         [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
@@ -158,7 +158,7 @@ namespace OpenTK.Audio.OpenAL
             delegate* unmanaged[Cdecl]<ALCContext, int, ReverbProperties*, ALPointers*, void> ptr = &EffectReverbDirectInternal;
             var pointers = direct.AL._pointers;
             // Perform GC Transition once for all calls.
-            ptr(context, effect, &properties, pointers);
+            ptr(context, effect, &properties, &pointers);
         }
 
         [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]

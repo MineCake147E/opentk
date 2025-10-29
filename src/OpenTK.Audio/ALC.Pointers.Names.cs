@@ -12,7 +12,7 @@ using OpenTK.Mathematics;
 
 namespace OpenTK.Audio.OpenAL.ALC
 {
-    public unsafe partial struct ALCPointers
+    public readonly unsafe partial struct ALCPointers
     {
         internal static ReadOnlySpan<byte> AllFunctionNames => "alcCaptureCloseDevice\0alcCaptureOpenDevice\0alcCaptureSamples\0alcCaptureStart\0alcCaptureStop\0alcCloseDevice\0alcCreateContext\0alcDestroyContext\0alcGetContextsDevice\0alcGetCurrentContext\0alcGetEnumValue\0alcGetError\0alcGetIntegerv\0alcGetProcAddress\0alcGetString\0alcIsExtensionPresent\0alcMakeContextCurrent\0alcOpenDevice\0alcProcessContext\0alcSuspendContext\0alcGetProcAddress2\0alcASAGetListener\0alcASAGetSource\0alcASASetListener\0alcASASetSource\0alcGetThreadContext\0alcSetThreadContext\0alcMacOSXGetMixerMaxiumumBusses\0alcMacOSXGetMixerOutputRate\0alcMacOSXGetRenderingQuality\0alcMacOSXMixerMaxiumumBusses\0alcMacOSXMixerOutputRate\0alcMacOSXRenderingQuality\0alcOutputCapturerAvailableSamples\0alcOutputCapturerPrepare\0alcOutputCapturerSamples\0alcOutputCapturerStart\0alcOutputCapturerStop\0GetAudioChannel_LOKI\0SetAudioChannel_LOKI\0alcDevicePauseSOFT\0alcDeviceResumeSOFT\0alcEventCallbackSOFT\0alcEventControlSOFT\0alcEventIsSupportedSOFT\0alcGetInteger64vSOFT\0alcGetStringiSOFT\0alcIsRenderFormatSupportedSOFT\0alcLoopbackOpenDeviceSOFT\0alcRenderSamplesSOFT\0alcReopenDeviceSOFT\0alcResetDeviceSOFT\0"u8;
         internal const ushort alcCaptureCloseDevice_offset = 0;
