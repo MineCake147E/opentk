@@ -124,9 +124,8 @@ namespace OpenALTest
 
             CheckALError(AL, "Start");
 
-            int alcMajorVersion = 0, alcMinorVersion = 0;
-            ALC.GetInteger(device, OpenTK.Audio.OpenAL.ALC.GetPNameIV.MajorVersion, 1, ref alcMajorVersion);
-            ALC.GetInteger(device, OpenTK.Audio.OpenAL.ALC.GetPNameIV.MinorVersion, 1, ref alcMinorVersion);
+            var alcMajorVersion = ALC.GetInteger(device, OpenTK.Audio.OpenAL.ALC.GetPNameIV.MajorVersion);
+            var alcMinorVersion = ALC.GetInteger(device, OpenTK.Audio.OpenAL.ALC.GetPNameIV.MinorVersion);
 
             var attrs = ALC.GetContextAttributes(device);
             Console.WriteLine($"Attributes: {attrs}");

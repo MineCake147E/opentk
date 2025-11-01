@@ -33,6 +33,7 @@ namespace OpenTK.Audio
         private readonly ALCDevice _device;
         private readonly delegate* unmanaged[Cdecl]<byte*, void*> _alGetProcAddressFnptr;
         private readonly ALCLoader? _parent;
+        private readonly ALCDevice _parentDevice;
         private readonly ALCPointers _pointers;
 
         internal delegate* unmanaged[Cdecl]<byte*, void*> AlGetProcAddressFnptr => _alGetProcAddressFnptr;
@@ -43,20 +44,20 @@ namespace OpenTK.Audio
         public ALC ALC => new(in _pointers);
 
         /// <summary>
-        /// The <see cref="ALCDevice"/> used while loading this <see cref="ALCLoader"/>.
-        /// This <see cref="ALCDevice"/> may not be a valid device for <see cref="ALC"/> of this instance.
+        /// The <see cref="ALCDevice"/> associated with this <see cref="ALCLoader"/>.
+        /// This may be different from <see cref="ALCDevice"/> returned by <see cref="Parent"/>.
         /// </summary>
-        public unsafe ALCDevice Device => _device;
+        public ALCDevice Device => _device;
 
         /// <summary>
-        /// The <see cref="ALCLoader"/> that loaded this <see cref="ALCLoader"/>.
+        /// The <see cref="ALCLoader"/> that loaded this <see cref="ALCLoader"/>, and <see cref="ALCDevice"/> used while loading.
         /// </summary>
-        public ALCLoader? Parent => _parent;
+        public (ALCLoader? Loader, ALCDevice Device) Parent => (_parent, _parentDevice);
 
         private ALCLoader(IntPtr alHandle)
         {
             _alHandle = alHandle;
-            _device = default;
+            _parentDevice = default;
             NativeLibrary.TryGetExport(alHandle, "alcGetProcAddress", out var alcGetProcAddressFnptr);
             NativeLibrary.TryGetExport(alHandle, "alGetProcAddress", out var alGetProcAddressFnptr);
             _alGetProcAddressFnptr = (delegate* unmanaged[Cdecl]<byte*, void*>)alGetProcAddressFnptr;
@@ -68,12 +69,15 @@ namespace OpenTK.Audio
         {
             _alHandle = loader._alHandle;
             var alcGetProcAddressFnptr = loader._pointers._alcGetProcAddress_fnptr;
+            var alGetProcAddressFnptr = loader.AlGetProcAddressFnptr;
+            var isDirect = false;
+            var oldAlc = loader.ALC;
             if (preferDirect)
             {
                 var alcGetProcAddress2Fnptr = loader._pointers._alcGetProcAddress2_fnptr;
                 if (alcGetProcAddress2Fnptr is null)
                 {
-                    alcGetProcAddress2Fnptr = (delegate* unmanaged[Cdecl]<nint, byte*, void*>)loader.ALC.GetProcAddress(newDevice, ALCPointers.AllFunctionNames.Slice(ALCPointers.alcGetProcAddress2_offset));
+                    alcGetProcAddress2Fnptr = (delegate* unmanaged[Cdecl]<nint, byte*, void*>)oldAlc.GetProcAddress(newDevice, ALCPointers.AllFunctionNames.Slice(ALCPointers.alcGetProcAddress2_offset));
                 }
                 if (alcGetProcAddress2Fnptr is not null)
                 {
@@ -81,20 +85,27 @@ namespace OpenTK.Audio
                 }
             }
             _pointers = new(alcGetProcAddressFnptr, newDevice);
-            _ = ALC.GetInteger(newDevice, OpenAL.ALC.GetPNameIV.AttributesSize);
-            var deviceInvalid = ALC.GetError(newDevice) == OpenAL.ALC.ErrorCode.InvalidDevice;
-            _device = newDevice;
+            var newAlc = ALC;
+            _ = newAlc.GetInteger(newDevice, OpenAL.ALC.GetPNameIV.AttributesSize);
+            var deviceInvalid = newAlc.GetError(newDevice) == OpenAL.ALC.ErrorCode.InvalidDevice;
+            _parentDevice = newDevice;
             deviceReconnectionRequired = deviceInvalid;
-            _alGetProcAddressFnptr = loader._alGetProcAddressFnptr;
-            if (!deviceInvalid)
+            if (deviceInvalid)
             {
-                var alc = loader.ALC;
-                var alGetProcAddress_fnptr = (delegate* unmanaged[Cdecl]<byte*, void*>)alc.GetProcAddress(newDevice, ALPointers.AllFunctionNames.Slice(ALPointers.alGetProcAddress_offset));
-                if (alGetProcAddress_fnptr is not null)
-                {
-                    _alGetProcAddressFnptr = alGetProcAddress_fnptr;
-                }
+                newDevice = default;
             }
+            _device = newDevice;
+            isDirect = newAlc.Pointers._alcGetProcAddress2_fnptr is not null;
+            delegate* unmanaged[Cdecl]<byte*, void*> newAlGetProcAddressFnptr = default;
+            if (isDirect)
+            {
+                newAlGetProcAddressFnptr = (delegate* unmanaged[Cdecl]<byte*, void*>)newAlc.Direct.GetProcAddress2(newDevice, ALPointers.AllFunctionNames.Slice(ALPointers.alGetProcAddress_offset));
+            }
+            if (newAlGetProcAddressFnptr is not null)
+            {
+                alGetProcAddressFnptr = newAlGetProcAddressFnptr;
+            }
+            _alGetProcAddressFnptr = alGetProcAddressFnptr;
         }
 
         /// <summary>

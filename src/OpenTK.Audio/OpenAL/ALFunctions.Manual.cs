@@ -4,6 +4,7 @@ using System.Linq;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Runtime.Intrinsics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -180,6 +181,42 @@ namespace OpenTK.Audio.OpenAL
             alEffectfDirect(context, effect, (int)EffectPNameF.ReverbAirAbsorptionGainhf, properties->AirAbsorptionGainHF);
             alEffectfDirect(context, effect, (int)EffectPNameF.ReverbRoomRolloffFactor, properties->RoomRolloffFactor);
             alEffectiDirect(context, effect, (int)EffectPNameI.ReverbDecayHflimit, properties->DecayHFLimit);
+        }
+
+        /// <inheritdoc cref="GetSourcei64vSOFT(ALExtensions.SOFT, int, SourceGetPNameI64V, long*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe Vector128<long> GetSource2i64SOFT(this ALExtensions.SOFT soft, int source, SourceGetPNameI64V param)
+        {
+            Vector128<long> values = default;
+            soft.GetSourcei64vSOFT(source, param, (long*)&values);
+            return values;
+        }
+
+        /// <inheritdoc cref="GetSourcei64vDirectSOFT(ALExtensions.Direct{ALExtensions.SOFT}, ALCContext, int, SourceGetPNameI64V, long*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe Vector128<long> GetSource2i64DirectSOFT(this ALExtensions.Direct<ALExtensions.SOFT> direct, ALCContext context, int source, SourceGetPNameI64V param)
+        {
+            Vector128<long> values = default;
+            direct.GetSourcei64vDirectSOFT(context, source, param, (long*)&values);
+            return values;
+        }
+
+        /// <inheritdoc cref="GetSourcedvSOFT(ALExtensions.SOFT, int, SourceGetPNameDV, double*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe Vector128<double> GetSource2dSOFT(this ALExtensions.SOFT soft, int source, SourceGetPNameDV param)
+        {
+            Vector128<double> values = default;
+            soft.GetSourcedvSOFT(source, param, (double*)&values);
+            return values;
+        }
+
+        /// <inheritdoc cref="GetSourcedvDirectSOFT(ALExtensions.Direct{ALExtensions.SOFT}, ALCContext, int, SourceGetPNameDV, double*)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe Vector128<double> GetSource2dDirectSOFT(this ALExtensions.Direct<ALExtensions.SOFT> direct, ALCContext context, int source, SourceGetPNameDV param)
+        {
+            Vector128<double> values = default;
+            direct.GetSourcedvDirectSOFT(context, source, param, (double*)&values);
+            return values;
         }
     }
 }
