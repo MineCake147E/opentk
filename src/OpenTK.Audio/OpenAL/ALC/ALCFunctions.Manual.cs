@@ -53,8 +53,7 @@ namespace OpenTK.Audio.OpenAL.ALC
         /// <returns>The parsed context attributes.</returns>
         public static ALCContextAttributes GetContextAttributes(this ALC alc, ALCDevice device)
         {
-            int size = 0;
-            alc.GetInteger(device, GetPNameIV.AttributesSize, 1, ref size);
+            var size = alc.GetInteger(device, GetPNameIV.AttributesSize);
             int[] attributes = ArrayPool<int>.Shared.Rent(size);
             alc.GetInteger(device, GetPNameIV.AllAttributes, size, attributes);
             var result = ALCContextAttributes.FromArray(attributes);
@@ -95,7 +94,12 @@ namespace OpenTK.Audio.OpenAL.ALC
             List<string> result = [];
             for (var i = 0; i < count; i++)
             {
-                result.Add(soft.GetStringiSOFT(device, paramName, i));
+                var item = soft.GetStringiSOFT(device, paramName, i);
+                if (item is null)
+                {
+                    continue;
+                }
+                result.Add(item);
             }
             return result;
         }

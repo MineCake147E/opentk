@@ -33,6 +33,39 @@ namespace OpenTK.Core.Native
             };
 
         /// <summary>
+        /// Decodes a range of bytes from a byte array into a string.
+        /// </summary>
+        /// <param name="bytes">A read-only byte span to decode to a Unicode string.</param>
+        /// <param name="encoding">The encoding of the string.</param>
+        /// <returns>A string that contains the decoded bytes from the provided read-only span.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe string? ByteToString(ReadOnlySpan<byte> bytes, [ConstantExpected] NativeCharacterEncoding encoding = NativeCharacterEncoding.Utf8)
+            => encoding switch
+            {
+                NativeCharacterEncoding.Utf8 => Encoding.UTF8.GetString(bytes),
+                NativeCharacterEncoding.Uni => Encoding.Unicode.GetString(bytes),
+                NativeCharacterEncoding.Auto => DecodeAuto(bytes),
+                NativeCharacterEncoding.Ansi => DecodeAnsi(bytes),
+                _ => Encoding.UTF8.GetString(bytes)
+            };
+
+        private static unsafe string? DecodeAuto(ReadOnlySpan<byte> bytes)
+        {
+            fixed (byte* ptr = bytes)
+            {
+                return Marshal.PtrToStringAuto((nint)ptr);
+            }
+        }
+
+        private static unsafe string? DecodeAnsi(ReadOnlySpan<byte> bytes)
+        {
+            fixed (byte* ptr = bytes)
+            {
+                return new string((sbyte*)ptr, 0, bytes.Length);
+            }
+        }
+
+        /// <summary>
         /// Ensures that <paramref name="nullTerminatedUtf8String"/> is null-terminated.
         /// </summary>
         /// <param name="nullTerminatedUtf8String">The <see cref="ReadOnlySpan{T}"/> to test.</param>
