@@ -254,11 +254,6 @@ namespace ALGenerator.Parsing
 
         private static void CreateDirectContextCommands(List<Function> functions, List<Extension> extensions)
         {
-            // FIXME: We need to deal with the fact that AL_EXT_direct_context devices need to load all of their
-            // function pointers from alcGetProcAddress2 which you only get access to after creating your first
-            // context, similar to how you need to do with OpenGL on windows.
-            // - Noggin_bops 2025-08-08
-
             List<Function> directContextFunctions = new List<Function>();
             List<CommandRef> directContextFunctionNames = new List<CommandRef>();
 
@@ -827,7 +822,7 @@ namespace ALGenerator.Parsing
             {
                 if (val.StartsWith('\''))
                 {
-                    return (ulong)(val[1] << 3 | val[2] << 2 | val[3] << 1 | val[4]);
+                    return (ulong)((val[1] << 3) | (val[2] << 2) | (val[3] << 1) | val[4]);
                 }
 
                 return type switch

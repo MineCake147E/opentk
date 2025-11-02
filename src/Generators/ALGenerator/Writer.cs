@@ -232,9 +232,6 @@ namespace ALGenerator
 
         private static void WriteFunctionPointer(IndentedTextWriter writer, Function function, FileStrings strings, bool isReadOnly)
         {
-            // Write delegate field initialized to the lazy loader.
-            // Write public function definition that calls delegate.
-            // Write lazy loader function.
             GetNativeFunctionSignature(function, false, true, out _, out StringBuilder paramNames, out StringBuilder delegateTypes, out StringBuilder signature, out _, out string returnType);
 
             string entryPoint = function.EntryPoint;

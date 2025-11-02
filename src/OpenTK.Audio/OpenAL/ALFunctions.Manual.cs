@@ -22,12 +22,15 @@ namespace OpenTK.Audio.OpenAL
         /// <param name="effect">The effect ID.</param>
         /// <param name="properties">A set of predefined reverb properties.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe void EffectEaxReverb(this ALExtensions.EXT ext, int effect, ReverbProperties properties)
+        public static unsafe void EffectEaxReverb(this ALExtensions.EXT ext, int effect, in ReverbProperties properties)
         {
-            delegate* unmanaged[Cdecl]<int, ReverbProperties*, ALPointers*, void> ptr = &EffectEaxReverbInternal;
-            var pointers = ext.AL._pointers;
-            // Perform GC Transition once for all calls.
-            ptr(effect, &properties, &pointers);
+            fixed (ReverbProperties* pProperties = &properties)
+            {
+                delegate* unmanaged[Cdecl]<int, ReverbProperties*, ALPointers*, void> ptr = &EffectEaxReverbInternal;
+                var pointers = ext.AL._pointers;
+                // Perform GC Transition once for all calls.
+                ptr(effect, pProperties, &pointers);
+            }
         }
 
         [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
@@ -70,12 +73,15 @@ namespace OpenTK.Audio.OpenAL
         /// <param name="effect">The effect ID.</param>
         /// <param name="properties">A set of predefined reverb properties.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe void EffectEaxReverbDirect(this ALExtensions.Direct<ALExtensions.EXT> direct, ALCContext context, int effect, ReverbProperties properties)
+        public static unsafe void EffectEaxReverbDirect(this ALExtensions.Direct<ALExtensions.EXT> direct, ALCContext context, int effect, in ReverbProperties properties)
         {
-            delegate* unmanaged[Cdecl]<ALCContext, int, ReverbProperties*, ALPointers*, void> ptr = &EffectEaxReverbDirectInternal;
-            var pointers = direct.AL._pointers;
-            // Perform GC Transition once for all calls.
-            ptr(context, effect, &properties, &pointers);
+            fixed (ReverbProperties* pProperties = &properties)
+            {
+                delegate* unmanaged[Cdecl]<ALCContext, int, ReverbProperties*, ALPointers*, void> ptr = &EffectEaxReverbDirectInternal;
+                var pointers = direct.AL._pointers;
+                // Perform GC Transition once for all calls.
+                ptr(context, effect, pProperties, &pointers);
+            }
         }
 
         [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
@@ -117,12 +123,15 @@ namespace OpenTK.Audio.OpenAL
         /// <param name="effect">The effect ID.</param>
         /// <param name="properties">A set of predefined reverb properties.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe void EffectReverb(this ALExtensions.EXT ext, int effect, ReverbProperties properties)
+        public static unsafe void EffectReverb(this ALExtensions.EXT ext, int effect, in ReverbProperties properties)
         {
-            delegate* unmanaged[Cdecl]<int, ReverbProperties*, ALPointers*, void> ptr = &EffectReverbInternal;
-            var pointers = ext.AL._pointers;
-            // Perform GC Transition once for all calls.
-            ptr(effect, &properties, &pointers);
+            fixed (ReverbProperties* pProperties = &properties)
+            {
+                delegate* unmanaged[Cdecl]<int, ReverbProperties*, ALPointers*, void> ptr = &EffectReverbInternal;
+                var pointers = ext.AL._pointers;
+                // Perform GC Transition once for all calls.
+                ptr(effect, pProperties, &pointers);
+            }
         }
 
         [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
@@ -154,12 +163,15 @@ namespace OpenTK.Audio.OpenAL
         /// <param name="effect">The effect ID.</param>
         /// <param name="properties">A set of predefined reverb properties.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe void EffectReverbDirect(this ALExtensions.Direct<ALExtensions.EXT> direct, ALCContext context, int effect, ReverbProperties properties)
+        public static unsafe void EffectReverbDirect(this ALExtensions.Direct<ALExtensions.EXT> direct, ALCContext context, int effect, in ReverbProperties properties)
         {
-            delegate* unmanaged[Cdecl]<ALCContext, int, ReverbProperties*, ALPointers*, void> ptr = &EffectReverbDirectInternal;
-            var pointers = direct.AL._pointers;
-            // Perform GC Transition once for all calls.
-            ptr(context, effect, &properties, &pointers);
+            fixed (ReverbProperties* pProperties = &properties)
+            {
+                delegate* unmanaged[Cdecl]<ALCContext, int, ReverbProperties*, ALPointers*, void> ptr = &EffectReverbDirectInternal;
+                var pointers = direct.AL._pointers;
+                // Perform GC Transition once for all calls.
+                ptr(context, effect, pProperties, &pointers);
+            }
         }
 
         [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]

@@ -13,17 +13,10 @@ namespace GeneratorBase.Overloading
     {
         public bool TryGenerateOverloads(Overload overload, [NotNullWhen(true)] out List<Overload>? newOverloads)
         {
-            // FIXME: We want to be able to handle more than just one Span and Array overload
-            // functions like "glShaderSource" can take more than one array.
-            //
-
             List<Parameter> newSpanParams = [.. overload.InputParameters];
             string[] genericTypes = overload.GenericTypes;
             Overload spanOverload = overload;
 
-            // FIXME: We would ideally combine all span and array overloads into a single overload layer
-            // to reduce fixed() nesting in the generated code.
-            // - Noggin_bops 2024-03-16
             int j = 0;
             for (int i = 0; i < overload.InputParameters.Length; i++, j++)
             {
@@ -33,8 +26,6 @@ namespace GeneratorBase.Overloading
                 {
                     if (pointer.BaseType is CSPointer)
                     {
-                        // FIXME: Maybe we can generate an IntPtr[] overload when this happens?
-                        // - Noggin_bops 2025-08-08
                         Logger.Warning($"Pointer leaked from earlier overloaders: \"{overload.NativeFunction.EntryPoint}\" ({param})");
                         continue;
                     }
