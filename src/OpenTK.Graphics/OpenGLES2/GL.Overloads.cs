@@ -3262,6 +3262,15 @@ namespace OpenTK.Graphics.OpenGLES2
             returnValue_str = NativeString.PtrToString(returnValue, resultEncoding);
             return returnValue_str;
         }
+        /// <inheritdoc cref="GetString_(StringName)"/>
+        public static unsafe ReadOnlySpan<byte> GetStringAsSpan(StringName name)
+        {
+            ReadOnlySpan<byte> returnValue_str;
+            byte* returnValue;
+            returnValue = GetString_(name);
+            returnValue_str = MemoryMarshal.CreateReadOnlySpanFromNullTerminated(returnValue);
+            return returnValue_str;
+        }
         /// <inheritdoc cref="GetStringi_(StringName, uint)"/>
         public static unsafe string? GetStringi(StringName name, uint index, [ConstantExpected] NativeCharacterEncoding resultEncoding = NativeCharacterEncoding.Utf8)
         {
@@ -3269,6 +3278,15 @@ namespace OpenTK.Graphics.OpenGLES2
             byte* returnValue;
             returnValue = GetStringi_(name, index);
             returnValue_str = NativeString.PtrToString(returnValue, resultEncoding);
+            return returnValue_str;
+        }
+        /// <inheritdoc cref="GetStringi_(StringName, uint)"/>
+        public static unsafe ReadOnlySpan<byte> GetStringiAsSpan(StringName name, uint index)
+        {
+            ReadOnlySpan<byte> returnValue_str;
+            byte* returnValue;
+            returnValue = GetStringi_(name, index);
+            returnValue_str = MemoryMarshal.CreateReadOnlySpanFromNullTerminated(returnValue);
             return returnValue_str;
         }
         /// <inheritdoc cref="GetSynciv(GLSync, SyncParameterName, int, int*, int*)"/>

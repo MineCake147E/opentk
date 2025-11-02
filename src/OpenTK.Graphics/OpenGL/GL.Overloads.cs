@@ -5398,6 +5398,15 @@ namespace OpenTK.Graphics.OpenGL
             returnValue_str = NativeString.PtrToString(returnValue, resultEncoding);
             return returnValue_str;
         }
+        /// <inheritdoc cref="GetString_(StringName)"/>
+        public static unsafe ReadOnlySpan<byte> GetStringAsSpan(StringName name)
+        {
+            ReadOnlySpan<byte> returnValue_str;
+            byte* returnValue;
+            returnValue = GetString_(name);
+            returnValue_str = MemoryMarshal.CreateReadOnlySpanFromNullTerminated(returnValue);
+            return returnValue_str;
+        }
         /// <inheritdoc cref="GetStringi_(StringName, uint)"/>
         public static unsafe string? GetStringi(StringName name, uint index, [ConstantExpected] NativeCharacterEncoding resultEncoding = NativeCharacterEncoding.Utf8)
         {
@@ -5405,6 +5414,15 @@ namespace OpenTK.Graphics.OpenGL
             byte* returnValue;
             returnValue = GetStringi_(name, index);
             returnValue_str = NativeString.PtrToString(returnValue, resultEncoding);
+            return returnValue_str;
+        }
+        /// <inheritdoc cref="GetStringi_(StringName, uint)"/>
+        public static unsafe ReadOnlySpan<byte> GetStringiAsSpan(StringName name, uint index)
+        {
+            ReadOnlySpan<byte> returnValue_str;
+            byte* returnValue;
+            returnValue = GetStringi_(name, index);
+            returnValue_str = MemoryMarshal.CreateReadOnlySpanFromNullTerminated(returnValue);
             return returnValue_str;
         }
         /// <inheritdoc cref="GetSubroutineIndex(int, ShaderType, byte*)"/>
@@ -41041,11 +41059,38 @@ namespace OpenTK.Graphics.OpenGL
                 }
             }
             /// <inheritdoc cref="GetProgramStringNV(int, VertexAttribEnumNV, byte*)"/>
-            public static unsafe void GetProgramStringNV(int id, VertexAttribEnumNV pname, string program)
+            public static unsafe byte GetProgramStringNV(int id, VertexAttribEnumNV pname)
             {
-                byte* program_ptr = (byte*)Marshal.StringToCoTaskMemUTF8(program);
-                GetProgramStringNV(id, pname, program_ptr);
-                Marshal.FreeCoTaskMem((IntPtr)program_ptr);
+                byte program;
+                byte* program_ptr = &program;
+                {
+                    GetProgramStringNV(id, pname, program_ptr);
+                }
+                return program;
+            }
+            /// <inheritdoc cref="GetProgramStringNV(int, VertexAttribEnumNV, byte*)"/>
+            public static unsafe void GetProgramStringNV(int id, VertexAttribEnumNV pname, out byte program)
+            {
+                fixed (byte* program_ptr = &program)
+                {
+                    GetProgramStringNV(id, pname, program_ptr);
+                }
+            }
+            /// <inheritdoc cref="GetProgramStringNV(int, VertexAttribEnumNV, byte*)"/>
+            public static unsafe void GetProgramStringNV(int id, VertexAttribEnumNV pname, byte[] program)
+            {
+                fixed (byte* program_ptr = program)
+                {
+                    GetProgramStringNV(id, pname, program_ptr);
+                }
+            }
+            /// <inheritdoc cref="GetProgramStringNV(int, VertexAttribEnumNV, byte*)"/>
+            public static unsafe void GetProgramStringNV(int id, VertexAttribEnumNV pname, Span<byte> program)
+            {
+                fixed (byte* program_ptr = program)
+                {
+                    GetProgramStringNV(id, pname, program_ptr);
+                }
             }
             /// <inheritdoc cref="GetProgramSubroutineParameteruivNV(All, uint, uint*)"/>
             public static unsafe uint GetProgramSubroutineParameteruivNV(All target, uint index)

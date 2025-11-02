@@ -844,6 +844,15 @@ namespace OpenTK.Graphics.OpenGLES1
             returnValue_str = NativeString.PtrToString(returnValue, resultEncoding);
             return returnValue_str;
         }
+        /// <inheritdoc cref="GetString_(StringName)"/>
+        public static unsafe ReadOnlySpan<byte> GetStringAsSpan(StringName name)
+        {
+            ReadOnlySpan<byte> returnValue_str;
+            byte* returnValue;
+            returnValue = GetString_(name);
+            returnValue_str = MemoryMarshal.CreateReadOnlySpanFromNullTerminated(returnValue);
+            return returnValue_str;
+        }
         /// <inheritdoc cref="GetTexEnvfv(TextureEnvTarget, TextureEnvParameter, float*)"/>
         public static unsafe float GetTexEnvf(TextureEnvTarget target, TextureEnvParameter pname)
         {

@@ -290,6 +290,18 @@ namespace OpenTK.Graphics.Glx
             Marshal.FreeCoTaskMem((IntPtr)procName_ptr);
             return returnValue;
         }
+        /// <inheritdoc cref="GetProcAddress(byte*)"/>
+        public static unsafe IntPtr GetProcAddress(ReadOnlySpan<byte> nullTerminatedUtf8ProcName)
+        {
+            IntPtr returnValue;
+            var nullTerminatedUtf8ProcName_span = NativeString.EnsureNullTerminated(nullTerminatedUtf8ProcName, out var nullTerminatedUtf8ProcName_array);
+            fixed (byte* procName_ptr = nullTerminatedUtf8ProcName_span)
+            {
+                returnValue = GetProcAddress(procName_ptr);
+            }
+            if (nullTerminatedUtf8ProcName_array is not null) ArrayPool<byte>.Shared.Return(nullTerminatedUtf8ProcName_array, true);
+            return returnValue;
+        }
         /// <inheritdoc cref="GetSelectedEvent(DisplayPtr, GLXDrawable, ulong*)"/>
         public static unsafe void GetSelectedEvent(DisplayPtr dpy, GLXDrawable draw, ref ulong event_mask)
         {
@@ -563,6 +575,18 @@ namespace OpenTK.Graphics.Glx
                 byte* procName_ptr = (byte*)Marshal.StringToCoTaskMemUTF8(procName);
                 returnValue = GetProcAddressARB(procName_ptr);
                 Marshal.FreeCoTaskMem((IntPtr)procName_ptr);
+                return returnValue;
+            }
+            /// <inheritdoc cref="GetProcAddressARB(byte*)"/>
+            public static unsafe IntPtr GetProcAddressARB(ReadOnlySpan<byte> nullTerminatedUtf8ProcName)
+            {
+                IntPtr returnValue;
+                var nullTerminatedUtf8ProcName_span = NativeString.EnsureNullTerminated(nullTerminatedUtf8ProcName, out var nullTerminatedUtf8ProcName_array);
+                fixed (byte* procName_ptr = nullTerminatedUtf8ProcName_span)
+                {
+                    returnValue = GetProcAddressARB(procName_ptr);
+                }
+                if (nullTerminatedUtf8ProcName_array is not null) ArrayPool<byte>.Shared.Return(nullTerminatedUtf8ProcName_array, true);
                 return returnValue;
             }
         }

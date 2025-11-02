@@ -25,7 +25,7 @@ namespace GeneratorBase.Overloading
                 // There are a few functions that are supposed to take string arguments but are defined as
                 // GLubyte* or unsigned byte*. The ones marked with kind="String" we overload so that they get the correct signature.
                 // - Noggin_bops 2024-09-23
-                if (param.Kinds.Contains("String") && param.StrongType is CSPointer spt && spt.BaseType is CSPrimitive sbt && sbt.TypeName == "byte")
+                if (param.Kinds.Contains("String") && param.StrongType is CSPointer spt && spt.BaseType is CSPrimitive sbt && sbt.TypeName == "byte" && sbt.Constant)
                 {
                     var pointerParam = newParams[i];
                     var nameTable = newOverload.NameTable.New();
@@ -45,6 +45,31 @@ namespace GeneratorBase.Overloading
                         InputParameters = stringParams,
                         NameTable = nameTable
                     };
+
+                    if (stringType == StringType.Char8)
+                    {
+                        var spanNameTable = spanOverload.NameTable.New();
+                        spanNameTable.Rename(pointerParam, $"{pointerParam.Name}_ptr");
+                        var name = pointerParam.Name;
+                        var lengthParamIndex = string.IsNullOrEmpty(pointerParam.Length) ? -1 : newSpanParams.FindIndex(a => a.OriginalName == pointerParam.Length);
+                        if (lengthParamIndex >= 0 && overload.InputParameters.Count(a => a.Length == pointerParam.Length) == 1)
+                        {
+                            Logger.Warning($"Pointer with length leaked from earlier overloaders: \"{overload.NativeFunction.EntryPoint}\" ({param})");
+                            continue;
+                        }
+                        else
+                        {
+                            newSpanParams[j] = newSpanParams[j] with { Name = $"nullTerminatedUtf8{char.ToUpperInvariant(name[0])}{name.Substring(1)}", StrongType = new CSSpan(CSPrimitive.Byte(false), true), StrongLength = null };
+                            var spanLayer = new Utf8StringLayer(pointerParam, newSpanParams[j]);
+                            spanOverload = spanOverload with
+                            {
+                                NestedOverload = spanOverload,
+                                MarshalLayerToNested = spanLayer,
+                                InputParameters = [.. newSpanParams],
+                                NameTable = spanNameTable
+                            };
+                        }
+                    }
                 }
                 else if (param.StrongType is CSPointer pt && pt.BaseType is ICSCharType bt)
                 {
@@ -74,7 +99,7 @@ namespace GeneratorBase.Overloading
                             NameTable = nameTable
                         };
 
-                        if (stringType == StringType.Char8)
+                        if (stringType == StringType.Char8 && bt.Constant)
                         {
                             var spanNameTable = spanOverload.NameTable.New();
                             spanNameTable.Rename(pointerParam, $"{pointerParam.Name}_ptr");

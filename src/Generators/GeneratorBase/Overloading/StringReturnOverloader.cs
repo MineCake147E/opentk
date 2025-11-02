@@ -27,8 +27,11 @@ namespace GeneratorBase.Overloading
                     DefaultValue = "NativeCharacterEncoding.Utf8",
                     Attributes = ["ConstantExpected"]
                 };
-                var layer = new StringReturnLayer(new CSPointer(CSPrimitive.Byte(true), true), newReturnName, overload.NameTable.ReturnName!, encodingParameter);
+                var pt = new CSPointer(CSPrimitive.Byte(true), true);
+                var layer = new StringReturnLayer(pt, newReturnName, overload.NameTable.ReturnName!, encodingParameter);
+                var spanLayer = new ReadOnlySpanReturnLayer(pt, newReturnName, overload.NameTable.ReturnName!);
                 var returnType = new CSString(Nullable: true);
+                var spanReturnType = new CSSpan(CSPrimitive.Byte(true), true);
                 var nameTable = overload.NameTable.New();
                 nameTable.ReturnName = newReturnName;
                 newOverloads =
@@ -40,6 +43,14 @@ namespace GeneratorBase.Overloading
                         MarshalLayerToNested = layer,
                         ReturnType = returnType,
                         NameTable = nameTable,
+                    },
+                    overload with
+                    {
+                        OverloadName = $"{overload.OverloadName}AsSpan",
+                        NestedOverload = overload,
+                        MarshalLayerToNested = spanLayer,
+                        ReturnType = spanReturnType,
+                        NameTable = nameTable,
                     }
                 ];
                 return true;
@@ -49,7 +60,7 @@ namespace GeneratorBase.Overloading
                 // FIXME: Handle CSChar8 and CSChar16 differently!
                 var newReturnName = $"{overload.NameTable.ReturnName}_str";
                 var returnType = new CSString(Nullable: true);
-                var spanReturnType = new CSSpan(CSPrimitive.Byte(false), true);
+                var spanReturnType = new CSSpan(CSPrimitive.Byte(true), true);
                 var nameTable = overload.NameTable.New();
                 nameTable.ReturnName = newReturnName;
                 var encodingParameter = new Parameter()
