@@ -1,10 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 using OpenTK.Audio.OpenAL;
 using OpenTK.Audio.OpenAL.ALC;
@@ -46,7 +40,7 @@ namespace OpenTK.Audio
             var deviceOrContextInvalid = alc.GetError(device) != OpenAL.ALC.ErrorCode.NoError;
             if (deviceOrContextInvalid)
             {
-                throw new ArgumentException("The specified laoder didn't recognize the specified context!", nameof(context));
+                throw new ArgumentException("The specified loader didn't recognize the specified context!", nameof(context));
             }
             var alcGetProcAddress2_fnptr = alc._pointers._alcGetProcAddress2_fnptr;
             if (alcGetProcAddress2_fnptr is null && alc.IsExtensionPresent(device, "ALC_EXT_direct_context\0"u8))
@@ -72,7 +66,7 @@ namespace OpenTK.Audio
             success = isContextThreadLocal ? alc.EXT.SetThreadContext(context) : alc.MakeContextCurrent(context);
             if (!success)
             {
-                throw new ArgumentException("The specified laoder didn't recognize the specified context!", nameof(context));
+                throw new ArgumentException("The specified loader didn't recognize the specified context!", nameof(context));
             }
             _pointers = new(loadFunction);
             _ = isContextThreadLocal ? alc.EXT.SetThreadContext(previousThreadContext) : alc.MakeContextCurrent(previousContext);

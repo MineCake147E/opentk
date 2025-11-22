@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 using OpenTK.Audio.OpenAL;
 using OpenTK.Audio.OpenAL.ALC;
@@ -112,9 +107,9 @@ namespace OpenTK.Audio
         /// Creates a new <see cref="ALCLoader"/> with the specified <paramref name="targetDevice"/>.
         /// </summary>
         /// <param name="targetDevice">The target <see cref="ALCDevice"/> to load ALC function pointers for.</param>
-        /// <param name="deviceReconnectionRequired">When this method returns, contains the value which indicates whether the <paramref name="targetDevice"/> is not valid for the newly laoded <see cref="ALC"/>.</param>
+        /// <param name="deviceReconnectionRequired">When this method returns, contains the value which indicates whether the <paramref name="targetDevice"/> is not valid for the newly loaded <see cref="ALC"/>.</param>
         /// <param name="preferDirect">
-        /// Whether <see cref="ALCLoader"/> should rather laod function pointers with <see cref="ALCFunctions.GetProcAddress2(ALCExtensions.Direct, ALCDevice, byte*)"/> instead of <see cref="ALCFunctions.GetProcAddress(ALC, ALCDevice, byte*)"/>.<br/>
+        /// Whether <see cref="ALCLoader"/> should rather load function pointers with <see cref="ALCFunctions.GetProcAddress2(ALCExtensions.Direct, ALCDevice, byte*)"/> instead of <see cref="ALCFunctions.GetProcAddress(ALC, ALCDevice, byte*)"/>.<br/>
         /// Setting this makes chance of <paramref name="deviceReconnectionRequired"/> being <see langword="true"/> higher, at least in Windows.
         /// </param>
         /// <returns>The newly created <see cref="ALCLoader"/>.</returns>
